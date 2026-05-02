@@ -115,3 +115,24 @@ export interface ThemeEnriched extends Theme {
   critic_views: CriticInterpretation[]
   quote_count: number
 }
+
+export interface Critic {
+  id: string
+  name: string
+  school: string
+  core_position: string
+  key_text: string | null
+  source_note: string | null    // birth/death dates e.g. "1851–1935"
+}
+
+export interface CriticEnriched extends Critic {
+  interpretations: Array<{
+    id: string
+    play: 'HAM' | 'MAL'
+    theme_code: string | null
+    theme_name: string | null
+    interpretation: string
+    usable_ao5_sentence: string | null
+    counter_reading: string | null
+  }>
+}
