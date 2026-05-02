@@ -180,3 +180,41 @@ export interface EssayPlanEnriched extends EssayPlan {
   theme_name: string
   paragraphs: PlanParagraph[]
 }
+
+export interface TimingStrategy {
+  id: string
+  section: 'SECTION_A' | 'SECTION_B'
+  total_minutes: number
+  planning_minutes: number
+  writing_minutes: number
+  checking_minutes: number
+  recommended_paragraphs: number
+  strategy_note: string | null
+}
+
+export interface GradeLevelDescriptor {
+  id: string
+  level_no: number
+  grade_band: GradeBand
+  descriptor: string
+  examiner_translation: string | null
+  success_criteria: string | null
+}
+
+export interface CommonError {
+  id: string
+  error_name: string
+  error_description: string
+  symptom_in_student_writing: string | null
+  correction_strategy: string | null
+  severity: number | null
+}
+
+export interface VocabularyTerm {
+  id: string
+  term: string
+  definition: string
+  usage_in_analysis: string | null
+  ao_relevance: string[]   // Postgres array e.g. ['AO1', 'AO2']
+  target_level: string | null
+}
