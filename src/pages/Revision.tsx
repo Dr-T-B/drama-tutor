@@ -14,7 +14,7 @@ const BUCKETS: { bucket: SRSBucket; label: string; colour: string }[] = [
 ]
 
 export function Revision() {
-  const { userId } = useAuth()
+  const { userId, loading: authLoading } = useAuth()
   const { play } = usePlay()
   const { dueDeck, masteredCount, totalCards, isLoading, rateCard, isRating } =
     useRevisionDeck(userId, play)
@@ -33,9 +33,16 @@ export function Revision() {
     setCardIndex(i => (i + 1 < dueDeck.length ? i + 1 : 0))
   }
 
-  if (isLoading) return (
+  if (authLoading || isLoading) return (
     <div className="flex items-center justify-center h-64 text-gray-400">
       Loading cards…
+    </div>
+  )
+
+  if (!authLoading && !userId) return (
+    <div className="flex items-center justify-center h-64 text-red-400">
+      Sign-in failed — check VITE_FAMILY_EMAIL and VITE_FAMILY_PASSWORD in
+      .env.local, then reload.
     </div>
   )
 
