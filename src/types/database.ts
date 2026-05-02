@@ -136,3 +136,47 @@ export interface CriticEnriched extends Critic {
     counter_reading: string | null
   }>
 }
+
+export interface EssayPlan {
+  id: string
+  text_id: string
+  theme_id: string
+  question_text: string
+  conceptual_thesis: string | null
+  timed_plan: boolean
+  target_level: string | null
+  plan_minutes: number | null
+  examiner_rationale: string | null
+}
+
+export interface PlanParagraph {
+  id: string
+  essay_plan_id: string
+  paragraph_no: number
+  paragraph_function: string | null
+  topic_sentence: string | null
+  ao2_move: string | null
+  ao3_move: string | null
+  ao4_move: string | null
+  ao5_move: string | null
+  mini_judgement: string | null
+  quote_id: string | null
+  quote_content: string | null
+  quote_speaker: string | null
+}
+
+export interface SentenceStem {
+  id: string
+  ao_code: string
+  stem_label: string
+  stem_text: string
+  usage_note: string | null
+  target_level: string | null
+}
+
+export interface EssayPlanEnriched extends EssayPlan {
+  play: 'HAM' | 'MAL'
+  theme_code: string
+  theme_name: string
+  paragraphs: PlanParagraph[]
+}
