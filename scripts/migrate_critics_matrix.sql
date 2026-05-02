@@ -9,9 +9,14 @@
 ALTER TABLE critics
   ADD COLUMN IF NOT EXISTS year integer;
 
+-- The schema's bulk updated_at trigger (sql/component1_drama_schema_v6.sql §12)
+-- attaches trg_critic_interpretations_updated_at to this table, but the
+-- original CREATE TABLE omits the column. Add it so the trigger stops failing
+-- with "record new has no field updated_at" on UPDATE.
 ALTER TABLE critic_interpretations
-  ADD COLUMN IF NOT EXISTS ao_tags       text[]  DEFAULT '{}',
-  ADD COLUMN IF NOT EXISTS exam_tip      text,
+  ADD COLUMN IF NOT EXISTS updated_at     timestamptz NOT NULL DEFAULT now(),
+  ADD COLUMN IF NOT EXISTS ao_tags        text[]      DEFAULT '{}',
+  ADD COLUMN IF NOT EXISTS exam_tip       text,
   ADD COLUMN IF NOT EXISTS ao4_connection text;
 
 -- RLS: ensure authenticated users can read critics data
