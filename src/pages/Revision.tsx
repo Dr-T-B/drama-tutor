@@ -112,7 +112,10 @@ export function Revision() {
               'text-lg font-medium leading-snug flex-1',
               flipped ? 'text-white' : 'text-gray-900',
             ].join(' ')}>
-              {flipped ? currentCard.back_content : currentCard.front_prompt}
+              {flipped
+                ? currentCard.back_content
+                : currentCard.front_prompt.replace(/^\[[A-Z_0-9]+\]\s*/, '')
+              }
             </p>
 
             {!flipped && (
