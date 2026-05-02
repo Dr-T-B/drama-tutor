@@ -20,6 +20,8 @@ type CriticEntry = {
   ao_tags: string[]
   exam_tip: string | null
   ao4_connection: string | null
+  short_quote: string | null
+  themes: string[]
 }
 
 const AO_CLS: Record<string, string> = {
@@ -34,8 +36,9 @@ async function fetchCritics(textIds: string[]): Promise<CriticEntry[]> {
   const { data, error } = await supabase
     .from('critic_interpretations')
     .select(`
-      text_id, interpretation, usable_ao5_sentence, counter_reading,
-      ao_tags, exam_tip, ao4_connection,
+      text_id, interpretation, usable_ao5_sentence,
+      counter_reading, ao_tags, exam_tip, ao4_connection,
+      short_quote, themes,
       critics!inner(id, name, school, year, key_text),
       texts!inner(title)
     `)
@@ -64,6 +67,8 @@ async function fetchCritics(textIds: string[]): Promise<CriticEntry[]> {
       ao_tags: row.ao_tags ?? [],
       exam_tip: row.exam_tip,
       ao4_connection: row.ao4_connection,
+      short_quote: row.short_quote,
+      themes: row.themes ?? [],
     }))
 }
 
@@ -137,6 +142,19 @@ export default function CriticsView() {
         }, {} as Record<string, CriticEntry[]>)
       : { '': filtered }
 
+  const examDate = new Date('2026-05-11T00:00:00')
+  const daysLeft = Math.max(0,
+    Math.round((examDate.getTime() - Date.now()) / 86400000)
+  )
+  const sectionLabel = play === 'HAM'
+    ? 'Section A — Hamlet'
+    : play === 'MAL'
+    ? 'Section B — The Duchess of Malfi'
+    : 'Both sections'
+  const ao4Note = play === 'HAM'
+    ? 'AO4 (connections) not assessed in Section A'
+    : 'AO4 assessed — connections to Hamlet required'
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
       <div>
@@ -145,6 +163,24 @@ export default function CriticsView() {
           {filtered.length} of {critics.length} critics ·{' '}
           {play === 'HAM' ? 'Hamlet' : play === 'MAL' ? 'The Duchess of Malfi' : 'Both plays'}
         </p>
+      </div>
+
+      <div className="flex items-center justify-between flex-wrap gap-2
+                      px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/60
+                      text-xs text-gray-500 dark:text-gray-400">
+        <span>{sectionLabel} · {ao4Note}</span>
+        <span className="flex items-center gap-2">
+          {visibleAOs.map(ao => (
+            <span key={ao}
+              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${AO_CLS[ao]}`}>
+              {ao}
+            </span>
+          ))}
+          <span className="ml-1">
+            11 May 2026 ·{' '}
+            <strong className="text-gray-700 dark:text-gray-200">{daysLeft} days</strong>
+          </span>
+        </span>
       </div>
 
       <div className="space-y-2">
@@ -200,10 +236,13 @@ export default function CriticsView() {
                 return (
                   <div key={id}
                     className="bg-white dark:bg-gray-800 border border-gray-200
-                               dark:border-gray-700 rounded-xl p-4 flex flex-col gap-2.5">
+                               dark:border-gray-700 rounded-xl p-4 flex flex-col gap-3">
+
+                    {/* Row 1: school + AO tags */}
                     <div className="flex items-start justify-between gap-2">
                       <span className="text-[11px] px-2 py-0.5 rounded bg-gray-100
-                                       dark:bg-gray-700 text-gray-500 dark:text-gray-300 shrink-0">
+                                       dark:bg-gray-700 text-gray-500 dark:text-gray-300
+                                       leading-snug shrink-0 max-w-[55%]">
                         {c.school}
                       </span>
                       <div className="flex gap-1 flex-wrap justify-end">
@@ -215,66 +254,134 @@ export default function CriticsView() {
                         ))}
                       </div>
                     </div>
-                    <div>
+
+                    {/* Row 2: name + year */}
+                    <div className="flex items-baseline gap-2">
                       <span className="font-medium text-gray-900 dark:text-gray-100">{c.name}</span>
                       {c.year && (
-                        <span className="text-xs text-gray-400 ml-2">{c.year}</span>
+                        <span className="text-xs text-gray-400">{c.year}</span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+
+                    {/* Row 3: interpretation (clamped to 3 lines) */}
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed
+                                  line-clamp-3">
                       {c.interpretation}
                     </p>
-                    {c.usable_ao5_sentence && (
-                      <div className="border-l-2 border-gray-200 dark:border-gray-600 pl-3">
+
+                    {/* Row 4: short quote blockquote */}
+                    {c.short_quote && (
+                      <div className="border-l-2 border-gray-300 dark:border-gray-500 pl-3">
                         <p className="text-xs italic text-gray-500 dark:text-gray-400 leading-relaxed">
-                          {c.usable_ao5_sentence}
+                          {c.short_quote}
                         </p>
                       </div>
                     )}
+
+                    {/* Row 5: theme chips */}
+                    {c.themes.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {c.themes.map(t => (
+                          <span key={t}
+                            className="text-[11px] px-2 py-0.5 rounded
+                                       bg-gray-100 dark:bg-gray-700/60
+                                       text-gray-500 dark:text-gray-400">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Expand toggle */}
                     <button
                       onClick={() => setExpandedId(expanded ? null : id)}
-                      className="self-start text-xs px-2 py-1 rounded border border-gray-200
-                                 dark:border-gray-700 text-gray-400 hover:bg-gray-50
-                                 dark:hover:bg-gray-700/50 transition-colors">
+                      className="self-start text-xs px-2.5 py-1 rounded-lg border
+                                 border-gray-200 dark:border-gray-700
+                                 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50
+                                 transition-colors">
                       {expanded ? '▲ hide exam notes' : '▼ exam notes'}
                     </button>
+
+                    {/* Expanded: three-move dialectical panel */}
                     {expanded && (
                       <div className="border-t border-gray-100 dark:border-gray-700
-                                      pt-3 space-y-3">
-                        {c.exam_tip && (
-                          <div>
-                            <p className="text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-1">
-                              Exam integration
-                            </p>
-                            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                              {c.exam_tip}
-                            </p>
-                          </div>
-                        )}
+                                      pt-3 flex flex-col gap-2.5">
+
+                        {/* Move 1 — Establish */}
+                        <div className="rounded-lg p-3
+                                        bg-teal-50 dark:bg-teal-900/20
+                                        border border-teal-100 dark:border-teal-800/40">
+                          <p className="text-[10px] font-semibold uppercase tracking-wider
+                                        text-teal-700 dark:text-teal-400 mb-1.5">
+                            Move 1 — Establish
+                          </p>
+                          <p className="text-xs text-teal-900 dark:text-teal-200 leading-relaxed">
+                            {c.school} perspective: {c.interpretation}
+                          </p>
+                        </div>
+
+                        {/* Move 2 — Challenge */}
                         {c.counter_reading && (
-                          <div>
-                            <p className="text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-1">
-                              Counter-critic
+                          <div className="rounded-lg p-3
+                                          bg-red-50 dark:bg-red-900/20
+                                          border border-red-100 dark:border-red-800/40">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider
+                                          text-red-700 dark:text-red-400 mb-1.5">
+                              Move 2 — Challenge
                             </p>
-                            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <p className="text-xs text-red-900 dark:text-red-200 leading-relaxed">
                               {c.counter_reading}
                             </p>
                           </div>
                         )}
-                        {c.ao4_connection && (
+
+                        {/* Move 3 — Advance */}
+                        {c.exam_tip && (
+                          <div className="rounded-lg p-3
+                                          bg-blue-50 dark:bg-blue-900/20
+                                          border border-blue-100 dark:border-blue-800/40">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider
+                                          text-blue-700 dark:text-blue-400 mb-1.5">
+                              Move 3 — Advance
+                            </p>
+                            <p className="text-xs text-blue-900 dark:text-blue-200 leading-relaxed">
+                              {c.exam_tip}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Deployable AO5 sentence */}
+                        {c.usable_ao5_sentence && (
                           <div>
-                            <p className="text-[11px] font-medium text-gray-900 dark:text-gray-100 mb-1 flex items-center gap-1.5">
-                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-50
-                                               text-purple-800 dark:bg-purple-900/40 dark:text-purple-200">
-                                AO4
-                              </span>
+                            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
+                              Deployable AO5 sentence
+                            </p>
+                            <div className="border-l-2 border-gray-200 dark:border-gray-600 pl-3">
+                              <p className="text-xs italic text-gray-600 dark:text-gray-300 leading-relaxed">
+                                {c.usable_ao5_sentence}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* AO4 connection — DoM only */}
+                        {c.ao4_connection && (
+                          <div className="rounded-lg p-3
+                                          bg-purple-50 dark:bg-purple-900/20
+                                          border border-purple-100 dark:border-purple-800/40">
+                            <p className="text-[10px] font-semibold uppercase tracking-wider
+                                          text-purple-700 dark:text-purple-400 mb-1.5 flex items-center gap-1.5">
+                              <span className="px-1 py-0.5 rounded bg-purple-100 dark:bg-purple-900/60
+                                               text-purple-800 dark:text-purple-300 text-[9px]">AO4</span>
                               Connection to Hamlet
                             </p>
-                            <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <p className="text-xs text-purple-900 dark:text-purple-200 leading-relaxed">
                               {c.ao4_connection}
                             </p>
                           </div>
                         )}
+
+                        {/* Source note */}
                         {c.key_text && (
                           <p className="text-[10px] text-gray-400 italic">{c.key_text}</p>
                         )}
