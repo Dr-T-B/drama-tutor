@@ -6,8 +6,8 @@ import { Dashboard } from './pages/Dashboard'
 import { Revision }  from './pages/Revision'
 import { Quotes }    from './pages/Quotes'
 import { Themes }    from './pages/Themes'
-import { Critics }   from './pages/Critics'
-import { Essays }    from './pages/Essays'
+import CriticsView   from './views/CriticsView'
+import EssaysView    from './views/EssaysView'
 import { Exam }      from './pages/Exam'
 
 const qc = new QueryClient()
@@ -23,8 +23,8 @@ export default function App() {
             <Route path="/revision" element={<Revision />} />
             <Route path="/quotes"   element={<Quotes />} />
             <Route path="/themes"   element={<Themes />} />
-            <Route path="/critics"  element={<Critics />} />
-            <Route path="/essays"   element={<Essays />} />
+            <Route path="/critics"  element={<CriticsView />} />
+            <Route path="/essays"   element={<EssaysView />} />
             <Route path="/exam"     element={<Exam />} />
             <Route path="*"         element={<Navigate to="/" replace />} />
           </Routes>
