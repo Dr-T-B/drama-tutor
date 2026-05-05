@@ -1,13 +1,16 @@
 import { Link, useLocation } from 'react-router-dom'
 import { PlayToggle } from './PlayToggle'
 
-const LINKS = [
+type NavLink = { to: string; label: string; highlight?: boolean }
+
+const LINKS: NavLink[] = [
   { to: '/revision', label: 'Revise' },
   { to: '/quotes',   label: 'Quotes' },
   { to: '/themes',   label: 'Themes' },
   { to: '/critics',  label: 'Critics' },
   { to: '/essays',   label: 'Essays' },
   { to: '/exam',     label: 'Exam skills' },
+  { to: '/framework', label: '🎯 Framework', highlight: true },
 ]
 
 export function Nav() {
@@ -20,17 +23,20 @@ export function Nav() {
       </Link>
       <PlayToggle />
       <div className="flex gap-1 ml-auto flex-wrap">
-        {LINKS.map(l => (
-          <Link key={l.to} to={l.to}
-            className={[
-              'px-3 py-1.5 rounded-md text-sm font-medium transition-colors',
-              pathname.startsWith(l.to)
-                ? 'bg-violet-50 text-violet-700'
-                : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50',
-            ].join(' ')}>
-            {l.label}
-          </Link>
-        ))}
+        {LINKS.map(l => {
+          const active = pathname.startsWith(l.to)
+          const cls = active
+            ? 'bg-violet-50 text-violet-700'
+            : l.highlight
+              ? 'bg-gray-900 text-white hover:bg-gray-800'
+              : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+          return (
+            <Link key={l.to} to={l.to}
+              className={['px-3 py-1.5 rounded-md text-sm font-medium transition-colors', cls].join(' ')}>
+              {l.label}
+            </Link>
+          )
+        })}
       </div>
     </nav>
   )

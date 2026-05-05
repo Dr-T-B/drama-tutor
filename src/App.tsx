@@ -9,6 +9,7 @@ import { Themes }    from './pages/Themes'
 import CriticsView   from './views/CriticsView'
 import EssaysView    from './views/EssaysView'
 import { Exam }      from './pages/Exam'
+import { Framework } from './pages/Framework'
 
 const qc = new QueryClient()
 
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/critics"  element={<CriticsView />} />
             <Route path="/essays"   element={<EssaysView />} />
             <Route path="/exam"     element={<Exam />} />
+            <Route path="/framework" element={<Framework />} />
             <Route path="*"         element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
