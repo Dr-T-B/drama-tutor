@@ -67,6 +67,50 @@ const aoTooltips: Record<string, string> = {
   AO5: "Critics — paraphrase a position and show you've weighed it",
 }
 
+const aoColours: Record<string, {
+  badge: string
+  badgeActive: string
+  border: string
+  promptBg: string
+  promptLabel: string
+}> = {
+  AO1: {
+    badge: 'bg-blue-100 text-blue-700',
+    badgeActive: 'ring-2 ring-blue-400 ring-offset-1',
+    border: 'border-blue-200',
+    promptBg: 'bg-blue-50',
+    promptLabel: 'bg-blue-100 text-blue-700',
+  },
+  AO2: {
+    badge: 'bg-amber-100 text-amber-700',
+    badgeActive: 'ring-2 ring-amber-400 ring-offset-1',
+    border: 'border-amber-200',
+    promptBg: 'bg-amber-50',
+    promptLabel: 'bg-amber-100 text-amber-700',
+  },
+  AO3: {
+    badge: 'bg-green-100 text-green-700',
+    badgeActive: 'ring-2 ring-green-400 ring-offset-1',
+    border: 'border-green-200',
+    promptBg: 'bg-green-50',
+    promptLabel: 'bg-green-100 text-green-700',
+  },
+  AO4: {
+    badge: 'bg-rose-100 text-rose-700',
+    badgeActive: 'ring-2 ring-rose-400 ring-offset-1',
+    border: 'border-rose-200',
+    promptBg: 'bg-rose-50',
+    promptLabel: 'bg-rose-100 text-rose-700',
+  },
+  AO5: {
+    badge: 'bg-purple-100 text-purple-700',
+    badgeActive: 'ring-2 ring-purple-400 ring-offset-1',
+    border: 'border-purple-200',
+    promptBg: 'bg-purple-50',
+    promptLabel: 'bg-purple-100 text-purple-700',
+  },
+}
+
 const aoPrompts: Record<string, string> = {
   AO1: "What is the precise argument this paragraph is making? Write it as a single sentence beginning 'This paragraph argues that…' — make sure it answers the question, not just describes the scene.",
   AO2: "What is the dramatic or linguistic method at the centre of this paragraph? Name it precisely (e.g. 'dramatic irony', 'stichomythia', 'asyndetic listing'), quote the line that contains it, then explain in one sentence exactly what effect it produces on the audience.",
@@ -297,7 +341,9 @@ export function Exam() {
                                       <div className="flex items-start justify-between gap-2 mb-1">
                                         <p className="text-xs font-medium text-gray-800">{p.topic}</p>
                                         <div className="flex gap-1 flex-shrink-0">
-                                          {p.ao_focus.map(ao => (
+                                          {p.ao_focus.map(ao => {
+                                            const c = aoColours[ao] ?? aoColours.AO5
+                                            return (
                                             <button
                                               key={ao}
                                               onClick={(e) => {
@@ -307,34 +353,40 @@ export function Exam() {
                                                   [paragraphKey]: prev[paragraphKey] === ao ? null : ao,
                                                 }))
                                               }}
-                                              className={`text-[9px] bg-violet-100 text-violet-700
+                                              className={`text-[9px] ${c.badge}
                                                 rounded px-1.5 py-0.5 cursor-pointer transition-all
                                                 ${openAo[paragraphKey] === ao
-                                                  ? 'ring-2 ring-purple-400 ring-offset-1'
+                                                  ? c.badgeActive
                                                   : 'hover:opacity-80'}`}
                                             >
                                               {ao}
                                             </button>
-                                          ))}
+                                            )
+                                          })}
                                         </div>
                                       </div>
                                       <p className="text-xs text-gray-600 leading-relaxed">
                                         {p.topic_sentence}
                                       </p>
-                                      {openAo[paragraphKey] && (
-                                        <div className="mt-3 pt-3 border-t border-purple-200
-                                          animate-in slide-in-from-top-1 duration-150">
-                                          <div className="flex items-start gap-2">
-                                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded
-                                              bg-purple-100 text-purple-700 flex-shrink-0 mt-0.5">
-                                              {openAo[paragraphKey]} prompt
-                                            </span>
-                                            <p className="text-sm text-gray-700 leading-relaxed">
-                                              {aoPrompts[openAo[paragraphKey]!]}
-                                            </p>
+                                      {openAo[paragraphKey] && (() => {
+                                        const activeAo = openAo[paragraphKey]!
+                                        const c = aoColours[activeAo] ?? aoColours.AO5
+                                        return (
+                                          <div className={`mt-3 pt-3 border-t ${c.border}
+                                            ${c.promptBg} rounded-md p-3 -mx-1
+                                            animate-in slide-in-from-top-1 duration-150`}>
+                                            <div className="flex items-start gap-2">
+                                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded
+                                                ${c.promptLabel} flex-shrink-0 mt-0.5`}>
+                                                {activeAo} prompt
+                                              </span>
+                                              <p className="text-sm text-gray-700 leading-relaxed">
+                                                {aoPrompts[activeAo]}
+                                              </p>
+                                            </div>
                                           </div>
-                                        </div>
-                                      )}
+                                        )
+                                      })()}
                                     </div>
                                     )
                                   })}
