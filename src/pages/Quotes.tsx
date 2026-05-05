@@ -129,13 +129,13 @@ export function Quotes() {
           {themes.slice(0, 12).map(t => (
             <button key={t.code}
               onClick={() => setThemeFilter(themeFilter === t.code ? null : t.code)}
-              title={t.name}
+              title={t.code}
               className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
                 themeFilter === t.code
                   ? 'bg-teal-600 text-white border-teal-600'
                   : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
               }`}>
-              {t.code}
+              {t.name}
             </button>
           ))}
         </div>
