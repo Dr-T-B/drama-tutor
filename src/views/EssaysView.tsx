@@ -1,6 +1,35 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
+
+interface UserPlanRow {
+  id: string
+  title: string
+  source: 'exam' | 'manual'
+  source_question_id: string | null
+  play: 'HAM' | 'MAL' | null
+  thesis: string | null
+  paragraph_plan: ParagraphPlanItem[] | null
+  sentence_stems: Record<string, string> | null
+  critic_positions: CriticPositionItem[] | null
+  model_paragraph: string | null
+  saved_sections: string[]
+  notes: string | null
+  created_at: string
+  updated_at: string
+}
+
+interface ParagraphPlanItem {
+  topic?: string
+  topic_sentence?: string
+  ao_focus?: string[]
+}
+
+interface CriticPositionItem {
+  critic?: string
+  position?: string
+  embed?: string
+}
 
 const PHASES = [
   {
@@ -81,25 +110,42 @@ const AO_CLS: Record<string, string> = {
   AO5: 'bg-teal-50 text-teal-800 dark:bg-teal-900/40 dark:text-teal-200',
 }
 
-async function fetchPlans() {
+async function fetchPlans(): Promise<UserPlanRow[]> {
   const { data, error } = await supabase
-    .from('essay_plans')
+    .from('user_essay_plans')
     .select('*')
     .order('updated_at', { ascending: false })
-    .limit(50)
   if (error) throw error
-  return data ?? []
+  return (data ?? []) as UserPlanRow[]
 }
 
 export default function EssaysView() {
   const [tab, setTab] = useState<'framework' | 'plans'>('framework')
   const [fwTab, setFwTab] = useState<'para' | 'essay' | 'qtypes' | 'l5'>('para')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const queryClient = useQueryClient()
   const { data: plans = [], isLoading: plansLoading } = useQuery({
-    queryKey: ['essay_plans'],
+    queryKey: ['user_essay_plans'],
     queryFn: fetchPlans,
     enabled: tab === 'plans',
     staleTime: 60_000,
   })
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('user_essay_plans').delete().eq('id', id)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['user_essay_plans'] })
+    },
+  })
+
+  function handleDelete(plan: UserPlanRow) {
+    if (!confirm(`Delete "${plan.title}"? This cannot be undone.`)) return
+    if (expandedId === plan.id) setExpandedId(null)
+    deleteMutation.mutate(plan.id)
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
@@ -263,30 +309,155 @@ export default function EssaysView() {
             <p className="text-sm text-gray-500">
               {plansLoading ? 'Loading…' : `${plans.length} plan${plans.length !== 1 ? 's' : ''}`}
             </p>
-            <button
-              className="text-sm px-3 py-1.5 rounded-lg border border-gray-300 dark:border-gray-600
-                         text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-              + New plan
-            </button>
           </div>
           {plans.length === 0 && !plansLoading ? (
-            <div className="text-center py-16 text-sm text-gray-400">No plans yet</div>
+            <div className="text-center py-16 text-sm text-gray-400">
+              No plans yet — open a question on the Exam page and tap “Save to My Plans”.
+            </div>
           ) : (
             <div className="space-y-2">
-              {plans.map((plan: any) => (
-                <div key={plan.id}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                             rounded-xl px-4 py-3">
-                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                    {plan.title ?? plan.question ?? 'Untitled plan'}
-                  </p>
-                  {plan.updated_at && (
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {new Date(plan.updated_at).toLocaleDateString('en-GB')}
-                    </p>
-                  )}
-                </div>
-              ))}
+              {plans.map(plan => {
+                const isOpen = expandedId === plan.id
+                return (
+                  <div key={plan.id}
+                    className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
+                               rounded-xl overflow-hidden">
+                    <div
+                      onClick={() => setExpandedId(isOpen ? null : plan.id)}
+                      className="px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/40
+                                 flex items-start gap-3"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                          {plan.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          <span className="text-xs text-gray-400">
+                            {new Date(plan.updated_at).toLocaleDateString('en-GB')}
+                          </span>
+                          {plan.source === 'exam' && (
+                            <span className="text-[10px] font-medium bg-violet-50 text-violet-700
+                                             dark:bg-violet-900/40 dark:text-violet-200
+                                             rounded-full px-2 py-0.5">
+                              From past paper
+                            </span>
+                          )}
+                          {plan.play && (
+                            <span className="text-[10px] font-medium bg-gray-100 text-gray-600
+                                             dark:bg-gray-700 dark:text-gray-300
+                                             rounded-full px-2 py-0.5">
+                              {plan.play === 'HAM' ? 'Hamlet' : 'Malfi'}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); handleDelete(plan) }}
+                        disabled={deleteMutation.isPending}
+                        className="text-gray-300 hover:text-red-500 transition-colors
+                                   text-sm shrink-0"
+                        aria-label="Delete plan"
+                        title="Delete plan"
+                      >
+                        🗑
+                      </button>
+                      <span className="text-gray-300 text-sm shrink-0">{isOpen ? '▲' : '▼'}</span>
+                    </div>
+
+                    {isOpen && (
+                      <div className="border-t border-gray-100 dark:border-gray-700 p-4 space-y-4">
+                        {plan.thesis && (
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wide
+                                          text-violet-600 mb-1">Thesis</p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                              {plan.thesis}
+                            </p>
+                          </div>
+                        )}
+
+                        {plan.paragraph_plan && plan.paragraph_plan.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wide
+                                          text-violet-600 mb-2">Paragraph plan</p>
+                            <div className="space-y-2">
+                              {plan.paragraph_plan.map((p, i) => (
+                                <div key={i} className="rounded-lg bg-gray-50 dark:bg-gray-700/40 p-3">
+                                  <div className="flex items-start justify-between gap-2 mb-1">
+                                    <p className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                                      {p.topic}
+                                    </p>
+                                    <div className="flex gap-1 flex-shrink-0">
+                                      {(p.ao_focus ?? []).map(ao => (
+                                        <span key={ao} className="text-[9px] bg-violet-100
+                                          text-violet-700 rounded px-1.5 py-0.5">{ao}</span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                    {p.topic_sentence}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {plan.sentence_stems && Object.keys(plan.sentence_stems).length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wide
+                                          text-violet-600 mb-2">Sentence stems</p>
+                            <div className="space-y-1.5">
+                              {Object.entries(plan.sentence_stems)
+                                .filter(([, v]) => v)
+                                .map(([ao, stem]) => (
+                                  <div key={ao} className="flex gap-2 text-xs">
+                                    <span className="font-semibold text-gray-500
+                                                     flex-shrink-0 w-8">{ao}</span>
+                                    <span className="text-gray-700 dark:text-gray-300
+                                                     leading-relaxed">{stem}</span>
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {plan.critic_positions && plan.critic_positions.length > 0 && (
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wide
+                                          text-violet-600 mb-2">Critic positions</p>
+                            <div className="space-y-2">
+                              {plan.critic_positions.map((c, i) => (
+                                <div key={i} className="rounded-lg border border-gray-200
+                                  dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+                                  <p className="text-xs font-semibold text-gray-800
+                                                dark:text-gray-200 mb-0.5">{c.critic}</p>
+                                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 italic">
+                                    {c.position}
+                                  </p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                    {c.embed}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {plan.model_paragraph && (
+                          <div>
+                            <p className="text-[10px] font-semibold uppercase tracking-wide
+                                          text-violet-600 mb-1">Model paragraph</p>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                              {plan.model_paragraph}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>

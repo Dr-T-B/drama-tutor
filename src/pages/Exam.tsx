@@ -1,11 +1,24 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../hooks/useAuth'
 import { usePlay } from '../contexts/PlayContext'
 import { useExamSkills } from '../hooks/useExamSkills'
 import { AoBadge } from '../components/AoBadge'
+import { supabase } from '../lib/supabase'
 import type { GradeBand } from '../types/database'
 import { getQuestionsForPlay, getThemeFrequencies, themeQuoteBanks } from '../data/pastPapers'
-import type { ThemeQuoteBank } from '../data/pastPapers'
+import type { ThemeQuoteBank, PastPaperQuestion } from '../data/pastPapers'
+
+type SectionKey = 'thesis' | 'paragraph_plan' | 'sentence_stems' | 'critic_positions' | 'model_paragraph'
+
+const SECTION_OPTIONS: { key: SectionKey; label: string }[] = [
+  { key: 'thesis',           label: 'Thesis' },
+  { key: 'paragraph_plan',   label: 'Paragraph plan' },
+  { key: 'sentence_stems',   label: 'Sentence stems' },
+  { key: 'critic_positions', label: 'Critic positions' },
+  { key: 'model_paragraph',  label: 'Model paragraph' },
+]
+const ALL_SECTION_KEYS: SectionKey[] = SECTION_OPTIONS.map(s => s.key)
 
 const SECTION_PLAY = { SECTION_A: 'HAM', SECTION_B: 'MAL' } as const
 const SECTION_LABEL = {
@@ -61,6 +74,60 @@ export function Exam() {
   const [openQuotes, setOpenQuotes]       = useState(false)
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
   const [openCard, setOpenCard]           = useState<string | null>(null)
+  const [savedSections, setSavedSections] = useState<Record<string, SectionKey[]>>({})
+  const [savingId, setSavingId]           = useState<string | null>(null)
+  const [savedConfirm, setSavedConfirm]   = useState<string | null>(null)
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (!savedConfirm) return
+    const t = setTimeout(() => setSavedConfirm(null), 3000)
+    return () => clearTimeout(t)
+  }, [savedConfirm])
+
+  const saveMutation = useMutation({
+    mutationFn: async ({ q, sections }: { q: PastPaperQuestion; sections: SectionKey[] }) => {
+      if (!q.framework) throw new Error('No framework to save')
+      const fw = q.framework
+      const row: Record<string, unknown> = {
+        title: q.question.length > 200 ? q.question.slice(0, 200) : q.question,
+        source: 'exam',
+        source_question_id: q.id,
+        play: q.play,
+        thesis:           sections.includes('thesis')           ? fw.thesis           : null,
+        paragraph_plan:   sections.includes('paragraph_plan')   ? fw.paragraph_plan   : null,
+        sentence_stems:   sections.includes('sentence_stems')   ? fw.sentence_stems   : null,
+        critic_positions: sections.includes('critic_positions') ? fw.critic_positions : null,
+        model_paragraph:  sections.includes('model_paragraph')  ? fw.model_paragraph  : null,
+        saved_sections:   sections,
+      }
+      const { error } = await supabase.from('user_essay_plans').insert(row)
+      if (error) throw error
+    },
+    onSuccess: (_d, vars) => {
+      setSavedConfirm(vars.q.id)
+      setSavingId(null)
+      queryClient.invalidateQueries({ queryKey: ['user_essay_plans'] })
+    },
+    onError: () => setSavingId(null),
+  })
+
+  function toggleSection(qid: string, key: SectionKey) {
+    setSavedSections(prev => {
+      const current = prev[qid] ?? ALL_SECTION_KEYS
+      const next = current.includes(key)
+        ? current.filter(k => k !== key)
+        : [...current, key]
+      return { ...prev, [qid]: next }
+    })
+  }
+
+  function handleSave(q: PastPaperQuestion) {
+    const sections = savedSections[q.id] ?? ALL_SECTION_KEYS
+    if (sections.length === 0) return
+    setSavingId(q.id)
+    saveMutation.mutate({ q, sections })
+  }
 
   const visibleTiming = useMemo(() =>
     timing.filter(ts => {
@@ -254,6 +321,51 @@ export function Exam() {
                                 <p className="text-sm text-gray-700 leading-relaxed">
                                   {q.framework.model_paragraph}
                                 </p>
+                              </div>
+
+                              {/* SAVE TO MY PLANS */}
+                              <div className="pt-4 border-t border-gray-100"
+                                onClick={(e) => e.stopPropagation()}>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide
+                                  text-violet-600 mb-2">Save to My Plans</p>
+                                <div className="flex flex-wrap gap-2 mb-3">
+                                  {SECTION_OPTIONS.map(opt => {
+                                    const checked = (savedSections[q.id] ?? ALL_SECTION_KEYS)
+                                      .includes(opt.key)
+                                    return (
+                                      <label key={opt.key}
+                                        className="flex items-center gap-1.5 text-xs text-gray-700
+                                          bg-gray-50 hover:bg-gray-100 rounded-full px-2.5 py-1
+                                          cursor-pointer">
+                                        <input
+                                          type="checkbox"
+                                          checked={checked}
+                                          onChange={() => toggleSection(q.id, opt.key)}
+                                          className="accent-violet-600"
+                                        />
+                                        {opt.label}
+                                      </label>
+                                    )
+                                  })}
+                                </div>
+                                <div className="flex items-center gap-3">
+                                  <button
+                                    onClick={() => handleSave(q)}
+                                    disabled={savingId === q.id ||
+                                      ((savedSections[q.id] ?? ALL_SECTION_KEYS).length === 0)}
+                                    className="text-xs font-medium bg-violet-600 hover:bg-violet-700
+                                      disabled:bg-gray-300 disabled:cursor-not-allowed
+                                      text-white rounded-lg px-3 py-1.5 transition-colors"
+                                  >
+                                    {savingId === q.id ? 'Saving…' : 'Save to My Plans'}
+                                  </button>
+                                  {savedConfirm === q.id && (
+                                    <span className="text-xs text-green-600 font-medium
+                                      transition-opacity">
+                                      ✓ Saved to My Plans
+                                    </span>
+                                  )}
+                                </div>
                               </div>
 
                             </div>
