@@ -67,48 +67,48 @@ const aoTooltips: Record<string, string> = {
   AO5: "Critics — paraphrase a position and show you've weighed it",
 }
 
-const aoColours: Record<string, {
-  badge: string
-  badgeActive: string
-  border: string
-  promptBg: string
-  promptLabel: string
-}> = {
-  AO1: {
-    badge: 'bg-blue-100 text-blue-700',
-    badgeActive: 'ring-2 ring-blue-400 ring-offset-1',
-    border: 'border-blue-200',
-    promptBg: 'bg-blue-50',
-    promptLabel: 'bg-blue-100 text-blue-700',
-  },
-  AO2: {
-    badge: 'bg-amber-100 text-amber-700',
-    badgeActive: 'ring-2 ring-amber-400 ring-offset-1',
-    border: 'border-amber-200',
-    promptBg: 'bg-amber-50',
-    promptLabel: 'bg-amber-100 text-amber-700',
-  },
-  AO3: {
-    badge: 'bg-green-100 text-green-700',
-    badgeActive: 'ring-2 ring-green-400 ring-offset-1',
-    border: 'border-green-200',
-    promptBg: 'bg-green-50',
-    promptLabel: 'bg-green-100 text-green-700',
-  },
-  AO4: {
-    badge: 'bg-rose-100 text-rose-700',
-    badgeActive: 'ring-2 ring-rose-400 ring-offset-1',
-    border: 'border-rose-200',
-    promptBg: 'bg-rose-50',
-    promptLabel: 'bg-rose-100 text-rose-700',
-  },
-  AO5: {
-    badge: 'bg-purple-100 text-purple-700',
-    badgeActive: 'ring-2 ring-purple-400 ring-offset-1',
-    border: 'border-purple-200',
-    promptBg: 'bg-purple-50',
-    promptLabel: 'bg-purple-100 text-purple-700',
-  },
+function aoBadgeClasses(ao: string): string {
+  switch (ao) {
+    case 'AO1': return 'bg-blue-100 text-blue-700'
+    case 'AO2': return 'bg-amber-100 text-amber-700'
+    case 'AO3': return 'bg-green-100 text-green-700'
+    case 'AO4': return 'bg-rose-100 text-rose-700'
+    case 'AO5': return 'bg-purple-100 text-purple-700'
+    default:    return 'bg-gray-100 text-gray-700'
+  }
+}
+
+function aoActiveRing(ao: string): string {
+  switch (ao) {
+    case 'AO1': return 'ring-2 ring-blue-400 ring-offset-1'
+    case 'AO2': return 'ring-2 ring-amber-400 ring-offset-1'
+    case 'AO3': return 'ring-2 ring-green-400 ring-offset-1'
+    case 'AO4': return 'ring-2 ring-rose-400 ring-offset-1'
+    case 'AO5': return 'ring-2 ring-purple-400 ring-offset-1'
+    default:    return 'ring-2 ring-gray-400 ring-offset-1'
+  }
+}
+
+function aoPromptPanel(ao: string): string {
+  switch (ao) {
+    case 'AO1': return 'border-blue-200 bg-blue-50'
+    case 'AO2': return 'border-amber-200 bg-amber-50'
+    case 'AO3': return 'border-green-200 bg-green-50'
+    case 'AO4': return 'border-rose-200 bg-rose-50'
+    case 'AO5': return 'border-purple-200 bg-purple-50'
+    default:    return 'border-gray-200 bg-gray-50'
+  }
+}
+
+function aoPromptLabel(ao: string): string {
+  switch (ao) {
+    case 'AO1': return 'bg-blue-100 text-blue-700'
+    case 'AO2': return 'bg-amber-100 text-amber-700'
+    case 'AO3': return 'bg-green-100 text-green-700'
+    case 'AO4': return 'bg-rose-100 text-rose-700'
+    case 'AO5': return 'bg-purple-100 text-purple-700'
+    default:    return 'bg-gray-100 text-gray-700'
+  }
 }
 
 const aoPrompts: Record<string, string> = {
@@ -341,9 +341,7 @@ export function Exam() {
                                       <div className="flex items-start justify-between gap-2 mb-1">
                                         <p className="text-xs font-medium text-gray-800">{p.topic}</p>
                                         <div className="flex gap-1 flex-shrink-0">
-                                          {p.ao_focus.map(ao => {
-                                            const c = aoColours[ao] ?? aoColours.AO5
-                                            return (
+                                          {p.ao_focus.map(ao => (
                                             <button
                                               key={ao}
                                               onClick={(e) => {
@@ -353,40 +351,35 @@ export function Exam() {
                                                   [paragraphKey]: prev[paragraphKey] === ao ? null : ao,
                                                 }))
                                               }}
-                                              className={`text-[9px] ${c.badge}
-                                                rounded px-1.5 py-0.5 cursor-pointer transition-all
+                                              className={`text-[10px] font-bold px-1.5 py-0.5 rounded
+                                                ${aoBadgeClasses(ao)} cursor-pointer transition-all
                                                 ${openAo[paragraphKey] === ao
-                                                  ? c.badgeActive
+                                                  ? aoActiveRing(ao)
                                                   : 'hover:opacity-80'}`}
                                             >
                                               {ao}
                                             </button>
-                                            )
-                                          })}
+                                          ))}
                                         </div>
                                       </div>
                                       <p className="text-xs text-gray-600 leading-relaxed">
                                         {p.topic_sentence}
                                       </p>
-                                      {openAo[paragraphKey] && (() => {
-                                        const activeAo = openAo[paragraphKey]!
-                                        const c = aoColours[activeAo] ?? aoColours.AO5
-                                        return (
-                                          <div className={`mt-3 pt-3 border-t ${c.border}
-                                            ${c.promptBg} rounded-md p-3 -mx-1
-                                            animate-in slide-in-from-top-1 duration-150`}>
-                                            <div className="flex items-start gap-2">
-                                              <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded
-                                                ${c.promptLabel} flex-shrink-0 mt-0.5`}>
-                                                {activeAo} prompt
-                                              </span>
-                                              <p className="text-sm text-gray-700 leading-relaxed">
-                                                {aoPrompts[activeAo]}
-                                              </p>
-                                            </div>
+                                      {openAo[paragraphKey] && (
+                                        <div className={`mt-3 pt-3 border-t rounded-md p-3
+                                          ${aoPromptPanel(openAo[paragraphKey]!)}
+                                          animate-in slide-in-from-top-1 duration-150`}>
+                                          <div className="flex items-start gap-2">
+                                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded
+                                              ${aoPromptLabel(openAo[paragraphKey]!)} flex-shrink-0 mt-0.5`}>
+                                              {openAo[paragraphKey]} prompt
+                                            </span>
+                                            <p className="text-sm text-gray-700 leading-relaxed">
+                                              {aoPrompts[openAo[paragraphKey]!]}
+                                            </p>
                                           </div>
-                                        )
-                                      })()}
+                                        </div>
+                                      )}
                                     </div>
                                     )
                                   })}
