@@ -85,6 +85,25 @@ export default async function handler(req: any, res: any) {
     if (r.error) return res.status(500).json({ error: r.error.message })
   }
 
+  const quoteIds = (quotesRes.data ?? []).map((q: any) => q.id)
+  const aoByQuote = new Map<string, string[]>()
+  if (quoteIds.length) {
+    const { data: aoLinks, error: aoErr } = await supabase
+      .from('quote_ao_links')
+      .select('quote_id, ao_code')
+      .in('quote_id', quoteIds)
+    if (aoErr) return res.status(500).json({ error: aoErr.message })
+    for (const link of aoLinks ?? []) {
+      const arr = aoByQuote.get(link.quote_id) ?? []
+      arr.push(link.ao_code)
+      aoByQuote.set(link.quote_id, arr)
+    }
+  }
+  const quotesWithAo = (quotesRes.data ?? []).map((q: any) => ({
+    ...q,
+    ao_codes: aoByQuote.get(q.id) ?? [],
+  }))
+
   const linkedIds = new Set((themeLinksRes.data ?? []).map((r: any) => r.character_id))
   const characters = (charactersRes.data ?? []).map((c: any) => ({
     ...c,
@@ -106,7 +125,7 @@ export default async function handler(req: any, res: any) {
     },
     theses,
     guidance: (theme as any).theme_guidance ?? [],
-    quotes: quotesRes.data ?? [],
+    quotes: quotesWithAo,
     critics: criticsRes.data ?? [],
     characters,
     methods: methodsRes.data ?? [],

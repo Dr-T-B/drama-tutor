@@ -35,6 +35,7 @@ export type QuoteRow = {
   act_scene: string | null
   exam_sentence?: string | null
   memorisation_priority?: number | null
+  ao_codes: string[]
   quote_methods: QuoteMethod[]
   [k: string]: any
 }

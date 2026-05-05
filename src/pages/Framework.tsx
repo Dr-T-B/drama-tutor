@@ -5,6 +5,7 @@ import {
   type ThemeSummary,
   type FrameworkData,
   type AiAnalysis,
+  type QuoteRow,
 } from '../hooks/useFrameworkData'
 
 type Status = 'idle' | 'loading' | 'done' | 'error'
@@ -358,43 +359,111 @@ export function Framework() {
               </div>
             </div>
 
-            {/* 06 Quotes */}
+            {/* 06 Quotes — ranked list */}
             <div>
-              <SectionHeader n="06" title="Quotes" />
-              <div className="space-y-3">
-                {ai.quote_selection.map((q, i) => {
-                  const dbMatch = data.quotes.find(dq => {
-                    const t = quoteText(dq)
-                    return t && (t.includes(q.quote) || q.quote.includes(t))
-                  })
+              <SectionHeader n="06" title="Quotes — ranked by priority" />
+              {(() => {
+                const sorted = [...data.quotes].sort(
+                  (a, b) => (b.memorisation_priority ?? 0) - (a.memorisation_priority ?? 0),
+                )
+                const mustUse = sorted.filter(q => (q.memorisation_priority ?? 0) === 5)
+                const strong = sorted.filter(q => (q.memorisation_priority ?? 0) === 4)
+                const additional = sorted.filter(q => (q.memorisation_priority ?? 0) <= 3)
+
+                let rank = 0
+                const renderCard = (q: QuoteRow) => {
+                  rank += 1
+                  const priority = q.memorisation_priority ?? 0
+                  let badgeLabel = 'Optional'
+                  let badgeCls = 'bg-gray-200 text-gray-700'
+                  if (priority === 5) { badgeLabel = 'Must use'; badgeCls = 'bg-amber-200 text-amber-900' }
+                  else if (priority === 4) { badgeLabel = 'Strong'; badgeCls = 'bg-violet-200 text-violet-900' }
+                  else if (priority === 3) { badgeLabel = 'Useful'; badgeCls = 'bg-gray-200 text-gray-800' }
+
+                  const methodNames = (q.quote_methods ?? [])
+                    .map(m => m.ao2_methods?.method_name)
+                    .filter((n): n is string => !!n)
+
                   return (
-                    <div key={i} className="border-l-4 border-violet-500 bg-white border border-gray-200 rounded-r-md p-4">
-                      <blockquote className="text-gray-900 italic mb-1">"{q.quote}"</blockquote>
-                      <div className="text-xs text-gray-500 mb-3">— {q.speaker}</div>
-                      <div className="space-y-2 text-sm">
-                        <div className="rounded bg-green-50 border border-green-200 p-2">
-                          <span className="text-xs font-bold uppercase text-green-700 mr-1">Method</span>
-                          <span className="text-gray-800">{q.method_to_foreground}</span>
-                        </div>
-                        <div className="rounded bg-violet-50 border border-violet-200 p-2">
-                          <span className="text-xs font-bold uppercase text-violet-700 mr-1">Why this question</span>
-                          <span className="text-gray-800">{q.why_this_question}</span>
-                        </div>
-                        <div className="rounded bg-rose-50 border border-rose-200 p-2">
-                          <span className="text-xs font-bold uppercase text-rose-700 mr-1">AO5 pairing</span>
-                          <span className="text-gray-800">{q.ao5_pairing}</span>
-                        </div>
-                        {dbMatch?.exam_sentence && (
-                          <div className="rounded bg-gray-100 border border-gray-200 p-2">
-                            <span className="text-xs font-bold uppercase text-gray-600 mr-1">Exam sentence</span>
-                            <span className="text-gray-800">{dbMatch.exam_sentence}</span>
-                          </div>
+                    <div key={q.id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+                      <div className="flex items-center gap-3 mb-3 flex-wrap">
+                        <span className="text-3xl font-bold text-gray-300 tabular-nums leading-none">{rank}</span>
+                        <span className={`text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded ${badgeCls}`}>
+                          {badgeLabel}
+                        </span>
+                        {(q.speaker || q.act_scene) && (
+                          <span className="text-xs text-gray-500">
+                            {q.speaker}
+                            {q.speaker && q.act_scene ? ' · ' : ''}
+                            {q.act_scene}
+                          </span>
                         )}
+                        <div className="flex gap-1 ml-auto">
+                          {q.ao_codes.map(ao => <AoBadgeInline key={ao} ao={ao} />)}
+                        </div>
                       </div>
+
+                      <blockquote className="border-l-4 border-violet-500 pl-3 italic text-gray-900 mb-3">
+                        "{quoteText(q)}"
+                      </blockquote>
+
+                      {q.exam_sentence ? (
+                        <div className="rounded bg-green-50 border border-green-200 p-3 mb-3">
+                          <div className="text-xs font-bold uppercase text-green-700 mb-1">Why this quote works</div>
+                          <p className="text-sm text-gray-800">{q.exam_sentence}</p>
+                        </div>
+                      ) : (
+                        <p className="text-xs italic text-gray-400 mb-3">Exam sentence not yet added</p>
+                      )}
+
+                      {methodNames.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {methodNames.map((m, i) => (
+                            <span
+                              key={`${q.id}-m-${i}`}
+                              className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800"
+                            >
+                              {m}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )
-                })}
-              </div>
+                }
+
+                return (
+                  <div className="space-y-6">
+                    {mustUse.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-bold uppercase tracking-wide text-amber-700 mb-3">
+                          ★ Use these first
+                        </h3>
+                        <div className="space-y-3">{mustUse.map(renderCard)}</div>
+                      </div>
+                    )}
+                    {strong.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-bold uppercase tracking-wide text-violet-700 mb-3">
+                          Strong choices
+                        </h3>
+                        <div className="space-y-3">{strong.map(renderCard)}</div>
+                      </div>
+                    )}
+                    {additional.length > 0 && (
+                      <details className="group">
+                        <summary className="cursor-pointer text-sm font-bold uppercase tracking-wide text-gray-600 mb-3 select-none">
+                          Additional options ({additional.length})
+                        </summary>
+                        <div className="space-y-3 mt-3">{additional.map(renderCard)}</div>
+                      </details>
+                    )}
+                    {sorted.length === 0 && (
+                      <p className="text-sm italic text-gray-500">No quotes found for this theme.</p>
+                    )}
+                  </div>
+                )
+              })()}
             </div>
 
             {/* 07 Critics */}
