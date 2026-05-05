@@ -126,7 +126,7 @@ export function Exam() {
                       {questions.filter(q => q.year === year).map(q => (
                         <div key={q.id}
                           className="rounded-xl border border-gray-200 bg-white p-4 space-y-2 cursor-pointer"
-                          onClick={() => setOpenCard(openCard === q.id ? null : q.id)}>
+                          onClick={() => { if (openCard !== q.id) setOpenCard(q.id) }}>
                           <div className="flex justify-between items-start">
                             <span className="text-[10px] font-semibold uppercase
                               tracking-wide text-gray-400">{q.option}</span>
@@ -164,6 +164,16 @@ export function Exam() {
 
                           {openCard === q.id && q.framework && (
                             <div className="mt-4 pt-4 border-t border-gray-100 space-y-4">
+
+                              <div className="flex justify-end mb-2">
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); setOpenCard(null) }}
+                                  className="text-xs text-gray-400 hover:text-gray-600
+                                    flex items-center gap-1">
+                                  <span>✕</span>
+                                  <span>Close</span>
+                                </button>
+                              </div>
 
                               {/* THESIS */}
                               <div>
