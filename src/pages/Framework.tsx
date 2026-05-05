@@ -2,10 +2,12 @@ import { useEffect, useMemo, useState } from 'react'
 import {
   fetchAllThemes,
   buildFramework,
+  fetchPastQuestions,
   type ThemeSummary,
   type FrameworkData,
   type AiAnalysis,
   type QuoteRow,
+  type PastQuestion,
 } from '../hooks/useFrameworkData'
 
 type Status = 'idle' | 'loading' | 'done' | 'error'
@@ -70,6 +72,11 @@ export function Framework() {
   const [errorMsg, setErrorMsg] = useState<string>('')
   const [data, setData] = useState<FrameworkData | null>(null)
   const [ai, setAi] = useState<AiAnalysis | null>(null)
+  const [pickerYear, setPickerYear] = useState<string>('')
+  const [pickerSection, setPickerSection] = useState<'' | 'SECTION_A' | 'SECTION_B'>('')
+  const [pastQuestions, setPastQuestions] = useState<PastQuestion[]>([])
+  const [pickerLoading, setPickerLoading] = useState(false)
+  const [pickerError, setPickerError] = useState<string>('')
 
   useEffect(() => {
     fetchAllThemes()
@@ -83,6 +90,46 @@ export function Framework() {
 
   const hamletThemes = useMemo(() => themes.filter(t => t.play === 'HAM'), [themes])
   const malfiThemes = useMemo(() => themes.filter(t => t.play === 'MAL'), [themes])
+
+  useEffect(() => {
+    if (!pickerYear || !pickerSection) {
+      setPastQuestions([])
+      return
+    }
+    const year = parseInt(pickerYear, 10)
+    if (Number.isNaN(year)) return
+    setPickerLoading(true)
+    setPickerError('')
+    let cancelled = false
+    fetchPastQuestions(year, pickerSection)
+      .then(qs => { if (!cancelled) setPastQuestions(qs) })
+      .catch((e: Error) => {
+        if (!cancelled) {
+          setPickerError(e.message)
+          setPastQuestions([])
+        }
+      })
+      .finally(() => { if (!cancelled) setPickerLoading(false) })
+    return () => { cancelled = true }
+  }, [pickerYear, pickerSection])
+
+  function autoDetectThemeFor(q: string, restrictToPlay?: 'HAM' | 'MAL'): string | null {
+    if (!q.trim() || !themes.length) return null
+    const lower = q.toLowerCase()
+    const pool = restrictToPlay ? themes.filter(t => t.play === restrictToPlay) : themes
+    for (const t of pool) {
+      const words = (t.theme_name ?? '').toLowerCase().split(/\W+/).filter(w => w.length > 4)
+      if (words.some(w => lower.includes(w))) return t.id
+    }
+    return null
+  }
+
+  function pickPastQuestion(pq: PastQuestion) {
+    setQuestion(pq.question_text)
+    const restrictTo = pq.section === 'SECTION_A' ? 'HAM' : 'MAL'
+    const themeId = autoDetectThemeFor(pq.question_text, restrictTo)
+    if (themeId) setSelectedThemeId(themeId)
+  }
 
   function autoDetectTheme(): string | null {
     if (!question.trim() || !themes.length) return null
@@ -170,6 +217,53 @@ export function Framework() {
             placeholder='e.g. "Explore the significance of madness in Hamlet. In your answer, you must consider the dramatic methods Shakespeare uses."'
             className="w-full rounded-md bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
           />
+
+          <div className="mt-5 rounded-md border border-gray-700 bg-gray-800/60 p-4">
+            <div className="text-sm font-medium text-gray-300 mb-2">
+              Load past question <span className="text-gray-500 font-normal">(2017–2024)</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <select
+                value={pickerYear}
+                onChange={e => setPickerYear(e.target.value)}
+                className="w-full rounded-md bg-gray-900 border border-gray-700 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              >
+                <option value="">— Year —</option>
+                {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017].map(y => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+              <select
+                value={pickerSection}
+                onChange={e => setPickerSection(e.target.value as '' | 'SECTION_A' | 'SECTION_B')}
+                className="w-full rounded-md bg-gray-900 border border-gray-700 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              >
+                <option value="">— Text —</option>
+                <option value="SECTION_A">Hamlet (Section A)</option>
+                <option value="SECTION_B">The Duchess of Malfi (Section B)</option>
+              </select>
+            </div>
+            {pickerLoading && <p className="text-xs text-gray-400 mt-3">Loading questions…</p>}
+            {pickerError && <p className="text-xs text-red-400 mt-3">{pickerError}</p>}
+            {!pickerLoading && pastQuestions.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {pastQuestions.map(pq => (
+                  <button
+                    key={pq.id}
+                    type="button"
+                    onClick={() => pickPastQuestion(pq)}
+                    className="text-left text-xs bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/40 text-violet-100 rounded-md px-3 py-2 transition-colors max-w-full"
+                  >
+                    <span className="font-semibold mr-1">Q{pq.question_number}:</span>
+                    <span>{pq.question_text}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+            {!pickerLoading && !pickerError && pickerYear && pickerSection && pastQuestions.length === 0 && (
+              <p className="text-xs text-gray-400 mt-3">No questions found for this combination.</p>
+            )}
+          </div>
 
           <label className="block text-sm font-medium text-gray-300 mt-4 mb-1">
             Theme <span className="text-gray-500 font-normal">(or leave blank to auto-detect)</span>

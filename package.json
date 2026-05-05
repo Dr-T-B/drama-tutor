@@ -21,7 +21,8 @@
     "import-revision": "tsx scripts/importers/08_revision_cards.ts",
     "import-context": "tsx scripts/importers/09_context_entries.ts",
     "import-exam-skills": "tsx scripts/importers/10_exam_skills.ts",
-    "import-vocab": "tsx scripts/importers/11_vocabulary.ts"
+    "import-vocab": "tsx scripts/importers/11_vocabulary.ts",
+    "import-exam-questions": "tsx scripts/importers/12_exam_questions.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.1",

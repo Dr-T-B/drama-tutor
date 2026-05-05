@@ -169,6 +169,26 @@ export async function fetchAllThemes(): Promise<ThemeSummary[]> {
   return res.json()
 }
 
+export type PastQuestion = {
+  id: string
+  question_text: string
+  question_year: number
+  question_number: string | null
+  section: 'SECTION_A' | 'SECTION_B'
+}
+
+export async function fetchPastQuestions(
+  year: number,
+  section: 'SECTION_A' | 'SECTION_B',
+): Promise<PastQuestion[]> {
+  const url = `/api/past-questions?year=${year}&section=${section}`
+  const res = await fetch(url)
+  if (!res.ok) {
+    throw new Error(`fetchPastQuestions failed (${res.status}): ${await readError(res)}`)
+  }
+  return res.json()
+}
+
 export async function buildFramework(
   themeId: string,
   question: string,
