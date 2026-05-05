@@ -60,6 +60,7 @@ export function Exam() {
   const [openFreq,   setOpenFreq]         = useState(false)
   const [openQuotes, setOpenQuotes]       = useState(false)
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
+  const [openCard, setOpenCard]           = useState<string | null>(null)
 
   const visibleTiming = useMemo(() =>
     timing.filter(ts => {
@@ -124,7 +125,8 @@ export function Exam() {
                     <div className="space-y-3">
                       {questions.filter(q => q.year === year).map(q => (
                         <div key={q.id}
-                          className="rounded-xl border border-gray-200 bg-white p-4 space-y-2">
+                          className="rounded-xl border border-gray-200 bg-white p-4 space-y-2 cursor-pointer"
+                          onClick={() => setOpenCard(openCard === q.id ? null : q.id)}>
                           <div className="flex justify-between items-start">
                             <span className="text-[10px] font-semibold uppercase
                               tracking-wide text-gray-400">{q.option}</span>
@@ -159,6 +161,93 @@ export function Exam() {
                                   rounded-full px-2 py-0.5">{t}</span>
                             ))}
                           </div>
+
+                          {openCard === q.id && q.framework && (
+                            <div className="mt-4 pt-4 border-t border-gray-100 space-y-4">
+
+                              {/* THESIS */}
+                              <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide
+                                  text-violet-600 mb-1">Thesis</p>
+                                <p className="text-sm text-gray-700 leading-relaxed italic">
+                                  {q.framework.thesis}
+                                </p>
+                              </div>
+
+                              {/* PARAGRAPH PLAN */}
+                              <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide
+                                  text-violet-600 mb-2">Paragraph plan</p>
+                                <div className="space-y-2">
+                                  {q.framework.paragraph_plan.map((p, i) => (
+                                    <div key={i} className="rounded-lg bg-gray-50 p-3">
+                                      <div className="flex items-start justify-between gap-2 mb-1">
+                                        <p className="text-xs font-medium text-gray-800">{p.topic}</p>
+                                        <div className="flex gap-1 flex-shrink-0">
+                                          {p.ao_focus.map(ao => (
+                                            <span key={ao} className="text-[9px] bg-violet-100
+                                              text-violet-700 rounded px-1.5 py-0.5">{ao}</span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                      <p className="text-xs text-gray-600 leading-relaxed">
+                                        {p.topic_sentence}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* SENTENCE STEMS */}
+                              <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide
+                                  text-violet-600 mb-2">Sentence stems</p>
+                                <div className="space-y-1.5">
+                                  {Object.entries(q.framework.sentence_stems)
+                                    .filter(([, v]) => v)
+                                    .map(([ao, stem]) => (
+                                      <div key={ao} className="flex gap-2 text-xs">
+                                        <span className="font-semibold text-gray-500
+                                          flex-shrink-0 w-8">{ao}</span>
+                                        <span className="text-gray-700 leading-relaxed">{stem}</span>
+                                      </div>
+                                    ))}
+                                </div>
+                              </div>
+
+                              {/* CRITIC POSITIONS */}
+                              <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide
+                                  text-violet-600 mb-2">Critic positions</p>
+                                <div className="space-y-2">
+                                  {q.framework.critic_positions.map((c, i) => (
+                                    <div key={i} className="rounded-lg border border-gray-200
+                                      bg-white p-3">
+                                      <p className="text-xs font-semibold text-gray-800 mb-0.5">
+                                        {c.critic}
+                                      </p>
+                                      <p className="text-xs text-gray-600 mb-1 italic">
+                                        {c.position}
+                                      </p>
+                                      <p className="text-xs text-gray-500 leading-relaxed">
+                                        {c.embed}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              {/* MODEL PARAGRAPH */}
+                              <div>
+                                <p className="text-[10px] font-semibold uppercase tracking-wide
+                                  text-violet-600 mb-1">Model paragraph</p>
+                                <p className="text-sm text-gray-700 leading-relaxed">
+                                  {q.framework.model_paragraph}
+                                </p>
+                              </div>
+
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
