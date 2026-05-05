@@ -67,6 +67,14 @@ const aoTooltips: Record<string, string> = {
   AO5: "Critics — paraphrase a position and show you've weighed it",
 }
 
+const aoPrompts: Record<string, string> = {
+  AO1: "What is the precise argument this paragraph is making? Write it as a single sentence beginning 'This paragraph argues that…' — make sure it answers the question, not just describes the scene.",
+  AO2: "What is the dramatic or linguistic method at the centre of this paragraph? Name it precisely (e.g. 'dramatic irony', 'stichomythia', 'asyndetic listing'), quote the line that contains it, then explain in one sentence exactly what effect it produces on the audience.",
+  AO3: "What single piece of context sharpens this paragraph's claim? Avoid generic Jacobean / Elizabethan background — pick the specific historical, theatrical, or biographical detail that changes how we read this moment, and embed it inside an analytical sentence rather than a standalone fact.",
+  AO4: "How does this paragraph connect to the other text? Write one sentence that compares the methods or effects directly — e.g. 'Where Webster uses [X], Shakespeare instead uses [Y], producing [different effect].' Avoid 'similarly' and 'in contrast' as openings.",
+  AO5: "Which two critical positions could you weave into this paragraph? Name them, paraphrase each in under 12 words, and decide which one you side with — and why. Avoid quoting critics; integrate their argument into your own.",
+}
+
 export function Exam() {
   const { userId, loading: authLoading } = useAuth()
   const { play } = usePlay()
@@ -89,6 +97,7 @@ export function Exam() {
   const [tooltip, setTooltip] = useState<{
     text: string; x: number; y: number
   } | null>(null)
+  const [openAo, setOpenAo] = useState<Record<string, string | null>>({})
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -281,22 +290,54 @@ export function Exam() {
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
                                   text-violet-600 mb-2">Paragraph plan</p>
                                 <div className="space-y-2">
-                                  {q.framework.paragraph_plan.map((p, i) => (
+                                  {q.framework.paragraph_plan.map((p, i) => {
+                                    const paragraphKey = `${q.id}-${i}`
+                                    return (
                                     <div key={i} className="rounded-lg bg-gray-50 p-3">
                                       <div className="flex items-start justify-between gap-2 mb-1">
                                         <p className="text-xs font-medium text-gray-800">{p.topic}</p>
                                         <div className="flex gap-1 flex-shrink-0">
                                           {p.ao_focus.map(ao => (
-                                            <span key={ao} className="text-[9px] bg-violet-100
-                                              text-violet-700 rounded px-1.5 py-0.5">{ao}</span>
+                                            <button
+                                              key={ao}
+                                              onClick={(e) => {
+                                                e.stopPropagation()
+                                                setOpenAo(prev => ({
+                                                  ...prev,
+                                                  [paragraphKey]: prev[paragraphKey] === ao ? null : ao,
+                                                }))
+                                              }}
+                                              className={`text-[9px] bg-violet-100 text-violet-700
+                                                rounded px-1.5 py-0.5 cursor-pointer transition-all
+                                                ${openAo[paragraphKey] === ao
+                                                  ? 'ring-2 ring-purple-400 ring-offset-1'
+                                                  : 'hover:opacity-80'}`}
+                                            >
+                                              {ao}
+                                            </button>
                                           ))}
                                         </div>
                                       </div>
                                       <p className="text-xs text-gray-600 leading-relaxed">
                                         {p.topic_sentence}
                                       </p>
+                                      {openAo[paragraphKey] && (
+                                        <div className="mt-3 pt-3 border-t border-purple-200
+                                          animate-in slide-in-from-top-1 duration-150">
+                                          <div className="flex items-start gap-2">
+                                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded
+                                              bg-purple-100 text-purple-700 flex-shrink-0 mt-0.5">
+                                              {openAo[paragraphKey]} prompt
+                                            </span>
+                                            <p className="text-sm text-gray-700 leading-relaxed">
+                                              {aoPrompts[openAo[paragraphKey]!]}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      )}
                                     </div>
-                                  ))}
+                                    )
+                                  })}
                                 </div>
                               </div>
 
