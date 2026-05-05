@@ -43,6 +43,7 @@ export function useRevisionDeck(userId: string | null, play: PlayFilter) {
     queryFn: () => fetchProgress(userId!),
     staleTime: 1000 * 30,
     enabled: !!userId,
+    retry: 1,
   })
 
   // Build the due deck:
