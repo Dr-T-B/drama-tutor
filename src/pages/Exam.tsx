@@ -4,6 +4,8 @@ import { usePlay } from '../contexts/PlayContext'
 import { useExamSkills } from '../hooks/useExamSkills'
 import { AoBadge } from '../components/AoBadge'
 import type { GradeBand } from '../types/database'
+import { getQuestionsForPlay, getThemeFrequencies, themeQuoteBanks } from '../data/pastPapers'
+import type { ThemeQuoteBank } from '../data/pastPapers'
 
 const SECTION_PLAY = { SECTION_A: 'HAM', SECTION_B: 'MAL' } as const
 const SECTION_LABEL = {
@@ -54,6 +56,10 @@ export function Exam() {
   const [openVocab, setOpenVocab]     = useState(false)
   const [expandedError, setExpandedError] = useState<string | null>(null)
   const [vocabSearch, setVocabSearch] = useState('')
+  const [openPapers, setOpenPapers]       = useState(false)
+  const [openFreq,   setOpenFreq]         = useState(false)
+  const [openQuotes, setOpenQuotes]       = useState(false)
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
 
   const visibleTiming = useMemo(() =>
     timing.filter(ts => {
@@ -79,9 +85,209 @@ export function Exam() {
     </div>
   )
 
+  const playsToShow = play === 'both'
+    ? (['HAM', 'MAL'] as const)
+    : ([play] as const)
+  const availableBanks = themeQuoteBanks.filter(b =>
+    play === 'both' ? true : b.plays.includes(play as 'HAM' | 'MAL')
+  )
+  const activeTheme = selectedTheme ?? availableBanks[0]?.theme ?? null
+  const activeQuotes = activeTheme
+    ? availableBanks.filter(b => b.theme === activeTheme).flatMap(b => b.quotes)
+    : []
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold text-gray-900 mb-6">Exam skills</h1>
+
+      <SectionHeader
+        title="Past papers"
+        open={openPapers}
+        onToggle={() => setOpenPapers(o => !o)}
+      />
+      {openPapers && (
+        <div className="px-4 pb-4 space-y-6">
+          {playsToShow.map(p => {
+            const questions = getQuestionsForPlay(p)
+            const years = [...new Set(questions.map(q => q.year))].sort((a,b) => b-a)
+            return (
+              <div key={p}>
+                {play === 'both' && (
+                  <p className={`text-xs font-semibold uppercase tracking-wide mb-3
+                    ${p === 'HAM' ? 'text-violet-700' : 'text-teal-700'}`}>
+                    {p === 'HAM' ? 'Hamlet' : 'Duchess of Malfi'}
+                  </p>
+                )}
+                {years.map(year => (
+                  <div key={year} className="mb-4">
+                    <p className="text-xs text-gray-400 font-medium mb-2">{year}</p>
+                    <div className="space-y-3">
+                      {questions.filter(q => q.year === year).map(q => (
+                        <div key={q.id}
+                          className="rounded-xl border border-gray-200 bg-white p-4 space-y-2">
+                          <div className="flex justify-between items-start">
+                            <span className="text-[10px] font-semibold uppercase
+                              tracking-wide text-gray-400">{q.option}</span>
+                            <span className="text-[10px] bg-gray-100 text-gray-500
+                              rounded-full px-2 py-0.5">{q.totalMarks} marks</span>
+                          </div>
+                          <p className="text-sm text-gray-800">{q.question}</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {Object.entries(q.aoWeightings)
+                              .filter(([, v]) => v > 0)
+                              .map(([ao, weight]) => {
+                                const colours: Record<string,string> = {
+                                  AO1: 'bg-blue-100 text-blue-700',
+                                  AO2: 'bg-amber-100 text-amber-700',
+                                  AO3: 'bg-green-100 text-green-700',
+                                  AO4: 'bg-rose-100 text-rose-700',
+                                  AO5: 'bg-purple-100 text-purple-700',
+                                }
+                                return (
+                                  <span key={ao}
+                                    className={`text-[10px] font-medium rounded-full
+                                      px-2 py-0.5 ${colours[ao] ?? 'bg-gray-100 text-gray-600'}`}>
+                                    {ao} ×{weight}
+                                  </span>
+                                )
+                              })}
+                          </div>
+                          <div className="flex flex-wrap gap-1">
+                            {q.themes.map(t => (
+                              <span key={t}
+                                className="text-[10px] bg-gray-100 text-gray-600
+                                  rounded-full px-2 py-0.5">{t}</span>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <SectionHeader
+        title="Theme frequency"
+        open={openFreq}
+        onToggle={() => setOpenFreq(o => !o)}
+      />
+      {openFreq && (
+        <div className="px-4 pb-4 space-y-6">
+          {playsToShow.map(p => {
+            const freqs = getThemeFrequencies(p)
+            const maxCount = freqs[0]?.count ?? 1
+            return (
+              <div key={p}>
+                {play === 'both' && (
+                  <p className={`text-xs font-semibold uppercase tracking-wide mb-3
+                    ${p === 'HAM' ? 'text-violet-700' : 'text-teal-700'}`}>
+                    {p === 'HAM' ? 'Hamlet' : 'Duchess of Malfi'}
+                  </p>
+                )}
+                <div className="space-y-3">
+                  {freqs.map(f => (
+                    <div key={f.theme}>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-gray-700 capitalize">{f.theme}</span>
+                        <span className="text-gray-400">{f.count}</span>
+                      </div>
+                      <div className="w-full bg-gray-100 rounded-full h-1.5 mb-1">
+                        <div
+                          className={`h-1.5 rounded-full ${f.count >= 2
+                            ? 'bg-violet-500' : 'bg-gray-300'}`}
+                          style={{ width: `${(f.count / maxCount) * 100}%` }}
+                        />
+                      </div>
+                      <div className="flex flex-wrap gap-1">
+                        {f.years.map(y => (
+                          <span key={y}
+                            className="text-[10px] bg-gray-100 text-gray-500
+                              rounded px-1.5 py-0.5">{y}</span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      <SectionHeader
+        title="Quote bank"
+        open={openQuotes}
+        onToggle={() => setOpenQuotes(o => !o)}
+      />
+      {openQuotes && (
+        <div className="px-4 pb-4">
+          <div className="flex flex-wrap gap-2 mb-4">
+            {[...new Set(availableBanks.map(b => b.theme))].map(theme => (
+              <button
+                key={theme}
+                onClick={() => setSelectedTheme(theme)}
+                className={`text-xs rounded-full px-3 py-1 border capitalize
+                  ${activeTheme === theme
+                    ? 'bg-violet-100 text-violet-700 border-violet-300'
+                    : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                {theme}
+              </button>
+            ))}
+          </div>
+          {activeQuotes.length === 0 ? (
+            <p className="text-sm text-gray-500 italic">
+              No quotes available for this selection.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {play === 'both'
+                ? (['HAM','MAL'] as const).map(p => {
+                    const pQuotes = availableBanks
+                      .filter(b => b.theme === activeTheme && b.plays.includes(p))
+                      .flatMap(b => b.quotes)
+                    if (pQuotes.length === 0) return null
+                    return (
+                      <div key={p}>
+                        <p className={`text-xs font-semibold uppercase tracking-wide mb-2
+                          ${p === 'HAM' ? 'text-violet-700' : 'text-teal-700'}`}>
+                          {p === 'HAM' ? 'Hamlet' : 'Duchess of Malfi'}
+                        </p>
+                        {pQuotes.map((q, i) => (
+                          <div key={i}
+                            className="rounded-xl border border-gray-200 bg-white p-4 mb-3">
+                            <p className="text-sm italic text-gray-800 mb-1">"{q.text}"</p>
+                            <p className="text-xs text-gray-500">
+                              {q.speaker} — Act {q.act}, Scene {q.scene}
+                            </p>
+                            <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                              {q.significance}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  })
+                : activeQuotes.map((q, i) => (
+                    <div key={i}
+                      className="rounded-xl border border-gray-200 bg-white p-4">
+                      <p className="text-sm italic text-gray-800 mb-1">"{q.text}"</p>
+                      <p className="text-xs text-gray-500">
+                        {q.speaker} — Act {q.act}, Scene {q.scene}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+                        {q.significance}
+                      </p>
+                    </div>
+                  ))
+              }
+            </div>
+          )}
+        </div>
+      )}
 
       {/* SECTION 1: Timing */}
       <div className="rounded-xl border border-gray-200 bg-white mb-4">
