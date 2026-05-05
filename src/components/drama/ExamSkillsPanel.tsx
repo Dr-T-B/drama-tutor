@@ -6,6 +6,41 @@ import {
 } from '../../data/pastPapers'
 import type { PlayFilter } from '../../types/database'
 
+const COLOUR_STOPS: [number, [number, number, number]][] = [
+  [0.00, [245, 158,  11]],
+  [0.25, [139,  92, 246]],
+  [0.50, [ 99, 102, 241]],
+  [0.75, [ 59, 130, 246]],
+  [1.00, [  6, 182, 212]],
+]
+
+function rankRgb(index: number, total: number): [number, number, number] {
+  const t = index / Math.max(total - 1, 1)
+  for (let i = 0; i < COLOUR_STOPS.length - 1; i++) {
+    const [t0, c0] = COLOUR_STOPS[i]
+    const [t1, c1] = COLOUR_STOPS[i + 1]
+    if (t <= t1) {
+      const u = (t - t0) / (t1 - t0)
+      return [
+        Math.round(c0[0] + u * (c1[0] - c0[0])),
+        Math.round(c0[1] + u * (c1[1] - c0[1])),
+        Math.round(c0[2] + u * (c1[2] - c0[2])),
+      ]
+    }
+  }
+  return COLOUR_STOPS[COLOUR_STOPS.length - 1][1]
+}
+
+function rankColour(index: number, total: number): string {
+  const [r, g, b] = rankRgb(index, total)
+  return `rgb(${r},${g},${b})`
+}
+
+function rankColourFaded(index: number, total: number): string {
+  const [r, g, b] = rankRgb(index, total)
+  return `rgba(${r},${g},${b},0.8)`
+}
+
 interface Props {
   play: PlayFilter
   onPractise?: (q: PastPaperQuestion) => void
@@ -36,7 +71,7 @@ export default function ExamSkillsPanel({ play, onPractise }: Props) {
               </p>
             )}
             <div className="space-y-3">
-              {freqs.map(f => {
+              {freqs.map((f, i) => {
                 const key = `${p}:${f.theme}`
                 const isOpen = expanded === key
                 const themeQuestions = questionsForPlay.filter(q =>
@@ -51,7 +86,7 @@ export default function ExamSkillsPanel({ play, onPractise }: Props) {
                       className="w-full text-left"
                     >
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-gray-700 capitalize flex items-center gap-1">
+                        <span className="capitalize flex items-center gap-1" style={{ color: rankColourFaded(i, freqs.length) }}>
                           {f.theme}
                           <svg
                             className="w-3 h-3 text-gray-400 transition-transform"
@@ -65,9 +100,11 @@ export default function ExamSkillsPanel({ play, onPractise }: Props) {
                       </div>
                       <div className="w-full bg-gray-100 rounded-full h-1.5 mb-1">
                         <div
-                          className={`h-1.5 rounded-full ${f.count >= 2
-                            ? 'bg-violet-500' : 'bg-gray-300'}`}
-                          style={{ width: `${(f.count / maxCount) * 100}%` }}
+                          className="h-1.5 rounded-full"
+                          style={{
+                            width: `${(f.count / maxCount) * 100}%`,
+                            background: rankColour(i, freqs.length),
+                          }}
                         />
                       </div>
                       <div className="flex flex-wrap gap-1">
