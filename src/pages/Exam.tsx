@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { usePlay } from '../contexts/PlayContext'
 import { useExamSkills } from '../hooks/useExamSkills'
 import { AoBadge } from '../components/AoBadge'
+import ExamSkillsPanel from '../components/drama/ExamSkillsPanel'
 import { supabase } from '../lib/supabase'
 import type { GradeBand } from '../types/database'
 import { getQuestionsForPlay, getThemeFrequencies, themeQuoteBanks } from '../data/pastPapers'
@@ -387,45 +388,8 @@ export function Exam() {
         onToggle={() => setOpenFreq(o => !o)}
       />
       {openFreq && (
-        <div className="px-4 pb-4 space-y-6">
-          {playsToShow.map(p => {
-            const freqs = getThemeFrequencies(p)
-            const maxCount = freqs[0]?.count ?? 1
-            return (
-              <div key={p}>
-                {play === 'both' && (
-                  <p className={`text-xs font-semibold uppercase tracking-wide mb-3
-                    ${p === 'HAM' ? 'text-violet-700' : 'text-teal-700'}`}>
-                    {p === 'HAM' ? 'Hamlet' : 'Duchess of Malfi'}
-                  </p>
-                )}
-                <div className="space-y-3">
-                  {freqs.map(f => (
-                    <div key={f.theme}>
-                      <div className="flex justify-between text-xs mb-1">
-                        <span className="text-gray-700 capitalize">{f.theme}</span>
-                        <span className="text-gray-400">{f.count}</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-1.5 mb-1">
-                        <div
-                          className={`h-1.5 rounded-full ${f.count >= 2
-                            ? 'bg-violet-500' : 'bg-gray-300'}`}
-                          style={{ width: `${(f.count / maxCount) * 100}%` }}
-                        />
-                      </div>
-                      <div className="flex flex-wrap gap-1">
-                        {f.years.map(y => (
-                          <span key={y}
-                            className="text-[10px] bg-gray-100 text-gray-500
-                              rounded px-1.5 py-0.5">{y}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          })}
+        <div className="px-4 pb-4">
+          <ExamSkillsPanel play={play} />
         </div>
       )}
 
