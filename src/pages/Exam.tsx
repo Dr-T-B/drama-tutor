@@ -213,8 +213,16 @@ export function Exam() {
                                   AO4: 'bg-rose-100 text-rose-700',
                                   AO5: 'bg-purple-100 text-purple-700',
                                 }
+                                const titles: Record<string,string> = {
+                                  AO1: 'Informed personal response — argue a clear position',
+                                  AO2: 'Methods & form — name the technique, explain its effect',
+                                  AO3: 'Context — embed it to sharpen a claim, not bolt it on',
+                                  AO4: 'Connections — compare across texts continuously',
+                                  AO5: 'Critics — paraphrase a position and show you\'ve weighed it',
+                                }
                                 return (
                                   <span key={ao}
+                                    title={titles[ao]}
                                     className={`text-[10px] font-medium rounded-full
                                       px-2 py-0.5 ${colours[ao] ?? 'bg-gray-100 text-gray-600'}`}>
                                     {ao} ×{weight}
