@@ -86,6 +86,9 @@ export function Exam() {
   const [savedSections, setSavedSections] = useState<Record<string, SectionKey[]>>({})
   const [savingId, setSavingId]           = useState<string | null>(null)
   const [savedConfirm, setSavedConfirm]   = useState<string | null>(null)
+  const [tooltip, setTooltip] = useState<{
+    text: string; x: number; y: number
+  } | null>(null)
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -222,17 +225,22 @@ export function Exam() {
                                   AO5: 'bg-purple-100 text-purple-700',
                                 }
                                 return (
-                                  <span key={ao} className="relative group inline-block">
+                                  <span
+                                    key={ao}
+                                    className="relative inline-block cursor-default"
+                                    onMouseEnter={(e) => {
+                                      const r = e.currentTarget.getBoundingClientRect()
+                                      setTooltip({
+                                        text: aoTooltips[ao],
+                                        x: r.left + r.width / 2,
+                                        y: r.top,
+                                      })
+                                    }}
+                                    onMouseLeave={() => setTooltip(null)}
+                                  >
                                     <span className={`text-[10px] font-medium rounded-full
                                       px-2 py-0.5 ${colours[ao] ?? 'bg-gray-100 text-gray-600'}`}>
                                       {ao} ×{weight}
-                                    </span>
-                                    <span className="pointer-events-none absolute bottom-full left-1/2
-                                      -translate-x-1/2 mb-2 w-56 rounded-lg bg-gray-900 px-3 py-2
-                                      text-xs text-white opacity-0 group-hover:opacity-100
-                                      transition-opacity duration-150 z-50 text-center leading-snug
-                                      shadow-lg whitespace-normal">
-                                      {aoTooltips[ao]}
                                     </span>
                                   </span>
                                 )
@@ -735,6 +743,17 @@ export function Exam() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {tooltip && (
+        <div
+          className="fixed z-[9999] pointer-events-none -translate-x-1/2
+            -translate-y-full -mt-2 bg-gray-900 text-white text-xs
+            rounded-lg px-3 py-2 w-56 text-center shadow-xl leading-snug"
+          style={{ left: tooltip.x, top: tooltip.y - 8 }}
+        >
+          {tooltip.text}
         </div>
       )}
     </div>
