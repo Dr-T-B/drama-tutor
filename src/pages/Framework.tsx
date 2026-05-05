@@ -64,6 +64,70 @@ function quoteText(q: any): string {
   return (q?.quote_text ?? q?.text ?? q?.content ?? '') as string
 }
 
+const SYNONYM_MAP: Record<string, string[]> = {
+  'suffering':   ['HAM_T05','HAM_T07','DOM_T03','DOM_T05','DOM_T07'],
+  'pain':        ['HAM_T05','DOM_T05'],
+  'madness':     ['HAM_T02','DOM_T03'],
+  'mad':         ['HAM_T02','DOM_T03'],
+  'death':       ['HAM_T06','DOM_T05'],
+  'dying':       ['HAM_T06','DOM_T05'],
+  'mortality':   ['HAM_T06','DOM_T05'],
+  'revenge':     ['HAM_T01','HAM_T12'],
+  'ghost':       ['HAM_T03','HAM_T06'],
+  'women':       ['HAM_T08','DOM_T01','DOM_T08'],
+  'woman':       ['HAM_T08','DOM_T01','DOM_T08'],
+  'female':      ['HAM_T08','DOM_T01','DOM_T08'],
+  'gender':      ['HAM_T08','DOM_T01','DOM_T08'],
+  'sexuality':   ['HAM_T08','DOM_T08'],
+  'power':       ['HAM_T04','DOM_T02'],
+  'corruption':  ['HAM_T04','DOM_T04','DOM_T09'],
+  'court':       ['HAM_T04','DOM_T04'],
+  'deception':   ['HAM_T03','DOM_T06'],
+  'appearance':  ['HAM_T03','DOM_T06'],
+  'disguise':    ['HAM_T03','DOM_T06'],
+  'uncertainty': ['HAM_T03','DOM_T06'],
+  'religion':    ['HAM_T09','DOM_T09'],
+  'family':      ['HAM_T10','DOM_T11'],
+  'betrayal':    ['HAM_T10','DOM_T11'],
+  'loyalty':     ['DOM_T11'],
+  'isolation':   ['DOM_T11'],
+  'honour':      ['HAM_T01','DOM_T02'],
+  'reputation':  ['HAM_T01','DOM_T02'],
+  'heroism':     ['HAM_T01'],
+  'hero':        ['HAM_T01'],
+  'grief':       ['HAM_T05'],
+  'mourning':    ['HAM_T05'],
+  'surveillance':['HAM_T04','DOM_T03'],
+  'imprisonment':['DOM_T03'],
+  'torture':     ['DOM_T03','DOM_T12'],
+  'poison':      ['DOM_T07'],
+  'disease':     ['DOM_T07'],
+  'body':        ['DOM_T07','DOM_T08','DOM_T12'],
+  'spectacle':   ['DOM_T12'],
+  'violence':    ['DOM_T12'],
+  'class':       ['DOM_T10'],
+  'ambition':    ['DOM_T02','DOM_T04'],
+  'control':     ['DOM_T02','DOM_T03'],
+  'identity':    ['HAM_T02','DOM_T01'],
+  'selfhood':    ['HAM_T02','DOM_T01'],
+  'excess':      ['DOM_T04','DOM_T12'],
+  'setting':     ['HAM_T11'],
+  'theatre':     ['HAM_T12'],
+  'acting':      ['HAM_T12'],
+  'performance': ['HAM_T12','DOM_T06'],
+  'play':        ['HAM_T12'],
+}
+
+const HAM_HINTS = ['hamlet', 'denmark', 'ophelia', 'horatio']
+const MAL_HINTS = ['duchess', 'malfi', 'webster', 'bosola', 'ferdinand']
+
+function detectPlayFromQuestion(q: string): 'HAM' | 'MAL' | undefined {
+  const lower = q.toLowerCase()
+  if (HAM_HINTS.some(h => lower.includes(h))) return 'HAM'
+  if (MAL_HINTS.some(h => lower.includes(h))) return 'MAL'
+  return undefined
+}
+
 export function Framework() {
   const [themes, setThemes] = useState<ThemeSummary[]>([])
   const [selectedThemeId, setSelectedThemeId] = useState<string>('')
@@ -116,7 +180,19 @@ export function Framework() {
   function autoDetectThemeFor(q: string, restrictToPlay?: 'HAM' | 'MAL'): string | null {
     if (!q.trim() || !themes.length) return null
     const lower = q.toLowerCase()
-    const pool = restrictToPlay ? themes.filter(t => t.play === restrictToPlay) : themes
+    const play = restrictToPlay ?? detectPlayFromQuestion(lower)
+    const pool = play ? themes.filter(t => t.play === play) : themes
+
+    const tokens = lower.split(/\W+/).filter(Boolean)
+    for (const tok of tokens) {
+      const codes = SYNONYM_MAP[tok]
+      if (!codes) continue
+      for (const code of codes) {
+        const match = pool.find(t => t.theme_code === code)
+        if (match) return match.id
+      }
+    }
+
     for (const t of pool) {
       const words = (t.theme_name ?? '').toLowerCase().split(/\W+/).filter(w => w.length > 4)
       if (words.some(w => lower.includes(w))) return t.id
@@ -132,13 +208,7 @@ export function Framework() {
   }
 
   function autoDetectTheme(): string | null {
-    if (!question.trim() || !themes.length) return null
-    const q = question.toLowerCase()
-    for (const t of themes) {
-      const words = (t.theme_name ?? '').toLowerCase().split(/\W+/).filter(w => w.length > 4)
-      if (words.some(w => q.includes(w))) return t.id
-    }
-    return null
+    return autoDetectThemeFor(question)
   }
 
   async function handleBuild() {
