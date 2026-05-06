@@ -10,6 +10,9 @@ const LINKS: NavLink[] = [
   { to: '/critics',  label: 'Critics' },
   { to: '/essays',   label: 'Essays' },
   { to: '/exam',     label: 'Exam skills' },
+  { to: '/acts',     label: 'Acts & Scenes' },
+  { to: '/guide',    label: 'Recall Guide' },
+  { to: '/essay-builder', label: 'Essay Builder' },
 ]
 
 export function Nav() {
