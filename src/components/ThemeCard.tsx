@@ -114,7 +114,7 @@ export function ThemeCard({ theme }: { theme: ThemeEnriched }) {
                     <p className="text-sm text-gray-700 leading-relaxed mb-2">
                       {ci.interpretation}
                     </p>
-                    {ci.usable_ao5_sentence && (
+                    {ci.usable_ao5_sentence && theme.play === 'HAM' && (
                       <div className="bg-purple-50 rounded p-2 border border-purple-100">
                         <p className="text-xs font-semibold text-purple-600 mb-0.5">
                           AO5 sentence

@@ -63,7 +63,6 @@ const aoTooltips: Record<string, string> = {
   AO1: "Informed personal response — argue a clear position",
   AO2: "Methods & form — name the technique, explain its effect",
   AO3: "Context — embed it to sharpen a claim, not bolt it on",
-  AO4: "Connections — compare across texts continuously",
   AO5: "Critics — paraphrase a position and show you've weighed it",
 }
 
@@ -72,7 +71,6 @@ function aoBadgeClasses(ao: string): string {
     case 'AO1': return 'bg-blue-100 text-blue-700'
     case 'AO2': return 'bg-amber-100 text-amber-700'
     case 'AO3': return 'bg-green-100 text-green-700'
-    case 'AO4': return 'bg-rose-100 text-rose-700'
     case 'AO5': return 'bg-purple-100 text-purple-700'
     default:    return 'bg-gray-100 text-gray-700'
   }
@@ -83,7 +81,6 @@ function aoActiveRing(ao: string): string {
     case 'AO1': return 'ring-2 ring-blue-400 ring-offset-1'
     case 'AO2': return 'ring-2 ring-amber-400 ring-offset-1'
     case 'AO3': return 'ring-2 ring-green-400 ring-offset-1'
-    case 'AO4': return 'ring-2 ring-rose-400 ring-offset-1'
     case 'AO5': return 'ring-2 ring-purple-400 ring-offset-1'
     default:    return 'ring-2 ring-gray-400 ring-offset-1'
   }
@@ -94,7 +91,6 @@ function aoPromptPanel(ao: string): string {
     case 'AO1': return 'border-blue-200 bg-blue-50'
     case 'AO2': return 'border-amber-200 bg-amber-50'
     case 'AO3': return 'border-green-200 bg-green-50'
-    case 'AO4': return 'border-rose-200 bg-rose-50'
     case 'AO5': return 'border-purple-200 bg-purple-50'
     default:    return 'border-gray-200 bg-gray-50'
   }
@@ -105,7 +101,6 @@ function aoPromptLabel(ao: string): string {
     case 'AO1': return 'bg-blue-100 text-blue-700'
     case 'AO2': return 'bg-amber-100 text-amber-700'
     case 'AO3': return 'bg-green-100 text-green-700'
-    case 'AO4': return 'bg-rose-100 text-rose-700'
     case 'AO5': return 'bg-purple-100 text-purple-700'
     default:    return 'bg-gray-100 text-gray-700'
   }
@@ -115,7 +110,6 @@ const aoPrompts: Record<string, string> = {
   AO1: "What is the precise argument this paragraph is making? Write it as a single sentence beginning 'This paragraph argues that…' — make sure it answers the question, not just describes the scene.",
   AO2: "What is the dramatic or linguistic method at the centre of this paragraph? Name it precisely (e.g. 'dramatic irony', 'stichomythia', 'asyndetic listing'), quote the line that contains it, then explain in one sentence exactly what effect it produces on the audience.",
   AO3: "What single piece of context sharpens this paragraph's claim? Avoid generic Jacobean / Elizabethan background — pick the specific historical, theatrical, or biographical detail that changes how we read this moment, and embed it inside an analytical sentence rather than a standalone fact.",
-  AO4: "How does this paragraph connect to the other text? Write one sentence that compares the methods or effects directly — e.g. 'Where Webster uses [X], Shakespeare instead uses [Y], producing [different effect].' Avoid 'similarly' and 'in contrast' as openings.",
   AO5: "Which two critical positions could you weave into this paragraph? Name them, paraphrase each in under 12 words, and decide which one you side with — and why. Avoid quoting critics; integrate their argument into your own.",
 }
 
@@ -274,7 +268,6 @@ export function Exam() {
                                   AO1: 'bg-blue-100 text-blue-700',
                                   AO2: 'bg-amber-100 text-amber-700',
                                   AO3: 'bg-green-100 text-green-700',
-                                  AO4: 'bg-rose-100 text-rose-700',
                                   AO5: 'bg-purple-100 text-purple-700',
                                 }
                                 return (

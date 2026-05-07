@@ -28,8 +28,16 @@ const AO_CLS: Record<string, string> = {
   AO1: 'bg-amber-50 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
   AO2: 'bg-blue-50  text-blue-800  dark:bg-blue-900/40  dark:text-blue-200',
   AO3: 'bg-red-50   text-red-800   dark:bg-red-900/40   dark:text-red-200',
-  AO4: 'bg-purple-50 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
   AO5: 'bg-teal-50  text-teal-800  dark:bg-teal-900/40  dark:text-teal-200',
+}
+
+// Component 1 Drama (9ET0/01) AOs:
+//   Section A (Hamlet) → AO1/AO2/AO3/AO5
+//   Section B (Malfi)  → AO1/AO2/AO3 only
+function aosForPlay(p: 'HAM' | 'MAL' | 'both'): string[] {
+  if (p === 'HAM') return ['AO1', 'AO2', 'AO3', 'AO5']
+  if (p === 'MAL') return ['AO1', 'AO2', 'AO3']
+  return ['AO1', 'AO2', 'AO3', 'AO5']
 }
 
 async function fetchCritics(textIds: string[]): Promise<CriticEntry[]> {
@@ -84,10 +92,7 @@ export default function CriticsView() {
     play === 'MAL' ? [MAL_ID] :
     [HAM_ID, MAL_ID]
 
-  const visibleAOs =
-    play === 'HAM'
-      ? ['AO1', 'AO2', 'AO3', 'AO5']
-      : ['AO1', 'AO2', 'AO3', 'AO4', 'AO5']
+  const visibleAOs = aosForPlay(play)
 
   const { data: critics = [], isLoading, error } = useQuery({
     queryKey: ['critics', textIds],
@@ -151,9 +156,11 @@ export default function CriticsView() {
     : play === 'MAL'
     ? 'Section B — The Duchess of Malfi'
     : 'Both sections'
-  const ao4Note = play === 'HAM'
-    ? 'AO4 (connections) not assessed in Section A'
-    : 'AO4 assessed — connections to Hamlet required'
+  const sectionAoNote = play === 'HAM'
+    ? 'Assesses AO1, AO2, AO3, AO5'
+    : play === 'MAL'
+    ? 'Assesses AO1, AO2, AO3 only'
+    : 'AOs vary by section'
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
@@ -168,7 +175,7 @@ export default function CriticsView() {
       <div className="flex items-center justify-between flex-wrap gap-2
                       px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/60
                       text-xs text-gray-500 dark:text-gray-400">
-        <span>{sectionLabel} · {ao4Note}</span>
+        <span>{sectionLabel} · {sectionAoNote}</span>
         <span className="flex items-center gap-2">
           {visibleAOs.map(ao => (
             <span key={ao}
@@ -246,12 +253,14 @@ export default function CriticsView() {
                         {c.school}
                       </span>
                       <div className="flex gap-1 flex-wrap justify-end">
-                        {c.ao_tags.map(ao => (
-                          <span key={ao}
-                            className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${AO_CLS[ao] ?? ''}`}>
-                            {ao}
-                          </span>
-                        ))}
+                        {c.ao_tags
+                          .filter(ao => visibleAOs.includes(ao))
+                          .map(ao => (
+                            <span key={ao}
+                              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${AO_CLS[ao] ?? ''}`}>
+                              {ao}
+                            </span>
+                          ))}
                       </div>
                     </div>
 
@@ -350,8 +359,8 @@ export default function CriticsView() {
                           </div>
                         )}
 
-                        {/* Deployable AO5 sentence */}
-                        {c.usable_ao5_sentence && (
+                        {/* Deployable AO5 sentence — Section A (Hamlet) only */}
+                        {c.usable_ao5_sentence && c.play_title === 'Hamlet' && (
                           <div>
                             <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
                               Deployable AO5 sentence
@@ -361,23 +370,6 @@ export default function CriticsView() {
                                 {c.usable_ao5_sentence}
                               </p>
                             </div>
-                          </div>
-                        )}
-
-                        {/* AO4 connection — DoM only */}
-                        {c.ao4_connection && (
-                          <div className="rounded-lg p-3
-                                          bg-purple-50 dark:bg-purple-900/20
-                                          border border-purple-100 dark:border-purple-800/40">
-                            <p className="text-[10px] font-semibold uppercase tracking-wider
-                                          text-purple-700 dark:text-purple-400 mb-1.5 flex items-center gap-1.5">
-                              <span className="px-1 py-0.5 rounded bg-purple-100 dark:bg-purple-900/60
-                                               text-purple-800 dark:text-purple-300 text-[9px]">AO4</span>
-                              Connection to Hamlet
-                            </p>
-                            <p className="text-xs text-purple-900 dark:text-purple-200 leading-relaxed">
-                              {c.ao4_connection}
-                            </p>
                           </div>
                         )}
 

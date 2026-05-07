@@ -1,6 +1,13 @@
 import { useState } from 'react'
 import { AoBadge } from './AoBadge'
 import type { RecallGuide } from '../data/recallGuides'
+import type { AOKey } from '../data/actScenes'
+
+// Edexcel 9ET0/01: Section A (HAM) assesses AO1/AO2/AO3/AO5; Section B (MAL) assesses AO1/AO2/AO3 only.
+function filterAosForPlay(aos: AOKey[], play: 'HAM' | 'MAL'): AOKey[] {
+  if (play === 'MAL') return aos.filter(ao => ao !== 'AO4' && ao !== 'AO5')
+  return aos.filter(ao => ao !== 'AO4')
+}
 
 const PLAY_STYLE = {
   HAM: {
@@ -40,14 +47,6 @@ export function RecallGuide({ guide }: { guide: RecallGuide }) {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* AO4 note */}
-      <div className={`rounded-xl border border-gray-200 ${style.softBg} px-4 py-3`}>
-        <p className={`text-xs font-semibold uppercase tracking-wide mb-1 ${style.accent}`}>
-          AO4 note
-        </p>
-        <p className="text-sm text-gray-700 leading-snug">{guide.ao4Note}</p>
-      </div>
-
       {/* Tabs */}
       <div className="flex gap-1 border-b border-gray-200 flex-wrap">
         {tabs.map(t => {
@@ -101,13 +100,13 @@ function ThemesTab({ guide }: { guide: RecallGuide }) {
               <span className="text-sm font-serif italic text-gray-700">{theme.anchorQuote}</span>
               <span className="text-sm text-gray-600">{theme.method}</span>
               <span className="flex gap-1 flex-wrap">
-                {theme.aos.map(ao => <AoBadge key={ao} ao={ao} />)}
+                {filterAosForPlay(theme.aos, guide.play).map(ao => <AoBadge key={ao} ao={ao} />)}
               </span>
             </button>
             {open && (
               <div className="px-4 pb-4 pt-1 flex flex-col gap-3 bg-gray-50/50">
                 {theme.packages.map((pkg, j) => (
-                  <PackageCard key={j} pkg={pkg} />
+                  <PackageCard key={j} pkg={pkg} play={guide.play} />
                 ))}
               </div>
             )}
@@ -128,7 +127,7 @@ function PackagesTab({ guide }: { guide: RecallGuide }) {
           </h3>
           <div className="flex flex-col gap-3">
             {theme.packages.map((pkg, j) => (
-              <PackageCard key={j} pkg={pkg} />
+              <PackageCard key={j} pkg={pkg} play={guide.play} />
             ))}
           </div>
         </section>
@@ -137,7 +136,13 @@ function PackagesTab({ guide }: { guide: RecallGuide }) {
   )
 }
 
-function PackageCard({ pkg }: { pkg: import('../data/recallGuides').QuotePackage }) {
+function PackageCard({
+  pkg,
+  play,
+}: {
+  pkg: import('../data/recallGuides').QuotePackage
+  play: 'HAM' | 'MAL'
+}) {
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-2">
       <p className="text-xs uppercase tracking-wide text-gray-400">
@@ -160,7 +165,7 @@ function PackageCard({ pkg }: { pkg: import('../data/recallGuides').QuotePackage
         <p className="text-sm text-gray-600 leading-snug">{pkg.meaning}</p>
       </div>
       <div className="flex gap-1 flex-wrap">
-        {pkg.aos.map(ao => <AoBadge key={ao} ao={ao} />)}
+        {filterAosForPlay(pkg.aos, play).map(ao => <AoBadge key={ao} ao={ao} />)}
       </div>
     </div>
   )
@@ -222,18 +227,22 @@ function RecoveryTab({ guide }: { guide: RecallGuide }) {
         </p>
         <p className="font-serif italic text-amber-900 my-1">{guide.modelParagraph.quote}</p>
         <p className="text-sm text-amber-900 leading-relaxed">
-          {parseModelParagraph(guide.modelParagraph.text)}
+          {parseModelParagraph(guide.modelParagraph.text, guide.play)}
         </p>
       </div>
     </div>
   )
 }
 
-function parseModelParagraph(text: string) {
+function parseModelParagraph(text: string, play: 'HAM' | 'MAL') {
+  const allowed = play === 'MAL'
+    ? new Set(['AO1', 'AO2', 'AO3'])
+    : new Set(['AO1', 'AO2', 'AO3', 'AO5'])
   const parts = text.split(/(\[AO[1-5]\])/g)
   return parts.map((part, i) => {
     const m = part.match(/^\[(AO[1-5])\]$/)
     if (m) {
+      if (!allowed.has(m[1])) return null
       return (
         <span key={i} className="inline-block align-middle mx-0.5">
           <AoBadge ao={m[1]} />

@@ -10,6 +10,12 @@ const AO_RING: Record<AOKey, string> = {
   AO5: 'ring-purple-400',
 }
 
+// Edexcel 9ET0/01: Section A (HAM) assesses AO1/AO2/AO3/AO5; Section B (MAL) assesses AO1/AO2/AO3 only.
+function filterAosForPlay(aos: AOKey[], play: 'HAM' | 'MAL'): AOKey[] {
+  if (play === 'MAL') return aos.filter(ao => ao !== 'AO4' && ao !== 'AO5')
+  return aos.filter(ao => ao !== 'AO4')
+}
+
 const PLAY_STYLE = {
   HAM: {
     activeBg: 'bg-violet-50 text-violet-700',
@@ -155,6 +161,7 @@ function SceneDetail({ scene }: { scene: ActScene }) {
     setActiveAO(null)
   }, [sceneIdentity])
 
+  const visibleAoFocus = filterAosForPlay(scene.aoFocus, scene.play)
   const filteredQuotes = activeAO
     ? scene.keyQuotes.filter(q => q.aos.includes(activeAO))
     : scene.keyQuotes
@@ -167,7 +174,7 @@ function SceneDetail({ scene }: { scene: ActScene }) {
           Act {scene.act}, Scene {scene.scene} — {scene.title}
         </h2>
         <div className="flex items-center gap-1 flex-wrap">
-          {scene.aoFocus.map(ao => {
+          {visibleAoFocus.map(ao => {
             const isActive = ao === activeAO
             const hasFilter = activeAO !== null
             const ringClass = isActive ? `ring-2 ring-offset-1 ${AO_RING[ao]}` : ''

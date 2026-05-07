@@ -41,7 +41,6 @@ const PHASES = [
       'One clear, precise claim per paragraph — avoid compound claims.',
     ],
     note: null as string | null,
-    ao4note: null as string | null,
   },
   {
     num: 2, title: 'Ground', aos: ['AO1', 'AO2'],
@@ -52,7 +51,6 @@ const PHASES = [
       'Every sentence must name a technique or articulate an effect — eliminate paraphrase entirely.',
     ],
     note: null as string | null,
-    ao4note: null as string | null,
   },
   {
     num: 3, title: 'Complicate', aos: ['AO3', 'AO5'],
@@ -63,7 +61,6 @@ const PHASES = [
       'Advance: return to your thesis with new or deeper insight gained from the complication.',
     ],
     note: 'Level 4 → Level 5 transition: a Level 4 paragraph stops at Phase 2. A Level 5 paragraph completes Phase 3 and genuinely advances the argument.' as string | null,
-    ao4note: 'For Section B: weave AO4 connections to Hamlet into Phase 3 — at the point of critical or contextual expansion, not as a separate move.' as string | null,
   },
 ]
 
@@ -78,7 +75,6 @@ const ESSAY_STRUCTURE = {
     'Paragraphs must build — each one develops or complicates the thesis, not merely adds to it.',
     'Plan the logical sequence before writing: what must be established first? What follows necessarily?',
     'Organise by argument — never by character, chronology or quotation list.',
-    'AO4 note (Section B): connections to Hamlet should appear 2–3 times across the body, woven into critical or contextual expansion — not confined to a dedicated comparison paragraph.',
   ],
   conclusion: [
     { title: 'Return', body: 'Use the language of the question directly — signal you have answered what was asked, not a related question of your own devising.' },
@@ -106,7 +102,6 @@ const AO_CLS: Record<string, string> = {
   AO1: 'bg-amber-50 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
   AO2: 'bg-blue-50 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200',
   AO3: 'bg-red-50 text-red-800 dark:bg-red-900/40 dark:text-red-200',
-  AO4: 'bg-purple-50 text-purple-800 dark:bg-purple-900/40 dark:text-purple-200',
   AO5: 'bg-teal-50 text-teal-800 dark:bg-teal-900/40 dark:text-teal-200',
 }
 
@@ -206,16 +201,6 @@ export default function EssaysView() {
                     <div className="mt-3 p-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg
                                     text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
                       <strong className="text-gray-900 dark:text-gray-100">Level 4 → Level 5:</strong> {ph.note}
-                    </div>
-                  )}
-                  {ph.ao4note && (
-                    <div className="mt-2 p-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg
-                                    text-xs text-gray-600 dark:text-gray-300 leading-relaxed flex gap-1.5 items-start">
-                      <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-purple-50
-                                       text-purple-800 dark:bg-purple-900/40 dark:text-purple-200 shrink-0 mt-0.5">
-                        AO4
-                      </span>
-                      {ph.ao4note}
                     </div>
                   )}
                 </div>

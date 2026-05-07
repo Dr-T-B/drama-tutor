@@ -88,8 +88,8 @@ export function CriticCard({ critic, play }: Props) {
                       {ci.interpretation}
                     </p>
 
-                    {/* AO5 sentence */}
-                    {ci.usable_ao5_sentence && (
+                    {/* AO5 sentence — Section A (Hamlet) only; AO5 not assessed in Section B */}
+                    {ci.usable_ao5_sentence && ci.play === 'HAM' && (
                       <div className="bg-purple-50 rounded-lg p-2.5 border
                                       border-purple-100">
                         <p className="text-xs font-semibold text-purple-600 mb-1">
