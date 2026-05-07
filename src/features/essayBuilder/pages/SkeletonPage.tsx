@@ -61,11 +61,6 @@ export function SkeletonPage() {
 
   const sk = skeleton.data
 
-  function onSave() {
-    // v1 stub — full essay_plans integration is a follow-up.
-    window.alert('Saved')
-  }
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <Link
@@ -111,15 +106,6 @@ export function SkeletonPage() {
         </div>
       </div>
 
-      <div className="flex gap-2">
-        <button
-          onClick={onSave}
-          className="px-4 py-2 rounded-md bg-violet-600 text-white text-sm font-medium
-                     hover:bg-violet-700 transition-colors"
-        >
-          Save plan
-        </button>
-      </div>
     </div>
   )
 }
