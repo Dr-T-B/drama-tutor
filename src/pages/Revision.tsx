@@ -41,8 +41,7 @@ export function Revision() {
 
   if (!authLoading && !userId) return (
     <div className="flex items-center justify-center h-64 text-red-400">
-      Sign-in failed — check VITE_FAMILY_EMAIL and VITE_FAMILY_PASSWORD in
-      .env.local, then reload.
+      Sign-in failed — please reload the page.
     </div>
   )
 

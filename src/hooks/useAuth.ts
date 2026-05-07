@@ -8,19 +8,41 @@ export function useAuth() {
 
   useEffect(() => {
     // Try to restore existing session first
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(async ({ data }) => {
       if (data.session) {
         setSession(data.session)
         setLoading(false)
-      } else {
-        // Auto sign-in with shared family account
-        supabase.auth.signInWithPassword({
-          email: import.meta.env.VITE_FAMILY_EMAIL,
-          password: import.meta.env.VITE_FAMILY_PASSWORD,
-        }).then(({ data: signInData }) => {
-          setSession(signInData.session)
-          setLoading(false)
+        return
+      }
+
+      // No session — call the auto-session Edge Function to get tokens
+      try {
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+
+        const res = await fetch(
+          `${SUPABASE_URL}/functions/v1/auto-session`,
+          { method: 'POST' }
+        )
+
+        if (!res.ok) {
+          const { error } = await res.json()
+          throw new Error(error ?? 'Auto-session failed')
+        }
+
+        const { access_token, refresh_token } = await res.json()
+
+        const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
         })
+
+        if (sessionError) throw sessionError
+
+        setSession(sessionData.session)
+      } catch (err) {
+        console.error('Auto sign-in failed:', err)
+      } finally {
+        setLoading(false)
       }
     })
 
