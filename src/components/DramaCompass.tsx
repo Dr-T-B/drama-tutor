@@ -313,6 +313,30 @@ function renderPlan(text: string) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// THESIS BANK DATA
+// ────────────────────────────────────────────────────────────────────────────
+const THESIS_BANK = {
+  hamlet: [
+    { focus: 'Delay', thesis: 'Shakespeare presents delay as the tragic result of moral, spiritual, and political uncertainty.' },
+    { focus: 'Madness', thesis: 'Shakespeare presents madness as both performance and fragmentation, destabilising the boundary between strategy and psychological collapse.' },
+    { focus: 'Revenge', thesis: 'Shakespeare presents revenge as morally contaminating, turning the revenger into part of the corruption he seeks to punish.' },
+    { focus: 'Corruption', thesis: 'Shakespeare presents corruption as systemic rather than individual, using imagery of disease and surveillance to make Denmark appear politically infected.' },
+    { focus: 'Women', thesis: 'Shakespeare presents women as constrained by patriarchal structures, though their silence, madness, and sexuality become sites of male anxiety.' },
+    { focus: 'Death', thesis: 'Shakespeare presents death as both philosophical abstraction and physical reality, forcing the audience to confront mortality as a theatrical and material fact.' },
+    { focus: 'Appearance vs Reality', thesis: 'Shakespeare presents performance as the dominant condition of Elsinore, where truth can only be approached through acting, spying, and theatrical exposure.' },
+  ],
+  duchess: [
+    { focus: 'Power', thesis: 'Webster presents power as corrupt surveillance, transforming authority into coercion and theatrical cruelty.' },
+    { focus: 'Gender', thesis: 'Webster presents female autonomy as threatening because Jacobean patriarchy treats the female body as dynastic property.' },
+    { focus: 'Corruption', thesis: 'Webster presents corruption as both moral disease and courtly performance, hidden beneath aristocratic elegance.' },
+    { focus: 'Madness', thesis: 'Webster presents madness as the outward sign of inward corruption, especially in Ferdinand\'s collapse into animalistic disorder.' },
+    { focus: 'Suffering', thesis: 'Webster presents suffering as a test of dignity, using spectacle to contrast the Duchess\'s moral strength with her brothers\' degeneration.' },
+    { focus: 'Death', thesis: 'Webster presents death as theatrical revelation, exposing both the Duchess\'s spiritual dignity and the court\'s moral emptiness.' },
+    { focus: 'Class', thesis: 'Webster presents social rank as an artificial but violently enforced hierarchy, making the Duchess and Antonio\'s marriage politically explosive.' },
+  ],
+};
+
+// ────────────────────────────────────────────────────────────────────────────
 // PLAN TAB
 // ────────────────────────────────────────────────────────────────────────────
 function PlanTab() {
@@ -353,6 +377,14 @@ function PlanTab() {
             <button key={p} onClick={()=>setPlay(p)} style={{ flex:1, padding:"12px 0", borderRadius:8, border:`1px solid ${play===p?S.gold:S.border}`, background:play===p?S.goldBg:'transparent', color:play===p?S.gold:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(14,13), fontStyle:'italic', transition:'all 0.2s' }}>
               {p==='hamlet' ? 'Hamlet' : IS_MOBILE ? 'Duchess of Malfi' : 'The Duchess of Malfi'}
             </button>
+          ))}
+        </div>
+        <div style={{ marginBottom:8, color:S.muted, fontSize: px(13,12), fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase' }}>Thesis Bank — tap to use as your question focus</div>
+        <div style={{ display:'flex', flexWrap:'wrap', marginBottom:20 }}>
+          {THESIS_BANK[play].map(({ focus, thesis }) => (
+            <span key={focus} onClick={() => setQuestion(thesis)} style={{ fontSize: px(12,11), padding:"2px 8px", borderRadius:20, background:`${S.gold}18`, color:S.gold, border:`1px solid ${S.gold}30`, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:"system-ui, sans-serif", cursor:'pointer' }}>
+              {focus}
+            </span>
           ))}
         </div>
         <div style={{ marginBottom:16, color:S.muted, fontSize: px(13,12), fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase' }}>Exam question</div>
