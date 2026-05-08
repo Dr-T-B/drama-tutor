@@ -360,10 +360,17 @@ function PlanTab() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: question.trim(), play }),
       });
-      if (!res.ok) throw new Error(`API error ${res.status}`);
-      const data = await res.json();
-      if (!data.plan) throw new Error('No plan returned');
-      setPlan(data.plan);
+      if (!res.ok || !res.body) throw new Error(`API error ${res.status}`);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let acc = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        acc += decoder.decode(value, { stream: true });
+        setPlan(acc);
+      }
+      if (!acc.trim()) throw new Error('Empty stream');
     } catch(e) { setError('Generation failed — check your connection and try again.'); }
     setLoading(false);
   };
@@ -401,22 +408,18 @@ function PlanTab() {
         </div>
       </div>
 
-      {loading && (
-        <div style={{ textAlign:'center', padding:40, color:S.muted, fontFamily:"Georgia, serif", fontStyle:'italic' }}>
-          <div style={{ marginBottom:12, fontSize:24 }}>✦</div>
-          Constructing your essay plan…
-        </div>
-      )}
-
       {error && <div style={{ background:S.burgBg, border:`1px solid ${S.burg}`, color:'#e8a0b0', borderRadius:8, padding:16, fontSize:13, fontFamily:"system-ui, sans-serif" }}>{error}</div>}
 
-      {plan && (
+      {(plan || loading) && (
         <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding:28 }}>
           <div style={{ borderBottom:`1px solid ${S.border}`, marginBottom:20, paddingBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-            <span style={{ color:S.gold, fontFamily:font, fontStyle:'italic', fontSize:14 }}>Essay Plan</span>
+            <span style={{ color:S.gold, fontFamily:font, fontStyle:'italic', fontSize:14 }}>
+              Essay Plan
+              {loading && <span style={{ marginLeft:10, color:S.muted, fontSize:12, fontStyle:'italic' }}>· Generating…</span>}
+            </span>
             <span style={{ color:S.muted, fontSize:11, fontFamily:"system-ui, sans-serif" }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 30 min'}</span>
           </div>
-          <div>{renderPlan(plan)}</div>
+          <div>{plan ? renderPlan(plan) : <div style={{ color:S.muted, fontFamily:"Georgia, serif", fontStyle:'italic', fontSize:13 }}>Constructing your essay plan…</div>}</div>
         </div>
       )}
 

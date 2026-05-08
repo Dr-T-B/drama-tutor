@@ -1,6 +1,12 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// Edge runtime — required env vars in Vercel:
+//   SUPABASE_URL                 (mirror of VITE_SUPABASE_URL, no VITE_ prefix)
+//   SUPABASE_SERVICE_ROLE_KEY    (service role key — NOT the anon key)
+//   ANTHROPIC_API_KEY
+import { createClient } from '@supabase/supabase-js';
 
-const SYSTEM_PROMPT = `You are an expert Edexcel A-Level English Literature essay planning tutor for Component 1 Drama (9ET0/01). Your student is targeting Level 5 / A–A*.
+export const config = { runtime: 'edge' };
+
+const SYSTEM_PROMPT_BASE = `You are an expert Edexcel A-Level English Literature essay planning tutor for Component 1 Drama (9ET0/01). Your student is targeting Level 5 / A–A*.
 
 EXAMINATION STRUCTURE:
 • Section A: Hamlet — 35 marks — AO1, AO2, AO3, AO5 assessed. AO4 NOT assessed.
@@ -162,11 +168,104 @@ List 4-5 things to verify before starting to write, drawn from the non-negotiabl
 
 Name exact scenes. Give quote directions — phrase or moment, not full quote. Every AO2 method must be linked to its dramatic effect on the audience. Pitch at Level 5 / A* throughout.`;
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') return res.status(405).end();
+type QuoteRow = {
+  content: string | null;
+  speaker: string | null;
+  act_scene: string | null;
+  exam_sentence: string | null;
+  characters: { name: string } | null;
+  themes: { theme_name: string } | null;
+  quote_methods: Array<{
+    word_or_detail: string | null;
+    effect: string | null;
+    exam_sentence: string | null;
+    ao2_methods: { method_name: string } | null;
+  }> | null;
+};
 
-  const { question, play } = req.body as { question: string; play: string };
-  if (!question || !play) return res.status(400).json({ error: 'Missing question or play' });
+async function buildQuoteBank(play: string): Promise<string> {
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return '(quote bank unavailable — Supabase env vars missing)';
+
+  const shortCode = play.toLowerCase().startsWith('h') ? 'HAM' : 'MAL';
+  const supabase = createClient(url, key, { auth: { persistSession: false } });
+
+  const { data: textRow } = await supabase
+    .from('texts')
+    .select('id')
+    .eq('short_code', shortCode)
+    .single();
+  if (!textRow) return '(quote bank unavailable — text not found)';
+
+  const { data: quotes, error } = await supabase
+    .from('quotes')
+    .select(
+      `content, speaker, act_scene, exam_sentence,
+       characters ( name ),
+       themes:primary_theme_id ( theme_name ),
+       quote_methods ( word_or_detail, effect, exam_sentence,
+         ao2_methods ( method_name ) )`
+    )
+    .eq('text_id', textRow.id);
+  if (error || !quotes) return '(quote bank unavailable — query failed)';
+
+  const rows = (quotes as unknown as QuoteRow[])
+    .map(q => ({
+      content: (q.content ?? '').replace(/\s+/g, ' ').trim(),
+      character: q.characters?.name ?? q.speaker ?? 'Unknown',
+      theme: q.themes?.theme_name ?? 'General',
+      examSentence: q.exam_sentence ?? '',
+      method: q.quote_methods?.[0] ?? null,
+    }))
+    .filter(q => q.content.length > 0)
+    .sort((a, b) => a.theme.localeCompare(b.theme) || a.character.localeCompare(b.character))
+    .slice(0, 30);
+
+  return rows
+    .map(q => {
+      const m = q.method;
+      const methodName = m?.ao2_methods?.method_name ?? '—';
+      const wod = m?.word_or_detail ?? '—';
+      const eff = m?.effect ?? '—';
+      const exs = m?.exam_sentence ?? q.examSentence ?? '—';
+      return `[THEME: ${q.theme}] [${q.character}] "${q.content}"\n  → Method: ${methodName} | Word/detail: ${wod} | Effect: ${eff}\n  → Exam sentence: ${exs}`;
+    })
+    .join('\n\n');
+}
+
+export default async function handler(req: Request): Promise<Response> {
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405 });
+  }
+
+  let body: { question?: string; play?: string };
+  try {
+    body = await req.json();
+  } catch {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  const { question, play } = body;
+  if (!question || !play) {
+    return new Response(JSON.stringify({ error: 'Missing question or play' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const quoteBank = await buildQuoteBank(play);
+  const systemPrompt = `${SYSTEM_PROMPT_BASE}
+
+═══════════════════════════════════════
+## NEHA'S QUOTE BANK (USE THESE — DO NOT INVENT QUOTES)
+═══════════════════════════════════════
+
+${quoteBank}
+
+You MUST use quotes from this bank in the essay plan. Reference the exact quote text, AO2 method, and exam sentence provided. Do not fabricate quotes or critics not listed in this prompt.`;
 
   const userMsg = `EXAM QUESTION (${
     play === 'hamlet'
@@ -183,20 +282,59 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1200,
-      system: SYSTEM_PROMPT,
+      max_tokens: 1500,
+      stream: true,
+      system: systemPrompt,
       messages: [{ role: 'user', content: userMsg }],
     }),
   });
 
-  if (!upstream.ok) {
-    const err = await upstream.text();
-    return res.status(upstream.status).json({ error: err });
+  if (!upstream.ok || !upstream.body) {
+    const errText = await upstream.text();
+    return new Response(errText, { status: upstream.status });
   }
 
-  const data = await upstream.json();
-  const plan = (data.content as Array<{ type: string; text?: string }>)
-    ?.find(b => b.type === 'text')?.text ?? '';
+  const stream = new ReadableStream<Uint8Array>({
+    async start(controller) {
+      const reader = upstream.body!.getReader();
+      const decoder = new TextDecoder();
+      const encoder = new TextEncoder();
+      let buf = '';
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          const lines = buf.split('\n');
+          buf = lines.pop() ?? '';
+          for (const line of lines) {
+            if (!line.startsWith('data:')) continue;
+            const payload = line.slice(5).trim();
+            if (!payload || payload === '[DONE]') continue;
+            try {
+              const evt = JSON.parse(payload);
+              if (
+                evt.type === 'content_block_delta' &&
+                evt.delta?.type === 'text_delta' &&
+                typeof evt.delta.text === 'string'
+              ) {
+                controller.enqueue(encoder.encode(evt.delta.text));
+              }
+            } catch {
+              // ignore malformed SSE chunks
+            }
+          }
+        }
+      } finally {
+        controller.close();
+      }
+    },
+  });
 
-  res.status(200).json({ plan });
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+    },
+  });
 }
