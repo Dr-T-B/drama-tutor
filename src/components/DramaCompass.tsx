@@ -469,11 +469,6 @@ function SceneCard({ s, play }: { s: Scene; play: Play }) {
           <Section label="AO3 — Context" colour={S.amber}>
             <div style={{ fontSize:13, fontFamily:font, lineHeight:1.7, color:S.text }}>{s.ao3}</div>
           </Section>
-          {play === 'duchess' && s.ao4 && (
-            <Section label="AO4 — Cross-text Link to Hamlet" colour="#7C3AED">
-              <div style={{ fontSize:13, fontFamily:font, lineHeight:1.7, color:S.text }}>{s.ao4}</div>
-            </Section>
-          )}
           <Section label="AO5 — Critical Readings" colour={S.slate}>
             {s.ao5.map((c,i)=><div key={i} style={{ fontSize:13, fontFamily:font, lineHeight:1.6, color:S.text, marginBottom:4 }}>• {c}</div>)}
           </Section>
@@ -515,7 +510,6 @@ function ScenesTab() {
 
       <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:font }}>
         {filtered.length} scene{filtered.length!==1?'s':''} — tap any scene to expand
-        {play==='duchess' && <span style={{ color:'#7C3AED', marginLeft:10 }}>• AO4 cross-text links shown</span>}
       </div>
 
       {filtered.length === 0 && (
