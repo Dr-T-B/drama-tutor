@@ -29,7 +29,7 @@ const SECTION_LABEL = {
 
 const GRADE_STYLE: Record<GradeBand, { bg: string; text: string; badge: string }> = {
   B:      { bg: 'bg-blue-50',   text: 'text-blue-900',   badge: 'bg-blue-100 text-blue-700'   },
-  A:      { bg: 'bg-violet-50', text: 'text-violet-900', badge: 'bg-violet-100 text-violet-700' },
+  A:      { bg: 'bg-blue-50',   text: 'text-[#1D1D1F]',  badge: 'bg-blue-100 text-[#0071E3]'  },
   A_STAR: { bg: 'bg-amber-50',  text: 'text-amber-900',  badge: 'bg-amber-100 text-amber-700'  },
 }
 
@@ -241,7 +241,7 @@ export function Exam() {
               <div key={p}>
                 {play === 'both' && (
                   <p className={`text-xs font-semibold uppercase tracking-wide mb-3
-                    ${p === 'HAM' ? 'text-violet-700' : 'text-teal-700'}`}>
+                    ${p === 'HAM' ? 'text-[#0071E3]' : 'text-[#0F766E]'}`}>
                     {p === 'HAM' ? 'Hamlet' : 'Duchess of Malfi'}
                   </p>
                 )}
@@ -316,7 +316,7 @@ export function Exam() {
                               {/* THESIS */}
                               <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
-                                  text-violet-600 mb-1">Thesis</p>
+                                  text-[#0071E3] mb-1">Thesis</p>
                                 <p className="text-sm text-gray-700 leading-relaxed italic">
                                   {q.framework.thesis}
                                 </p>
@@ -325,7 +325,7 @@ export function Exam() {
                               {/* PARAGRAPH PLAN */}
                               <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
-                                  text-violet-600 mb-2">Paragraph plan</p>
+                                  text-[#0071E3] mb-2">Paragraph plan</p>
                                 <div className="space-y-2">
                                   {q.framework.paragraph_plan.map((p, i) => {
                                     const paragraphKey = `${q.id}-${i}`
@@ -382,7 +382,7 @@ export function Exam() {
                               {/* SENTENCE STEMS */}
                               <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
-                                  text-violet-600 mb-2">Sentence stems</p>
+                                  text-[#0071E3] mb-2">Sentence stems</p>
                                 <div className="space-y-1.5">
                                   {Object.entries(q.framework.sentence_stems)
                                     .filter(([, v]) => v)
@@ -399,7 +399,7 @@ export function Exam() {
                               {/* CRITIC POSITIONS */}
                               <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
-                                  text-violet-600 mb-2">Critic positions</p>
+                                  text-[#0071E3] mb-2">Critic positions</p>
                                 <div className="space-y-2">
                                   {q.framework.critic_positions.map((c, i) => (
                                     <div key={i} className="rounded-lg border border-gray-200
@@ -421,7 +421,7 @@ export function Exam() {
                               {/* MODEL PARAGRAPH */}
                               <div>
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
-                                  text-violet-600 mb-1">Model paragraph</p>
+                                  text-[#0071E3] mb-1">Model paragraph</p>
                                 <p className="text-sm text-gray-700 leading-relaxed">
                                   {q.framework.model_paragraph}
                                 </p>
@@ -431,7 +431,7 @@ export function Exam() {
                               <div className="pt-4 border-t border-gray-100"
                                 onClick={(e) => e.stopPropagation()}>
                                 <p className="text-[10px] font-semibold uppercase tracking-wide
-                                  text-violet-600 mb-2">Save to My Plans</p>
+                                  text-[#0071E3] mb-2">Save to My Plans</p>
                                 <div className="flex flex-wrap gap-2 mb-3">
                                   {SECTION_OPTIONS.map(opt => {
                                     const checked = (savedSections[q.id] ?? ALL_SECTION_KEYS)
@@ -445,7 +445,7 @@ export function Exam() {
                                           type="checkbox"
                                           checked={checked}
                                           onChange={() => toggleSection(q.id, opt.key)}
-                                          className="accent-violet-600"
+                                          className="accent-[#0071E3]"
                                         />
                                         {opt.label}
                                       </label>
@@ -457,7 +457,7 @@ export function Exam() {
                                     onClick={() => handleSave(q)}
                                     disabled={savingId === q.id ||
                                       ((savedSections[q.id] ?? ALL_SECTION_KEYS).length === 0)}
-                                    className="text-xs font-medium bg-violet-600 hover:bg-violet-700
+                                    className="text-xs font-medium bg-[#0071E3] hover:bg-[#0077ED]
                                       disabled:bg-gray-300 disabled:cursor-not-allowed
                                       text-white rounded-lg px-3 py-1.5 transition-colors"
                                   >
@@ -510,8 +510,8 @@ export function Exam() {
                 onClick={() => setSelectedTheme(theme)}
                 className={`text-xs rounded-full px-3 py-1 border capitalize
                   ${activeTheme === theme
-                    ? 'bg-violet-100 text-violet-700 border-violet-300'
-                    : 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                    ? 'bg-blue-50 text-[#0071E3] border-[#0071E3]'
+                    : 'bg-[#E8E8ED] text-[#6E6E73] border-[#D2D2D7]'}`}>
                 {theme}
               </button>
             ))}
@@ -531,7 +531,7 @@ export function Exam() {
                     return (
                       <div key={p}>
                         <p className={`text-xs font-semibold uppercase tracking-wide mb-2
-                          ${p === 'HAM' ? 'text-violet-700' : 'text-teal-700'}`}>
+                          ${p === 'HAM' ? 'text-[#0071E3]' : 'text-[#0F766E]'}`}>
                           {p === 'HAM' ? 'Hamlet' : 'Duchess of Malfi'}
                         </p>
                         {pQuotes.map((q, i) => (
@@ -586,8 +586,8 @@ export function Exam() {
                 className="rounded-xl border border-gray-200 overflow-hidden">
                 <div className={`px-4 py-3 font-semibold text-sm
                   ${ts.section === 'SECTION_A'
-                    ? 'bg-violet-50 text-violet-900 border-b border-violet-100'
-                    : 'bg-teal-50 text-teal-900 border-b border-teal-100'}`}>
+                    ? 'bg-blue-50 text-[#1D1D1F] border-b border-blue-100'
+                    : 'bg-teal-50 text-[#1D1D1F] border-b border-teal-100'}`}>
                   {SECTION_LABEL[ts.section]}
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-y
@@ -642,7 +642,7 @@ export function Exam() {
               const borderCls = g.grade_band === 'B'
                 ? 'border-blue-200'
                 : g.grade_band === 'A'
-                ? 'border-violet-200'
+                ? 'border-blue-200'
                 : 'border-amber-200'
               return (
                 <div key={g.id}
@@ -775,9 +775,9 @@ export function Exam() {
                 placeholder="Search terms, definitions…"
                 value={vocabSearch}
                 onChange={e => setVocabSearch(e.target.value)}
-                className="w-full rounded-xl border border-gray-200 px-4 py-2.5
-                           text-sm focus:outline-none focus:ring-2
-                           focus:ring-violet-300"
+                className="w-full rounded-xl border border-[#D2D2D7] px-4 py-2.5
+                           text-sm bg-white text-[#1D1D1F] focus:outline-none focus:ring-2
+                           focus:ring-[#0071E3]"
               />
               {/* Term list */}
               <div className="flex flex-col gap-2">

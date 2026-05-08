@@ -4,19 +4,22 @@ import { useState } from 'react';
 // STYLES
 // ────────────────────────────────────────────────────────────────────────────
 const S = {
-  bg: "#0b0a10", card: "#141219", cardHover: "#1a1820",
-  border: "#26233a", borderFaint: "#1c1a28",
-  gold: "#c4a24a", goldDim: "#8a702d", goldBg: "rgba(196,162,74,0.08)",
-  cream: "#f0ebe0", muted: "#7a7268", dimmer: "#4a4640",
-  burg: "#8a3050", burgBg: "rgba(138,48,80,0.1)",
-  teal: "#3a8a7a", tealBg: "rgba(58,138,122,0.1)",
-  slate: "#5a6a8a", slateBg: "rgba(90,106,138,0.1)",
-  amber: "#c47a2a", amberBg: "rgba(196,122,42,0.1)",
-  green: "#4a8a5a", greenBg: "rgba(74,138,90,0.1)",
+  bg: "#F5F5F7", card: "#FFFFFF", cardHover: "#F0F0F2",
+  border: "#D2D2D7", borderFaint: "#E5E5EA",
+  accent: "#0071E3", accentHover: "#0077ED", accentBg: "rgba(0,113,227,0.08)",
+  text: "#1D1D1F", muted: "#6E6E73", dimmer: "#A1A1A6",
+  destructive: "#FF3B30", destructiveBg: "rgba(255,59,48,0.08)",
+  teal: "#0F766E", tealBg: "rgba(15,118,110,0.08)",
+  slate: "#475569", slateBg: "rgba(71,85,105,0.08)",
+  amber: "#B45309", amberBg: "rgba(180,83,9,0.08)",
+  green: "#15803D", greenBg: "rgba(21,128,61,0.08)",
+  // keep these aliases for legacy references in data-rich sections:
+  gold: "#0071E3", goldDim: "#005BB5", goldBg: "rgba(0,113,227,0.08)",
+  cream: "#1D1D1F", burg: "#FF3B30", burgBg: "rgba(255,59,48,0.08)",
 };
 
-const font = "'Playfair Display', Georgia, 'Times New Roman', serif";
-const mono = "'Courier New', monospace";
+const font = "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif";
+const mono = "'SF Mono', ui-monospace, 'Courier New', monospace";
 const IS_MOBILE = typeof window !== 'undefined' && window.innerWidth < 640;
 const px = (mobile: number, desktop: number) => IS_MOBILE ? mobile : desktop;
 
@@ -273,13 +276,12 @@ const DUCHESS_CRITICS: Critic[] = [
 // UTILS
 // ────────────────────────────────────────────────────────────────────────────
 function Stars({ n }: { n: number }) {
-  return <span style={{ color: S.gold, letterSpacing:1 }}>{"★".repeat(n)}{"☆".repeat(5-n)}</span>;
+  return <span style={{ color: "#F59E0B", letterSpacing:1 }}>{"★".repeat(n)}{"☆".repeat(5-n)}</span>;
 }
 
 function Tag({ children, colour }: { children: React.ReactNode; colour?: string }) {
-  const c = colour || S.gold;
   return (
-    <span style={{ fontSize: px(12,11), padding:"2px 8px", borderRadius:20, background:`${c}18`, color:c, border:`1px solid ${c}30`, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:"system-ui, sans-serif" }}>
+    <span style={{ fontSize: px(12,11), padding:"3px 10px", borderRadius:6, background:'#E8E8ED', color: colour || S.text, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:font }}>
       {children}
     </span>
   );
@@ -287,8 +289,8 @@ function Tag({ children, colour }: { children: React.ReactNode; colour?: string 
 
 function Section({ label, colour, children }: { label: string; colour?: string; children: React.ReactNode }) {
   return (
-    <div style={{ marginBottom:12 }}>
-      <div style={{ fontSize: px(12,10), fontFamily:"system-ui, sans-serif", letterSpacing:2, textTransform:"uppercase", color:colour||S.gold, marginBottom:6 }}>{label}</div>
+    <div style={{ marginBottom:14 }}>
+      <div style={{ fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:"uppercase", color:colour||S.accent, marginBottom:6, fontWeight:600 }}>{label}</div>
       {children}
     </div>
   );
@@ -299,16 +301,16 @@ function renderPlan(text: string) {
   const lines = text.split('\n');
   return lines.map((line, i) => {
     if (line.startsWith('**') && line.endsWith('**')) {
-      return <div key={i} style={{ fontWeight:700, color:S.gold, fontSize:15, marginTop:20, marginBottom:6, fontFamily:font }}>{line.replace(/\*\*/g,'')}</div>;
+      return <div key={i} style={{ fontWeight:700, color:S.accent, fontSize:15, marginTop:20, marginBottom:6, fontFamily:font }}>{line.replace(/\*\*/g,'')}</div>;
     }
     if (line.startsWith('**')) {
       const bold = line.match(/\*\*(.*?)\*\*/g)||[];
       let result = line;
-      bold.forEach(b => { result = result.replace(b, `<strong style="color:${S.cream}">${b.replace(/\*\*/g,'')}</strong>`); });
-      return <div key={i} style={{ marginBottom:4, lineHeight:1.7, fontSize:13, fontFamily:"Georgia, serif" }} dangerouslySetInnerHTML={{__html:result}} />;
+      bold.forEach(b => { result = result.replace(b, `<strong style="color:${S.text}">${b.replace(/\*\*/g,'')}</strong>`); });
+      return <div key={i} style={{ marginBottom:4, lineHeight:1.7, fontSize:14, fontFamily:font }} dangerouslySetInnerHTML={{__html:result}} />;
     }
     if (line.trim() === '') return <div key={i} style={{ height:8 }} />;
-    return <div key={i} style={{ marginBottom:3, lineHeight:1.7, fontSize:13, fontFamily:"Georgia, serif", color:S.cream }}>{line}</div>;
+    return <div key={i} style={{ marginBottom:3, lineHeight:1.7, fontSize:14, fontFamily:font, color:S.text }}>{line}</div>;
   });
 }
 
@@ -377,56 +379,56 @@ function PlanTab() {
 
   return (
     <div style={{ maxWidth:780, margin:'0 auto', padding: IS_MOBILE ? '0 14px 60px' : '0 20px 60px' }}>
-      <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding: IS_MOBILE ? 18 : 28, marginBottom:20 }}>
-        <div style={{ marginBottom:16, color:S.muted, fontSize: px(13,12), fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase' }}>Select text</div>
+      <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding: IS_MOBILE ? 18 : 28, marginBottom:20, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+        <div style={{ marginBottom:16, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Select text</div>
         <div style={{ display:'flex', gap:12, marginBottom:20 }}>
           {(['hamlet','duchess'] as const).map(p => (
-            <button key={p} onClick={()=>setPlay(p)} style={{ flex:1, padding:"12px 0", borderRadius:8, border:`1px solid ${play===p?S.gold:S.border}`, background:play===p?S.goldBg:'transparent', color:play===p?S.gold:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(14,13), fontStyle:'italic', transition:'all 0.2s' }}>
+            <button key={p} onClick={()=>setPlay(p)} style={{ flex:1, padding:"12px 0", borderRadius:8, border:`1px solid ${play===p?S.accent:S.border}`, background:play===p?S.accentBg:'transparent', color:play===p?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(14,13), fontWeight: play===p ? 600 : 400, transition:'all 0.2s' }}>
               {p==='hamlet' ? 'Hamlet' : IS_MOBILE ? 'Duchess of Malfi' : 'The Duchess of Malfi'}
             </button>
           ))}
         </div>
-        <div style={{ marginBottom:8, color:S.muted, fontSize: px(13,12), fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase' }}>Thesis Bank — tap to use as your question focus</div>
+        <div style={{ marginBottom:8, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Thesis Bank — tap to use</div>
         <div style={{ display:'flex', flexWrap:'wrap', marginBottom:20 }}>
           {THESIS_BANK[play].map(({ focus, thesis }) => (
-            <span key={focus} onClick={() => setQuestion(thesis)} style={{ fontSize: px(12,11), padding:"2px 8px", borderRadius:20, background:`${S.gold}18`, color:S.gold, border:`1px solid ${S.gold}30`, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:"system-ui, sans-serif", cursor:'pointer' }}>
+            <span key={focus} onClick={() => setQuestion(thesis)} style={{ fontSize: px(12,11), padding:"3px 10px", borderRadius:6, background:'#E8E8ED', color:S.text, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:font, cursor:'pointer', transition:'background 0.15s' }}>
               {focus}
             </span>
           ))}
         </div>
-        <div style={{ marginBottom:16, color:S.muted, fontSize: px(13,12), fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase' }}>Exam question</div>
+        <div style={{ marginBottom:16, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Exam question</div>
         <textarea value={question} onChange={e=>setQuestion(e.target.value)}
           placeholder={`e.g. "${sample[play]}"`}
-          style={{ width:'100%', minHeight: IS_MOBILE ? 110 : 90, background:'#0f0e15', border:`1px solid ${S.border}`, borderRadius:8, color:S.cream, padding:14, fontSize: px(15,13), fontFamily:"Georgia, serif", resize:'vertical', outline:'none', lineHeight:1.6, boxSizing:'border-box' }} />
+          style={{ width:'100%', minHeight: IS_MOBILE ? 110 : 90, background:'#FFFFFF', border:`1px solid ${S.border}`, borderRadius:8, color:S.text, padding:14, fontSize: px(15,13), fontFamily:font, resize:'vertical', outline:'none', lineHeight:1.6, boxSizing:'border-box' }} />
         <div style={{ display:'flex', flexDirection: IS_MOBILE ? 'column' : 'row', justifyContent:'space-between', alignItems: IS_MOBILE ? 'stretch' : 'center', marginTop:14, gap: IS_MOBILE ? 10 : 0 }}>
-          <button onClick={()=>setQuestion(sample[play])} style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"10px 14px", borderRadius:6, cursor:'pointer', fontFamily:"system-ui, sans-serif", fontSize: px(13,11) }}>
+          <button onClick={()=>setQuestion(sample[play])} style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"10px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,11) }}>
             Use sample question
           </button>
-          <button onClick={generate} disabled={loading||!question.trim()} style={{ background:loading?'transparent':S.goldBg, border:`1px solid ${loading?S.border:S.gold}`, color:loading?S.muted:S.gold, padding:"12px 28px", borderRadius:8, cursor:loading?'default':'pointer', fontFamily:font, fontSize: px(15,14), fontStyle:'italic', transition:'all 0.2s', opacity:!question.trim()?0.5:1 }}>
+          <button onClick={generate} disabled={loading||!question.trim()} style={{ background:loading?'transparent':S.accent, border:`1px solid ${loading?S.border:S.accent}`, color:loading?S.muted:'#FFFFFF', padding:"12px 28px", borderRadius:8, cursor:loading?'default':'pointer', fontFamily:font, fontSize: px(15,14), fontWeight:600, transition:'all 0.2s', opacity:!question.trim()?0.5:1 }}>
             {loading ? 'Generating…' : 'Generate Essay Plan →'}
           </button>
         </div>
       </div>
 
-      {error && <div style={{ background:S.burgBg, border:`1px solid ${S.burg}`, color:'#e8a0b0', borderRadius:8, padding:16, fontSize:13, fontFamily:"system-ui, sans-serif" }}>{error}</div>}
+      {error && <div style={{ background:S.destructiveBg, border:`1px solid ${S.destructive}`, color:S.destructive, borderRadius:8, padding:16, fontSize:13, fontFamily:font }}>{error}</div>}
 
       {(plan || loading) && (
-        <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding:28 }}>
-          <div style={{ borderBottom:`1px solid ${S.border}`, marginBottom:20, paddingBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-            <span style={{ color:S.gold, fontFamily:font, fontStyle:'italic', fontSize:14 }}>
+        <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding:28, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+          <div style={{ borderBottom:`1px solid ${S.borderFaint}`, marginBottom:20, paddingBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <span style={{ color:S.accent, fontFamily:font, fontWeight:600, fontSize:14 }}>
               Essay Plan
-              {loading && <span style={{ marginLeft:10, color:S.muted, fontSize:12, fontStyle:'italic' }}>· Generating…</span>}
+              {loading && <span style={{ marginLeft:10, color:S.muted, fontSize:12, fontWeight:400 }}>· Generating…</span>}
             </span>
-            <span style={{ color:S.muted, fontSize:11, fontFamily:"system-ui, sans-serif" }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 30 min'}</span>
+            <span style={{ color:S.muted, fontSize:11, fontFamily:font }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 30 min'}</span>
           </div>
-          <div>{plan ? renderPlan(plan) : <div style={{ color:S.muted, fontFamily:"Georgia, serif", fontStyle:'italic', fontSize:13 }}>Constructing your essay plan…</div>}</div>
+          <div>{plan ? renderPlan(plan) : <div style={{ color:S.muted, fontFamily:font, fontSize:13 }}>Constructing your essay plan…</div>}</div>
         </div>
       )}
 
       {!plan && !loading && (
-        <div style={{ background:S.card, border:`1px solid ${S.borderFaint}`, borderRadius:12, padding:24 }}>
-          <div style={{ color:S.muted, fontSize:12, fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase', marginBottom:14 }}>How to use this tool</div>
-          <div style={{ fontSize:13, fontFamily:"Georgia, serif", lineHeight:1.8, color:"#a09888" }}>
+        <div style={{ background:S.card, border:`1px solid ${S.borderFaint}`, borderRadius:12, padding:24, boxShadow:'0 2px 8px rgba(0,0,0,0.06)' }}>
+          <div style={{ color:S.muted, fontSize:11, fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600, marginBottom:14 }}>How to use this tool</div>
+          <div style={{ fontSize:14, fontFamily:font, lineHeight:1.8, color:S.text }}>
             <div style={{ marginBottom:8 }}>1. Select Hamlet or The Duchess of Malfi above.</div>
             <div style={{ marginBottom:8 }}>2. Type or paste an Edexcel-style exam question — or use the sample question to see the tool in action.</div>
             <div style={{ marginBottom:8 }}>3. Receive a full A/A* essay plan: controlling thesis, opening move, 3–4 paragraphs (scene → AO2 → AO3 → AO5 dialogically), conclusion, timing guidance.</div>
@@ -444,15 +446,15 @@ function PlanTab() {
 function SceneCard({ s, play }: { s: Scene; play: Play }) {
   const [open, setOpen] = useState(false);
   return (
-    <div onClick={()=>setOpen(!open)} style={{ background:open?S.cardHover:S.card, border:`1px solid ${open?S.gold+'40':S.border}`, borderRadius:10, padding:'16px 18px', marginBottom:10, cursor:'pointer', transition:'all 0.2s' }}>
+    <div onClick={()=>setOpen(!open)} style={{ background:open?S.cardHover:S.card, border:`1px solid ${open?S.accent:S.border}`, borderRadius:12, padding:'16px 18px', marginBottom:10, cursor:'pointer', transition:'all 0.2s', boxShadow: open ? '0 2px 8px rgba(0,113,227,0.12)' : '0 1px 4px rgba(0,0,0,0.06)' }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:6 }}>
         <div>
-          <span style={{ color:S.goldDim, fontSize:11, fontFamily:mono, marginRight:10 }}>{s.id}</span>
-          <span style={{ color:S.cream, fontFamily:font, fontSize:14 }}>{s.title}</span>
+          <span style={{ color:S.muted, fontSize:11, fontFamily:mono, marginRight:10 }}>{s.id}</span>
+          <span style={{ color:S.text, fontFamily:font, fontSize:14, fontWeight:500 }}>{s.title}</span>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10, flexShrink:0 }}>
           <Stars n={s.stars} />
-          <span style={{ color:S.muted, fontSize:14 }}>{open?'▲':'▼'}</span>
+          <span style={{ color:S.muted, fontSize:12 }}>{open?'▲':'▼'}</span>
         </div>
       </div>
       <div style={{ display:'flex', flexWrap:'wrap' }}>
@@ -462,20 +464,20 @@ function SceneCard({ s, play }: { s: Scene; play: Play }) {
       {open && (
         <div style={{ marginTop:18, borderTop:`1px solid ${S.borderFaint}`, paddingTop:18 }} onClick={e=>e.stopPropagation()}>
           <Section label="AO2 — Dramatic Methods" colour={S.teal}>
-            {s.ao2.map((m,i)=><div key={i} style={{ fontSize:12, fontFamily:"Georgia, serif", lineHeight:1.6, color:"#b0ccc8", marginBottom:4 }}>• {m}</div>)}
+            {s.ao2.map((m,i)=><div key={i} style={{ fontSize:13, fontFamily:font, lineHeight:1.6, color:S.teal, marginBottom:4 }}>• {m}</div>)}
           </Section>
           <Section label="AO3 — Context" colour={S.amber}>
-            <div style={{ fontSize:12, fontFamily:"Georgia, serif", lineHeight:1.7, color:"#c8b898" }}>{s.ao3}</div>
+            <div style={{ fontSize:13, fontFamily:font, lineHeight:1.7, color:S.text }}>{s.ao3}</div>
           </Section>
           {play === 'duchess' && s.ao4 && (
-            <Section label="AO4 — Cross-text Link to Hamlet" colour={S.burg}>
-              <div style={{ fontSize:12, fontFamily:"Georgia, serif", lineHeight:1.7, color:"#d8a8b8" }}>{s.ao4}</div>
+            <Section label="AO4 — Cross-text Link to Hamlet" colour="#7C3AED">
+              <div style={{ fontSize:13, fontFamily:font, lineHeight:1.7, color:S.text }}>{s.ao4}</div>
             </Section>
           )}
           <Section label="AO5 — Critical Readings" colour={S.slate}>
-            {s.ao5.map((c,i)=><div key={i} style={{ fontSize:12, fontFamily:"Georgia, serif", lineHeight:1.6, color:"#a8b8d8", marginBottom:4 }}>• {c}</div>)}
+            {s.ao5.map((c,i)=><div key={i} style={{ fontSize:13, fontFamily:font, lineHeight:1.6, color:S.text, marginBottom:4 }}>• {c}</div>)}
           </Section>
-          <Section label="Best Essay Uses" colour={S.gold}>
+          <Section label="Best Essay Uses" colour={S.accent}>
             <div style={{ display:'flex', flexWrap:'wrap' }}>
               {s.bestFor.map(u=><Tag key={u}>{u}</Tag>)}
             </div>
@@ -497,27 +499,27 @@ function ScenesTab() {
       <div style={{ display:'flex', flexDirection: IS_MOBILE ? 'column' : 'row', justifyContent:'space-between', alignItems: IS_MOBILE ? 'flex-start' : 'center', marginBottom:20, gap:12 }}>
         <div style={{ display:'flex', gap:8 }}>
           {(['hamlet','duchess'] as const).map(p=>(
-            <button key={p} onClick={()=>{setPlay(p);setAct('all');}} style={{ padding:"10px 16px", borderRadius:8, border:`1px solid ${play===p?S.gold:S.border}`, background:play===p?S.goldBg:'transparent', color:play===p?S.gold:S.muted, cursor:'pointer', fontFamily:font, fontStyle:'italic', fontSize: px(14,13), transition:'all 0.2s' }}>
+            <button key={p} onClick={()=>{setPlay(p);setAct('all');}} style={{ padding:"10px 16px", borderRadius:8, border:`1px solid ${play===p?S.accent:S.border}`, background:play===p?S.accentBg:'transparent', color:play===p?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontWeight: play===p ? 600 : 400, fontSize: px(14,13), transition:'all 0.2s' }}>
               {p==='hamlet'?'Hamlet': IS_MOBILE ? 'Duchess' : 'The Duchess of Malfi'}
             </button>
           ))}
         </div>
         <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
           {['all','1','2','3','4','5'].map(a=>(
-            <button key={a} onClick={()=>setAct(a)} style={{ padding:"8px 12px", borderRadius:6, border:`1px solid ${act===a?S.goldDim:S.borderFaint}`, background:act===a?S.goldBg:'transparent', color:act===a?S.gold:S.dimmer, cursor:'pointer', fontFamily:"system-ui, sans-serif", fontSize: px(13,11), transition:'all 0.2s' }}>
+            <button key={a} onClick={()=>setAct(a)} style={{ padding:"8px 12px", borderRadius:6, border:`1px solid ${act===a?S.accent:S.border}`, background:act===a?S.accentBg:'transparent', color:act===a?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(13,11), transition:'all 0.2s' }}>
               {a==='all'?'All':a==='1'?'Act I':a==='2'?'Act II':a==='3'?'Act III':a==='4'?'Act IV':'Act V'}
             </button>
           ))}
         </div>
       </div>
 
-      <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:"system-ui, sans-serif" }}>
+      <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:font }}>
         {filtered.length} scene{filtered.length!==1?'s':''} — tap any scene to expand
-        {play==='duchess' && <span style={{ color:S.burg+'aa', marginLeft:10 }}>• AO4 cross-text links shown</span>}
+        {play==='duchess' && <span style={{ color:'#7C3AED', marginLeft:10 }}>• AO4 cross-text links shown</span>}
       </div>
 
       {filtered.length === 0 && (
-        <div style={{ textAlign:'center', padding:40, color:S.muted, fontFamily:"Georgia, serif", fontStyle:'italic' }}>No scenes match this act filter.</div>
+        <div style={{ textAlign:'center', padding:40, color:S.muted, fontFamily:font }}>No scenes match this act filter.</div>
       )}
       {filtered.map(s=><SceneCard key={s.id} s={s} play={play} />)}
     </div>
@@ -530,30 +532,30 @@ function ScenesTab() {
 function CriticCard({ c }: { c: Critic }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ background:S.card, border:`1px solid ${c.foil?S.burg+'60':S.border}`, borderRadius:10, marginBottom:10, overflow:'hidden' }}>
+    <div style={{ background:S.card, border:`1px solid ${c.foil?S.destructive+'50':S.border}`, borderRadius:12, marginBottom:10, overflow:'hidden', boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
       <div onClick={()=>setOpen(!open)} style={{ padding:'16px 18px', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'flex-start' }}>
         <div>
           <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:4 }}>
-            <span style={{ fontFamily:font, fontSize:15, color:S.cream }}>{c.name}</span>
-            {c.foil && <span style={{ fontSize:10, background:S.burgBg, color:'#e8a0b0', border:`1px solid ${S.burg}50`, padding:"2px 8px", borderRadius:20, fontFamily:"system-ui, sans-serif" }}>FOIL — use to disagree</span>}
+            <span style={{ fontFamily:font, fontSize:15, fontWeight:600, color:S.text }}>{c.name}</span>
+            {c.foil && <span style={{ fontSize:10, background:S.destructiveBg, color:S.destructive, border:`1px solid ${S.destructive}40`, padding:"2px 8px", borderRadius:20, fontFamily:font, fontWeight:600 }}>FOIL — use to disagree</span>}
           </div>
-          <div style={{ fontSize:11, color:S.muted, fontFamily:"system-ui, sans-serif", fontStyle:'italic' }}>{c.school}</div>
+          <div style={{ fontSize:12, color:S.muted, fontFamily:font }}>{c.school}</div>
         </div>
-        <span style={{ color:S.muted, fontSize:14 }}>{open?'▲':'▼'}</span>
+        <span style={{ color:S.muted, fontSize:12 }}>{open?'▲':'▼'}</span>
       </div>
 
       {open && (
         <div style={{ padding:'0 18px 18px', borderTop:`1px solid ${S.borderFaint}` }}>
           <div style={{ marginTop:14 }}>
-            <div style={{ fontSize:10, color:S.gold, letterSpacing:2, textTransform:'uppercase', fontFamily:"system-ui, sans-serif", marginBottom:6 }}>Core position</div>
-            <div style={{ fontSize:13, fontFamily:"Georgia, serif", lineHeight:1.7, color:"#d0c8b8", marginBottom:14 }}>{c.core}</div>
+            <div style={{ fontSize:11, color:S.accent, letterSpacing:1, textTransform:'uppercase', fontFamily:font, fontWeight:600, marginBottom:6 }}>Core position</div>
+            <div style={{ fontSize:13, fontFamily:font, lineHeight:1.7, color:S.text, marginBottom:14 }}>{c.core}</div>
           </div>
           <div>
-            <div style={{ fontSize:10, color:S.slate, letterSpacing:2, textTransform:'uppercase', fontFamily:"system-ui, sans-serif", marginBottom:6 }}>Dialogic deployment sentence</div>
-            <div style={{ fontSize:13, fontFamily:"Georgia, serif", lineHeight:1.7, color:"#a8b8d8", background:S.slateBg, padding:"12px 14px", borderRadius:6, borderLeft:`3px solid ${S.slate}`, marginBottom:14 }}>{c.dialogic}</div>
+            <div style={{ fontSize:11, color:S.slate, letterSpacing:1, textTransform:'uppercase', fontFamily:font, fontWeight:600, marginBottom:6 }}>Dialogic deployment sentence</div>
+            <div style={{ fontSize:13, fontFamily:font, lineHeight:1.7, color:S.text, background:S.slateBg, padding:"12px 14px", borderRadius:8, borderLeft:`3px solid ${S.slate}`, marginBottom:14 }}>{c.dialogic}</div>
           </div>
-          <div style={{ fontSize:10, color:S.goldDim, letterSpacing:2, textTransform:'uppercase', fontFamily:"system-ui, sans-serif", marginBottom:6 }}>Best deployed for</div>
-          <div style={{ fontSize:12, color:"#a09060", fontFamily:"Georgia, serif" }}>{c.bestFor}</div>
+          <div style={{ fontSize:11, color:S.muted, letterSpacing:1, textTransform:'uppercase', fontFamily:font, fontWeight:600, marginBottom:6 }}>Best deployed for</div>
+          <div style={{ fontSize:13, color:S.muted, fontFamily:font }}>{c.bestFor}</div>
         </div>
       )}
     </div>
@@ -568,19 +570,19 @@ function CriticsTab() {
     <div style={{ maxWidth:780, margin:'0 auto', padding: IS_MOBILE ? '0 14px 60px' : '0 20px 60px' }}>
       <div style={{ display:'flex', gap:8, marginBottom:20 }}>
         {(['hamlet','duchess'] as const).map(p=>(
-          <button key={p} onClick={()=>setPlay(p)} style={{ padding:"10px 16px", borderRadius:8, border:`1px solid ${play===p?S.gold:S.border}`, background:play===p?S.goldBg:'transparent', color:play===p?S.gold:S.muted, cursor:'pointer', fontFamily:font, fontStyle:'italic', fontSize: px(14,13), transition:'all 0.2s' }}>
+          <button key={p} onClick={()=>setPlay(p)} style={{ padding:"10px 16px", borderRadius:8, border:`1px solid ${play===p?S.accent:S.border}`, background:play===p?S.accentBg:'transparent', color:play===p?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontWeight: play===p ? 600 : 400, fontSize: px(14,13), transition:'all 0.2s' }}>
             {p==='hamlet'?'Hamlet': IS_MOBILE ? 'Duchess' : 'The Duchess of Malfi'}
           </button>
         ))}
       </div>
 
-      <div style={{ background:S.card, border:`1px solid ${S.borderFaint}`, borderRadius:8, padding:'12px 16px', marginBottom:16 }}>
-        <div style={{ fontSize:12, fontFamily:"Georgia, serif", color:"#8a8070", lineHeight:1.6 }}>
-          <strong style={{ color:S.gold }}>AO5 deployment rule:</strong> Never cite critics decoratively. Use tension verbs — <em>complicates, resists, extends, yet, although</em>. Each paragraph should contain 2 critics in productive tension. The dialogic sentence below is portable: substitute the scene/moment for your question's specifics.
+      <div style={{ background:'#F0F7FF', border:`1px solid ${S.accent}30`, borderRadius:12, padding:'12px 16px', marginBottom:16, borderLeft:`4px solid ${S.accent}` }}>
+        <div style={{ fontSize:13, fontFamily:font, color:S.text, lineHeight:1.6 }}>
+          <strong style={{ color:S.accent }}>AO5 deployment rule:</strong> Never cite critics decoratively. Use tension verbs — <em>complicates, resists, extends, yet, although</em>. Each paragraph should contain 2 critics in productive tension. The dialogic sentence below is portable: substitute the scene/moment for your question's specifics.
         </div>
       </div>
 
-      <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:"system-ui, sans-serif" }}>
+      <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:font }}>
         {critics.length} critics — tap to expand core position + dialogic sentence
       </div>
 
@@ -602,35 +604,34 @@ function DramaCompass() {
   const daysLeft = 5;
 
   return (
-    <div style={{ background:S.bg, minHeight:'100vh', color:S.cream, fontFamily:font }}>
+    <div style={{ background:S.bg, minHeight:'100vh', color:S.text, fontFamily:font }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
         * { box-sizing: border-box; }
         html { -webkit-text-size-adjust: 100%; }
-        textarea:focus { border-color: #c4a24a !important; }
+        textarea:focus { border-color: #0071E3 !important; box-shadow: 0 0 0 3px rgba(0,113,227,0.15) !important; }
         button { -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#0c0b11; } ::-webkit-scrollbar-thumb { background:#2a2638; border-radius:2px; }
+        ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:#F5F5F7; } ::-webkit-scrollbar-thumb { background:#D2D2D7; border-radius:2px; }
       `}</style>
 
       {/* Header */}
-      <header style={{ background:`${S.card}ee`, backdropFilter:'blur(10px)', borderBottom:`1px solid ${S.border}`, padding: IS_MOBILE ? '14px 16px' : '16px 24px', position:'sticky', top:0, zIndex:100 }}>
+      <header style={{ background:'#FFFFFF', backdropFilter:'blur(10px)', borderBottom:`1px solid ${S.border}`, padding: IS_MOBILE ? '14px 16px' : '16px 24px', position:'sticky', top:0, zIndex:100, boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
         <div style={{ maxWidth:780, margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           <div>
-            <div style={{ fontStyle:'italic', fontSize: px(18,20), fontWeight:700, color:S.cream, letterSpacing:-0.5 }}>Drama Compass</div>
-            <div style={{ fontSize: px(12,10), color:S.muted, fontFamily:"system-ui, sans-serif", letterSpacing:1.5, textTransform:'uppercase', marginTop:2 }}>Edexcel 9ET0/01 · Component 1</div>
+            <div style={{ fontSize: px(18,20), fontWeight:700, color:S.text, letterSpacing:-0.3 }}>Drama Compass</div>
+            <div style={{ fontSize: px(11,10), color:S.muted, fontFamily:font, letterSpacing:1, textTransform:'uppercase', marginTop:2 }}>Edexcel 9ET0/01 · Component 1</div>
           </div>
           <div style={{ textAlign:'right' }}>
-            <div style={{ fontSize: px(20,22), fontWeight:700, color:S.gold }}>{daysLeft}</div>
-            <div style={{ fontSize: px(11,10), color:S.muted, fontFamily:"system-ui, sans-serif", textTransform:'uppercase', letterSpacing:1.5 }}>days</div>
+            <div style={{ fontSize: px(20,22), fontWeight:700, color:S.accent }}>{daysLeft}</div>
+            <div style={{ fontSize: px(11,10), color:S.muted, textTransform:'uppercase', letterSpacing:1 }}>days</div>
           </div>
         </div>
       </header>
 
       {/* Nav */}
-      <nav style={{ borderBottom:`1px solid ${S.border}`, padding: IS_MOBILE ? '0 16px' : '0 24px', marginBottom: IS_MOBILE ? 20 : 28 }}>
+      <nav style={{ background:'#FFFFFF', borderBottom:`1px solid ${S.border}`, padding: IS_MOBILE ? '0 16px' : '0 24px', marginBottom: IS_MOBILE ? 20 : 28 }}>
         <div style={{ maxWidth:780, margin:'0 auto', display:'flex', gap:0 }}>
           {tabs.map(t=>(
-            <button key={t.id} onClick={()=>setTab(t.id)} style={{ padding: IS_MOBILE ? "12px 14px" : "14px 20px", background:'transparent', border:'none', borderBottom:`2px solid ${tab===t.id?S.gold:'transparent'}`, color:tab===t.id?S.gold:S.muted, cursor:'pointer', fontFamily:font, fontStyle:'italic', fontSize: px(14,14), transition:'all 0.2s', marginRight:IS_MOBILE?0:4, flex: IS_MOBILE ? 1 : 'none', textAlign:'center' }}>
+            <button key={t.id} onClick={()=>setTab(t.id)} style={{ padding: IS_MOBILE ? "12px 14px" : "14px 20px", background:'transparent', border:'none', borderBottom:`2px solid ${tab===t.id?S.accent:'transparent'}`, color:tab===t.id?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(14,14), fontWeight: tab===t.id ? 600 : 400, transition:'all 0.2s', marginRight:IS_MOBILE?0:4, flex: IS_MOBILE ? 1 : 'none', textAlign:'center' }}>
               {t.label}
             </button>
           ))}

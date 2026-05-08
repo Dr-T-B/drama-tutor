@@ -7,4 +7,11 @@
   --color-mal: #0F766E;   /* teal-700   */
 }
 
-body { @apply bg-gray-50 text-gray-900 antialiased; }
+body {
+  background-color: #F5F5F7;
+  color: #1D1D1F;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}

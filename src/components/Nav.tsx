@@ -18,9 +18,9 @@ const LINKS: NavLink[] = [
 export function Nav() {
   const { pathname } = useLocation()
   return (
-    <nav className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-2
+    <nav className="sticky top-0 z-10 bg-white border-b border-[#D2D2D7] px-4 py-2
                     flex items-center gap-4 flex-wrap">
-      <Link to="/" className="text-base font-semibold text-gray-900 mr-2">
+      <Link to="/" className="text-base font-semibold text-[#1D1D1F] mr-2">
         Drama tutor
       </Link>
       <PlayToggle />
@@ -28,10 +28,10 @@ export function Nav() {
         {LINKS.map(l => {
           const active = pathname.startsWith(l.to)
           const cls = active
-            ? 'bg-violet-50 text-violet-700'
+            ? 'bg-blue-50 text-[#0071E3]'
             : l.highlight
-              ? 'bg-gray-900 text-white hover:bg-gray-800'
-              : 'text-gray-500 hover:text-gray-800 hover:bg-gray-50'
+              ? 'bg-[#1D1D1F] text-white hover:bg-[#2D2D2F]'
+              : 'text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-gray-50'
           return (
             <Link key={l.to} to={l.to}
               className={['px-3 py-1.5 rounded-md text-sm font-medium transition-colors', cls].join(' ')}>
