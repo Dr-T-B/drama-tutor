@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
+import { usePlay } from '../contexts/PlayContext'
 
 interface UserPlanRow {
   id: string
@@ -31,27 +32,31 @@ interface CriticPositionItem {
   embed?: string
 }
 
-const PHASES = [
-  {
-    num: 1, title: 'Claim', aos: ['AO1'],
-    points: [
-      'Make a specific, arguable assertion — not a topic sentence, an interpretive move.',
-      'Use the language of the question stem; answer the question from the first word.',
-      'Signal the method: "Shakespeare employs X to suggest Y…" / "Webster constructs X in order to…"',
-      'One clear, precise claim per paragraph — avoid compound claims.',
-    ],
-    note: null as string | null,
-  },
-  {
-    num: 2, title: 'Ground', aos: ['AO1', 'AO2'],
-    points: [
-      'Select precise evidence: word or phrase level — not sentence-length quotation.',
-      'Analyse diction, imagery, syntax, tone, register, rhythm and metre.',
-      'For drama: analyse theatrical form — soliloquy, aside, dramatic irony, prose/verse shift, staging.',
-      'Every sentence must name a technique or articulate an effect — eliminate paraphrase entirely.',
-    ],
-    note: null as string | null,
-  },
+const PHASE_CLAIM = {
+  num: 1, title: 'Claim', aos: ['AO1'],
+  points: [
+    'Make a specific, arguable assertion — not a topic sentence, an interpretive move.',
+    'Use the language of the question stem; answer the question from the first word.',
+    'Signal the method: "Shakespeare employs X to suggest Y…" / "Webster constructs X in order to…"',
+    'One clear, precise claim per paragraph — avoid compound claims.',
+  ],
+  note: null as string | null,
+}
+
+const PHASE_GROUND = {
+  num: 2, title: 'Ground', aos: ['AO1', 'AO2'],
+  points: [
+    'Select precise evidence: word or phrase level — not sentence-length quotation.',
+    'Analyse diction, imagery, syntax, tone, register, rhythm and metre.',
+    'For drama: analyse theatrical form — soliloquy, aside, dramatic irony, prose/verse shift, staging.',
+    'Every sentence must name a technique or articulate an effect — eliminate paraphrase entirely.',
+  ],
+  note: null as string | null,
+}
+
+const PHASES_HAM = [
+  PHASE_CLAIM,
+  PHASE_GROUND,
   {
     num: 3, title: 'Complicate', aos: ['AO3', 'AO5'],
     points: [
@@ -61,6 +66,20 @@ const PHASES = [
       'Advance: return to your thesis with new or deeper insight gained from the complication.',
     ],
     note: 'Level 4 → Level 5 transition: a Level 4 paragraph stops at Phase 2. A Level 5 paragraph completes Phase 3 and genuinely advances the argument.' as string | null,
+  },
+]
+
+const PHASES_MAL = [
+  PHASE_CLAIM,
+  PHASE_GROUND,
+  {
+    num: 3, title: 'Complicate', aos: ['AO3'],
+    points: [
+      'Contextualise: anchor the method in Jacobean context — court corruption, patriarchal structures, Italianate stagecraft, the position of widows.',
+      'Generate insight: explain what the context reveals about Webster’s dramatic purpose, not just what it confirms.',
+      'Advance: return to your thesis with the deepened understanding the context has produced.',
+    ],
+    note: 'A Level 4 paragraph contextualises. A Level 5 paragraph uses context to reframe the method — showing why Webster made this choice for this audience.' as string | null,
   },
 ]
 
@@ -83,19 +102,34 @@ const ESSAY_STRUCTURE = {
   ],
 }
 
-const QUESTION_TYPES = [
+const QUESTION_TYPES_HAM = [
   { stem: '"Explore the significance of…"', guidance: 'Significance = function + meaning + effect. What does this moment, character or theme do within the play? Multiple, competing significances give you your dialectical structure. Begin with your most important claim about significance.' },
   { stem: '"How does [playwright] present…"', guidance: 'Heavy AO2 emphasis — the HOW is the methods. Frame each paragraph around a specific method: diction, imagery, theatrical form, structural position. Do not discuss what is presented without analysing how. Context and critics enter through the methods lens.' },
   { stem: '"Discuss the view that…"', guidance: 'Built-in invitation for dialectical argument. Do not fully agree or disagree — Level 5 responses agree in part, complicate, and qualify. Engage with critics who hold the opposing view rather than those who confirm yours.' },
   { stem: '"Explore the ways in which…"', guidance: 'WAYS implies variety of approach — aim for genuine diversity: language analysis, dramatic form, contextual dimension, critical perspective. Avoid repeating the same type of analytical move across paragraphs.' },
 ]
 
-const LEVEL5 = [
+const QUESTION_TYPES_MAL = [
+  { stem: '"Explore the significance of…"', guidance: 'Significance = function + meaning + effect. What does this moment, character or theme do within the play? Multiple, competing significances give you your dialectical structure. Begin with your most important claim about significance.' },
+  { stem: '"How does [playwright] present…"', guidance: 'Heavy AO2 emphasis — the HOW is the methods. Frame each paragraph around a specific method: diction, imagery, theatrical form, structural position. Do not discuss what is presented without analysing how. Context enters through the methods lens.' },
+  { stem: '"Discuss the view that…"', guidance: 'Built-in invitation for dialectical argument. Do not fully agree or disagree — Level 5 responses agree in part, complicate, and qualify. Engage seriously with the strongest opposing reading rather than the version easiest to refute.' },
+  { stem: '"Explore the ways in which…"', guidance: 'WAYS implies variety of approach — aim for genuine diversity: language analysis, dramatic form, contextual dimension, structural design. Avoid repeating the same type of analytical move across paragraphs.' },
+]
+
+const LEVEL5_HAM = [
   { title: 'Argument is dialectical, not linear', l4: 'Paragraphs add points in sequence. Critics confirm the argument already made.', l5: 'Paragraphs build by complicating each other. Critics challenge the argument and force it to develop.' },
   { title: 'Evidence is precise, not quotation-heavy', l4: 'Long quotations with limited analysis. Quotation used as evidence of a point already made.', l5: 'Word or phrase level precision. Quotation is the starting point for analysis. Multiple analytical moves from a single phrase.' },
   { title: 'Context generates insight, not background', l4: '"In Shakespeare\'s time, women were subordinated…" — context as historical backdrop, disconnected from textual analysis.', l5: 'Context deepens or destabilises the analysis: "Greenblatt\'s reading reframes this moment as a product of Reformation anxiety, which…"' },
   { title: 'Form is analysed as meaningful, not labelled', l4: '"This is a soliloquy" / "Shakespeare uses dramatic irony here" — form identified but significance not explored.', l5: 'The soliloquy form itself becomes the argument\'s evidence — as Belsey argues, the form stages the very fragmentation of selfhood the speech describes.' },
   { title: 'Voice is confident and evaluative', l4: 'Consistent hedging: "This could suggest…" / "It might be argued that…" used as a default register throughout.', l5: 'Decisive evaluative language at key moments: "I would argue…" / "The most productive reading is…" — hedging only where genuine critical debate warrants it.' },
+]
+
+const LEVEL5_MAL = [
+  { title: 'Argument is dialectical, not linear', l4: 'Paragraphs add points in sequence. Counter-readings briefly noted but not engaged.', l5: 'Paragraphs build by complicating each other. Counter-interpretations are taken seriously and force the argument to develop.' },
+  { title: 'Evidence is precise, not quotation-heavy', l4: 'Long quotations with limited analysis. Quotation used as evidence of a point already made.', l5: 'Word or phrase level precision. Quotation is the starting point for analysis. Multiple analytical moves from a single phrase.' },
+  { title: 'Context generates insight, not background', l4: '"In Webster\'s time, women had limited agency…" — context as historical backdrop, disconnected from textual analysis.', l5: 'Context deepens or destabilises the analysis: Jacobean anxieties about female sovereignty and Italianate court intrigue reframe the Duchess\'s wooing of Antonio as a deliberate transgression of every patriarchal expectation Webster\'s audience held.' },
+  { title: 'Form is analysed as meaningful, not labelled', l4: '"This is an aside" / "Webster uses dramatic irony here" — form identified but significance not explored.', l5: 'The aside form itself becomes the argument\'s evidence — Bosola\'s asides stage the very moral fracture between his actions and his conscience that defines the play\'s tragic vision.' },
+  { title: 'Voice is confident and evaluative', l4: 'Consistent hedging: "This could suggest…" / "It might be argued that…" used as a default register throughout.', l5: 'Decisive evaluative language at key moments: "I would argue…" / "The most productive reading is…" — hedging only where the text genuinely admits competing readings.' },
 ]
 
 const AO_CLS: Record<string, string> = {
@@ -118,6 +152,11 @@ export default function EssaysView() {
   const [tab, setTab] = useState<'framework' | 'plans'>('framework')
   const [fwTab, setFwTab] = useState<'para' | 'essay' | 'qtypes' | 'l5'>('para')
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const { play } = usePlay()
+  const isMalfi = play === 'MAL'
+  const PHASES = isMalfi ? PHASES_MAL : PHASES_HAM
+  const QUESTION_TYPES = isMalfi ? QUESTION_TYPES_MAL : QUESTION_TYPES_HAM
+  const LEVEL5 = isMalfi ? LEVEL5_MAL : LEVEL5_HAM
   const queryClient = useQueryClient()
   const { data: plans = [], isLoading: plansLoading } = useQuery({
     queryKey: ['user_essay_plans'],
