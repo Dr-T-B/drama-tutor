@@ -1,0 +1,375 @@
+[
+  {
+    "paragraph_key": "MODE_D_D007_DUCHESS_PATR_R1_INTRODUCTION",
+    "template_key": "REVEAL_DUCHESS_SECTION_B",
+    "model_essay_key": "MODE_D_D001R_DUCHESS_CONTROL_001",
+    "route_key": "MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL",
+    "round_key": "MODE_D_D003R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL_R1_INTRODUCTION",
+    "round_number": 1,
+    "paragraph_slot": "INTRODUCTION",
+    "paragraph_text": "Webster constructs control in The Duchess of Malfi as gendered and dynastic power exerted over the Duchess's body, marriage and identity. From the brothers' opening imperatives — 'You shall not marry' — through to their stage dominance over a kneeling sister, Webster dramatises Jacobean patriarchy not as background but as a coercive theatrical mechanism in which aristocratic widowhood is policed by language before it is policed by violence. The play's central question is not whether the Duchess will defy her brothers but what kind of control her defiance reveals; this essay will argue that Webster anatomises patriarchal control as a calibrated dramatic apparatus — operating through speech, prop, blocking and surveillance — that achieves its lethal end yet exposes its own structural exhaustion. In doing so, Webster's tragedy refuses both consolation and restoration, diagnosing patriarchal authority as an inheritance system that cannot survive its own logic.",
+    "annotations": [
+      {
+        "span_text": "Webster constructs",
+        "ao_tags": ["AO2"],
+        "technique": "active dramatist verb",
+        "note": "The grammatical subject is the dramatist, not a character. Every Level 5 paragraph keeps Webster as the agent of meaning."
+      },
+      {
+        "span_text": "gendered and dynastic power exerted over the Duchess's body, marriage and identity",
+        "ao_tags": ["AO1"],
+        "technique": "conceptual thesis",
+        "note": "Control is named with specific kinds (gendered, dynastic) and specific objects (body, marriage, identity). This is conceptual, not thematic."
+      },
+      {
+        "span_text": "'You shall not marry'",
+        "ao_tags": ["AO2"],
+        "technique": "imperative mood",
+        "note": "Textual anchor. The route's required AO2 method focus is delivered in the introduction itself."
+      },
+      {
+        "span_text": "dramatises Jacobean patriarchy not as background but as a coercive theatrical mechanism",
+        "ao_tags": ["AO3", "AO2"],
+        "technique": "context-as-engine",
+        "note": "The phrase 'not as background but as' is the AO3-into-AO2 hinge: Jacobean context interprets Webster's dramatic choice rather than sitting beside it."
+      },
+      {
+        "span_text": "policed by language before it is policed by violence",
+        "ao_tags": ["AO2"],
+        "technique": "method ordering",
+        "note": "Sequences Webster's instruments hierarchically: language as the primary technology of patriarchy, violence as its consequence."
+      },
+      {
+        "span_text": "calibrated dramatic apparatus",
+        "ao_tags": ["AO1"],
+        "technique": "controlling concept",
+        "note": "The phrase that organises the body paragraphs. 'Apparatus' frames control as systemic, not personal."
+      },
+      {
+        "span_text": "speech, prop, blocking and surveillance",
+        "ao_tags": ["AO2"],
+        "technique": "method preview",
+        "note": "Pre-announces the four AO2 methods that will structure the essay. Examiners reward signposted architecture."
+      },
+      {
+        "span_text": "refuses both consolation and restoration",
+        "ao_tags": ["AO1"],
+        "technique": "conclusion signposting",
+        "note": "The conclusion's verdict is anticipated in the introduction. The essay's argument is closed-loop, not improvised."
+      }
+    ],
+    "examiner_summary": "This is the Level 5 introduction. Thesis is conceptual (specific kinds of control with specific objects); Webster as dramatist is the grammatical subject; Jacobean context is activated as the engine of dramatic argument rather than asserted as background; the essay's structural argument is signposted ('this essay will argue…'). Note how the introduction already commits to the conclusion's dialectical verdict — closure is anticipated, not improvised.",
+    "word_count": 146,
+    "recommended_reading_time_seconds": 90,
+    "marking_status": "draft",
+    "quote_verification_status": "pending"
+  },
+  {
+    "paragraph_key": "MODE_D_D007_DUCHESS_PATR_R2_BODY_1",
+    "template_key": "REVEAL_DUCHESS_SECTION_B",
+    "model_essay_key": "MODE_D_D001R_DUCHESS_CONTROL_001",
+    "route_key": "MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL",
+    "round_key": "MODE_D_D003R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL_R2_BODY_1",
+    "round_number": 2,
+    "paragraph_slot": "BODY_1",
+    "paragraph_text": "Webster stages the brothers' prohibition as a calibrated grammar of control. The imperative mood — 'Marry? They are most luxurious / Will wed twice' — functions not as advice but as a syntactic act: the verb's grammatical force enacts the patriarchal authority the brothers claim. This is reinforced by Ferdinand's prop, the dagger he offers as 'my father's poniard' — a phrase that converts a weapon into an inheritance, materialising patriarchy as a transferable object. The Cardinal's chillingly euphemistic register ('What can the church force more?') operates through a different theatrical channel, deploying ecclesiastical understatement as a velvet form of coercion. Meanwhile, the Duchess's silent kneeling — Webster's blocking choice — makes patriarchy visible as a stage hierarchy, transforming the abstraction of 'control' into something the audience can see. Together, language, prop, blocking and ecclesiastical register form a 'grammar of control' through which Webster dramatises patriarchal power without ever once narrating it. Jacobean audiences, alert to widowhood debates and dynastic anxiety, would have recognised this scene as the language of aristocratic policing — and Webster, by staging that language as a multi-channel dramatic apparatus rather than a single villain's speech, indicts an entire patriarchal dramaturgy rather than two cruel brothers.",
+    "annotations": [
+      {
+        "span_text": "calibrated grammar of control",
+        "ao_tags": ["AO1", "AO2"],
+        "technique": "controlling concept",
+        "note": "The paragraph's organising metaphor. 'Grammar' frames the brothers' cruelty as systemic technique, not personal violence."
+      },
+      {
+        "span_text": "imperative mood",
+        "ao_tags": ["AO2"],
+        "technique": "named grammatical mood",
+        "note": "Not 'strong language'. A* AO2 reads like a linguist on the page — grammatical terms do the analytical work."
+      },
+      {
+        "span_text": "'Marry? They are most luxurious / Will wed twice'",
+        "ao_tags": ["AO2"],
+        "technique": "textual anchor with lineation",
+        "note": "The forward slash preserves Webster's verse line break. The predictive verb 'will wed twice' carries the coercion."
+      },
+      {
+        "span_text": "syntactic act",
+        "ao_tags": ["AO2"],
+        "technique": "speech-act analysis",
+        "note": "Speech-act theory in miniature: language doing, not describing. Lifts ordinary grammar to dramatic force."
+      },
+      {
+        "span_text": "'my father's poniard'",
+        "ao_tags": ["AO2"],
+        "technique": "prop as quotation",
+        "note": "The possessive 'father's' turns the weapon into inheritance. The prop is read for its language, not just its appearance."
+      },
+      {
+        "span_text": "materialising patriarchy as a transferable object",
+        "ao_tags": ["AO1", "AO3"],
+        "technique": "context-into-concept",
+        "note": "AO3 weight via the dynastic-inheritance frame; AO1 weight via the conceptual move from prop to system."
+      },
+      {
+        "span_text": "ecclesiastical understatement as a velvet form of coercion",
+        "ao_tags": ["AO2", "AO3"],
+        "technique": "register analysis",
+        "note": "AO2 names the register precisely (understatement); AO3 activates the ecclesiastical context as audience-recognition lens."
+      },
+      {
+        "span_text": "Webster's blocking choice",
+        "ao_tags": ["AO2"],
+        "technique": "staging as method",
+        "note": "Blocking — where bodies stand on stage — placed on equal analytical footing with language and prop."
+      },
+      {
+        "span_text": "alert to widowhood debates and dynastic anxiety",
+        "ao_tags": ["AO3"],
+        "technique": "audience-response context",
+        "note": "Context delivered as audience knowledge ('would have recognised'), not as historical decoration."
+      },
+      {
+        "span_text": "indicts an entire patriarchal dramaturgy rather than two cruel brothers",
+        "ao_tags": ["AO1"],
+        "technique": "argumentative widening",
+        "note": "Closing move: from particular characters to systemic critique. Returns the paragraph to the introduction's thesis."
+      }
+    ],
+    "examiner_summary": "This is what AO2 worth 40% of Duchess marks looks like in practice: four named methods (imperative mood, prop, register, blocking), each with a textual anchor, each interpreted rather than spotted. The 'grammar of control' frame sustains the introduction's thesis without restating it. Crucially, the closing sentence widens the argument from the brothers' specific cruelty to Webster's systemic critique — preventing this from collapsing into character study.",
+    "word_count": 200,
+    "recommended_reading_time_seconds": 130,
+    "marking_status": "draft",
+    "quote_verification_status": "pending"
+  },
+  {
+    "paragraph_key": "MODE_D_D007_DUCHESS_PATR_R3_BODY_2",
+    "template_key": "REVEAL_DUCHESS_SECTION_B",
+    "model_essay_key": "MODE_D_D001R_DUCHESS_CONTROL_001",
+    "route_key": "MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL",
+    "round_key": "MODE_D_D003R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL_R3_BODY_2",
+    "round_number": 3,
+    "paragraph_slot": "BODY_2",
+    "paragraph_text": "Webster widens the patriarchal mechanism into a court apparatus through Bosola's preferment as 'intelligencer'. The galleria scene — in which Bosola, briefed by Ferdinand, infiltrates the Duchess's household — converts service into espionage in a single dramatic move; the apricot trick that follows stages domestic intimacy as a site of forensic surveillance, with a piece of fruit functioning as an obstetric test. Webster's spatial choices are equally precise: Ferdinand's nocturnal entry to the bedchamber, key in hand, collapses the noble household — the early modern emblem of private aristocratic order — into an observation post, while the dramatic irony of the audience's superior knowledge transforms every household exchange into surveillance theatre. The patriarchal poniard returns here, now joined by the courtly key: between them, these two props literalise Webster's critique of a court culture in which patronage, service and observation have become a single perverted instrument of dynastic policing. Jacobean readers of court satire — Marston, Donne, the anti-Jamesian pamphleteers — would have recognised this conflation as Webster's central indictment: that under James I, the patronage relation has been so thoroughly converted into intelligencing that aristocratic privacy itself has become a fiction.",
+    "annotations": [
+      {
+        "span_text": "widens the patriarchal mechanism into a court apparatus",
+        "ao_tags": ["AO1"],
+        "technique": "structural argument",
+        "note": "The verb 'widens' carries the paragraph: the move from family unit to political system."
+      },
+      {
+        "span_text": "preferment as 'intelligencer'",
+        "ao_tags": ["AO2", "AO3"],
+        "technique": "period-specific vocabulary",
+        "note": "AO2: the textual quotation. AO3: the term 'intelligencer' is patronage-era vocabulary, not modern 'spy'. Precision earns AO3 weight."
+      },
+      {
+        "span_text": "converts service into espionage",
+        "ao_tags": ["AO1", "AO3"],
+        "technique": "patronage perversion",
+        "note": "The conceptual diagnosis at the heart of the route: legitimate patronage relation perverted into surveillance."
+      },
+      {
+        "span_text": "obstetric test",
+        "ao_tags": ["AO2"],
+        "technique": "prop semiotics",
+        "note": "A piece of fruit doing forensic medical work. The technical noun 'obstetric' carries the AO2 weight."
+      },
+      {
+        "span_text": "collapses the noble household — the early modern emblem of private aristocratic order — into an observation post",
+        "ao_tags": ["AO2", "AO3"],
+        "technique": "spatial dramaturgy",
+        "note": "AO2: spatial method named (collapse). AO3: the household's social meaning made specific to the period."
+      },
+      {
+        "span_text": "dramatic irony",
+        "ao_tags": ["AO2"],
+        "technique": "named genre device",
+        "note": "Not 'the audience knows'. Dramatic irony names the technique, not its effect."
+      },
+      {
+        "span_text": "patriarchal poniard",
+        "ao_tags": ["AO2"],
+        "technique": "paired prop reading",
+        "note": "Joins the dagger from Body 1 to the new key, building a paired prop reading across paragraphs."
+      },
+      {
+        "span_text": "perverted instrument of dynastic policing",
+        "ao_tags": ["AO1", "AO3"],
+        "technique": "verdict-level naming",
+        "note": "The phrase that anticipates the conclusion's judgement. 'Policing' is the controlling verb."
+      },
+      {
+        "span_text": "Marston, Donne, the anti-Jamesian pamphleteers",
+        "ao_tags": ["AO3"],
+        "technique": "named contemporaries",
+        "note": "Three sources, named, contemporary, thematic. AO3 weight comes from specificity, not length."
+      },
+      {
+        "span_text": "under James I",
+        "ao_tags": ["AO3"],
+        "technique": "ruler-specific context",
+        "note": "Not 'in Jacobean times'. 'Under James I' makes the political target precise."
+      },
+      {
+        "span_text": "aristocratic privacy itself has become a fiction",
+        "ao_tags": ["AO1"],
+        "technique": "concluding theoretical claim",
+        "note": "Closes the paragraph on a structural diagnosis: the household, the genre's emblem of private aristocratic order, no longer exists in Webster's diagnosis."
+      }
+    ],
+    "examiner_summary": "Body 2's job is to widen the argument structurally; this paragraph does so through spatial dramaturgy. The galleria-bedchamber-key sequence is read as one continuous spatial collapse, not three separate moments. Note the AO3 specificity: 'under James I' (not 'in Jacobean times'), 'Marston, Donne, the anti-Jamesian pamphleteers' (named, contemporary, satiric). This is AO3 doing interpretive work, not appearing as decorative period detail.",
+    "word_count": 192,
+    "recommended_reading_time_seconds": 140,
+    "marking_status": "draft",
+    "quote_verification_status": "pending"
+  },
+  {
+    "paragraph_key": "MODE_D_D007_DUCHESS_PATR_R4_BODY_3",
+    "template_key": "REVEAL_DUCHESS_SECTION_B",
+    "model_essay_key": "MODE_D_D001R_DUCHESS_CONTROL_001",
+    "route_key": "MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL",
+    "round_key": "MODE_D_D003R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL_R4_BODY_3",
+    "round_number": 4,
+    "paragraph_slot": "BODY_3",
+    "paragraph_text": "Yet Webster preserves a tragic contradiction in Act 4 that resists any simple reading of patriarchal triumph. The Duchess's declarative ontology — 'I am Duchess of Malfi still' — asserts an aristocratic and stoic identity the brothers cannot dramaturgically erase: the line's syntax (subject-verb-complement), its present-tense permanence ('still'), and its appropriation of the very title patriarchy seeks to revoke combine into a Lipsian act of self-constitution under duress. Yet Webster simultaneously stages her as a body controlled. The wax effigies of her dead husband and children operate as a perverse dynastic display, weaponising the very inheritance system the brothers police. The antimasque of madmen — Webster's grotesque inversion of the courtly masque, that supreme genre of aristocratic self-celebration — transforms the Duchess into a spectator at her own erasure. The ritualised strangulation, with executioners and ropes treated as dramatic personae, converts murder into a sustained piece of theatre. The result is a structural irony: the Duchess's resistance is real (Webster gives her the line, and the line works), but her body is destroyed by the very apparatus that cannot speak it. Patriarchal control becomes finally lethal, but not legitimating — and that distinction, Webster suggests, is the tragedy.",
+    "annotations": [
+      {
+        "span_text": "tragic contradiction",
+        "ao_tags": ["AO1"],
+        "technique": "round-defining concept",
+        "note": "Holds the round's required dialectic in a single phrase. The whole paragraph operates under this header."
+      },
+      {
+        "span_text": "declarative ontology",
+        "ao_tags": ["AO2"],
+        "technique": "speech-act + philosophy",
+        "note": "Names the speech-act (declarative) and the philosophical claim (ontology) it makes. A* analytical register."
+      },
+      {
+        "span_text": "'I am Duchess of Malfi still'",
+        "ao_tags": ["AO2"],
+        "technique": "textual anchor",
+        "note": "The line the round demands. Quoted, then dissected sentence-by-sentence in the next clause."
+      },
+      {
+        "span_text": "subject-verb-complement",
+        "ao_tags": ["AO2"],
+        "technique": "syntactic analysis",
+        "note": "Granular grammar. A* AO2 reads like a linguist on the page."
+      },
+      {
+        "span_text": "present-tense permanence",
+        "ao_tags": ["AO2"],
+        "technique": "tense analysis",
+        "note": "The single word 'still' is doing existential work: present tense + adverb of continuation = ontological persistence."
+      },
+      {
+        "span_text": "Lipsian act of self-constitution",
+        "ao_tags": ["AO3"],
+        "technique": "named stoic philosopher",
+        "note": "Lipsius (1547–1606), Flemish humanist whose neo-stoicism shaped early modern thought on endurance. AO3 depth without historical detour."
+      },
+      {
+        "span_text": "perverse dynastic display, weaponising the very inheritance system",
+        "ao_tags": ["AO1", "AO2"],
+        "technique": "method-into-concept",
+        "note": "AO2: 'display', 'weaponising' name the staging technique. AO1: the inheritance-recursion concept (the system devours itself)."
+      },
+      {
+        "span_text": "antimasque",
+        "ao_tags": ["AO2"],
+        "technique": "named genre",
+        "note": "The antimasque is the grotesque half of a Jacobean masque. Webster's inversion of the courtly genre is itself the dramatic argument."
+      },
+      {
+        "span_text": "spectator at her own erasure",
+        "ao_tags": ["AO1"],
+        "technique": "conceptual paradox",
+        "note": "Sustains the contradiction: the Duchess present at her own absenting. A single phrase holding two states."
+      },
+      {
+        "span_text": "structural irony",
+        "ao_tags": ["AO1"],
+        "technique": "named form of contradiction",
+        "note": "Not 'irony' alone — 'structural' specifies the kind: built into the play's architecture, not a local effect."
+      },
+      {
+        "span_text": "lethal, but not legitimating",
+        "ao_tags": ["AO1"],
+        "technique": "conceptual signature",
+        "note": "The distinction the essay carries to its conclusion. Examiners notice phrases of this calibration."
+      }
+    ],
+    "examiner_summary": "This is the round Mode D was built to train: holding two readings of one moment without collapsing them. Note the technical AO2 grammar (subject-verb-complement, declarative, present-tense permanence) — A* AO2 reads like a linguist on the page. The Lipsian reference earns AO3 through specificity, not length. The closing distinction — 'lethal but not legitimating' — is the kind of conceptual signature an examiner notices and remembers.",
+    "word_count": 198,
+    "recommended_reading_time_seconds": 150,
+    "marking_status": "draft",
+    "quote_verification_status": "pending"
+  },
+  {
+    "paragraph_key": "MODE_D_D007_DUCHESS_PATR_R5_CONCLUSION",
+    "template_key": "REVEAL_DUCHESS_SECTION_B",
+    "model_essay_key": "MODE_D_D001R_DUCHESS_CONTROL_001",
+    "route_key": "MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL",
+    "round_key": "MODE_D_D003R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL_R5_CONCLUSION",
+    "round_number": 5,
+    "paragraph_slot": "CONCLUSION",
+    "paragraph_text": "Webster's final judgement on control is dialectical rather than redemptive. The brothers' apparatus of patriarchal control achieves its lethal end: the Duchess, Antonio, and their children are dead. Yet the staged collapse of Act 5 — Ferdinand's lycanthropic disintegration, the Cardinal undone by his own intelligencer, Bosola's misdirected dagger killing the man he sought to save — exposes that apparatus as structurally self-consuming. Patriarchal control, Webster shows, is an inheritance system that cannot survive its own logic: when it consumes the Duchess, it consumes itself. Webster's tragedy refuses both consolation and restoration; the Duchess's son inherits, but Antonio is dead, the brothers are dead, and the controlling order they enforced has destroyed itself in the act of enforcement. This refusal of closure is itself the answer to 'what Webster finally suggests about control': it is dramaturgically lethal, structurally self-defeating, and morally unredeemable.",
+    "annotations": [
+      {
+        "span_text": "dialectical rather than redemptive",
+        "ao_tags": ["AO1"],
+        "technique": "calibrated verdict",
+        "note": "Refuses the morality-tale reading. 'Dialectical' names the kind of judgement; 'rather than redemptive' names what it refuses."
+      },
+      {
+        "span_text": "structurally self-consuming",
+        "ao_tags": ["AO1"],
+        "technique": "mechanism named",
+        "note": "Not 'destroyed' — self-consuming. The system's death is internal to its logic."
+      },
+      {
+        "span_text": "lycanthropic disintegration",
+        "ao_tags": ["AO3"],
+        "technique": "period-specific medical belief",
+        "note": "Lycanthropy — the early modern belief that one might transform into a wolf — is medical/folkloric AO3 doing interpretive work."
+      },
+      {
+        "span_text": "intelligencer",
+        "ao_tags": ["AO3"],
+        "technique": "vocabulary callback",
+        "note": "The Body 2 vocabulary returns. The conclusion closes the loop with the patronage critique."
+      },
+      {
+        "span_text": "Bosola's misdirected dagger killing the man he sought to save",
+        "ao_tags": ["AO1"],
+        "technique": "plot-as-evidence",
+        "note": "Plot detail compressed into structural evidence. Antonio's death by Bosola's hand is the apparatus consuming the man it should have served."
+      },
+      {
+        "span_text": "inheritance system that cannot survive its own logic",
+        "ao_tags": ["AO1", "AO3"],
+        "technique": "final conceptual move",
+        "note": "AO1: structural diagnosis. AO3: 'inheritance system' names the dynastic context as the engine of self-destruction."
+      },
+      {
+        "span_text": "refuses both consolation and restoration",
+        "ao_tags": ["AO1"],
+        "technique": "echo of introduction",
+        "note": "The exact phrase from the introduction returns. The essay closes its own loop — a signature of essay architecture."
+      },
+      {
+        "span_text": "dramaturgically lethal, structurally self-defeating, and morally unredeemable",
+        "ao_tags": ["AO1"],
+        "technique": "triple-clause verdict",
+        "note": "Three registers in three clauses: form, structure, ethics. A Level 5 closing move — each register names a different kind of judgement."
+      }
+    ],
+    "examiner_summary": "The conclusion answers 'finally suggests' head-on. 'Dialectical rather than redemptive' is the verdict in calibrated form — neither generic ('Webster criticises patriarchy') nor over-claimed ('Webster offers no hope'). The triple-clause closing — dramaturgically lethal, structurally self-defeating, morally unredeemable — is a Level 5 closing move because each clause names a different register of judgement. Note how the conclusion reaches back to the introduction ('refuses both consolation and restoration') — the essay closes its own loop. AO2 is deliberately absent in line with the round's target codes; the conclusion judges, it does not analyse method.",
+    "word_count": 142,
+    "recommended_reading_time_seconds": 100,
+    "marking_status": "draft",
+    "quote_verification_status": "pending"
+  }
+]
