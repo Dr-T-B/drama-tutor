@@ -347,6 +347,7 @@ function PlanTab() {
   const [plan, setPlan] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
 
   const sample: Record<Play, string> = {
     hamlet: "Explore how Shakespeare presents Hamlet's treatment of women in the play.",
@@ -360,7 +361,7 @@ function PlanTab() {
       const res = await fetch('/api/generate-plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: question.trim(), play }),
+        body: JSON.stringify({ question: question.trim(), play, theme: selectedTheme }),
       });
       if (!res.ok || !res.body) throw new Error(`API error ${res.status}`);
       const reader = res.body.getReader();
@@ -383,7 +384,7 @@ function PlanTab() {
         <div style={{ marginBottom:16, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Select text</div>
         <div style={{ display:'flex', gap:12, marginBottom:20 }}>
           {(['hamlet','duchess'] as const).map(p => (
-            <button key={p} onClick={()=>setPlay(p)} style={{ flex:1, padding:"12px 0", borderRadius:8, border:`1px solid ${play===p?S.accent:S.border}`, background:play===p?S.accentBg:'transparent', color:play===p?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(14,13), fontWeight: play===p ? 600 : 400, transition:'all 0.2s' }}>
+            <button key={p} onClick={()=>{ setPlay(p); setSelectedTheme(null); }} style={{ flex:1, padding:"12px 0", borderRadius:8, border:`1px solid ${play===p?S.accent:S.border}`, background:play===p?S.accentBg:'transparent', color:play===p?S.accent:S.muted, cursor:'pointer', fontFamily:font, fontSize: px(14,13), fontWeight: play===p ? 600 : 400, transition:'all 0.2s' }}>
               {p==='hamlet' ? 'Hamlet' : IS_MOBILE ? 'Duchess of Malfi' : 'The Duchess of Malfi'}
             </button>
           ))}
@@ -391,17 +392,17 @@ function PlanTab() {
         <div style={{ marginBottom:8, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Thesis Bank — tap to use</div>
         <div style={{ display:'flex', flexWrap:'wrap', marginBottom:20 }}>
           {THESIS_BANK[play].map(({ focus, thesis }) => (
-            <span key={focus} onClick={() => setQuestion(thesis)} style={{ fontSize: px(12,11), padding:"3px 10px", borderRadius:6, background:'#E8E8ED', color:S.text, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:font, cursor:'pointer', transition:'background 0.15s' }}>
+            <span key={focus} onClick={() => { setQuestion(thesis); setSelectedTheme(focus); }} style={{ fontSize: px(12,11), padding:"3px 10px", borderRadius:6, background: selectedTheme===focus ? S.accentBg : '#E8E8ED', color: selectedTheme===focus ? S.accent : S.text, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:font, cursor:'pointer', transition:'background 0.15s' }}>
               {focus}
             </span>
           ))}
         </div>
         <div style={{ marginBottom:16, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Exam question</div>
-        <textarea value={question} onChange={e=>setQuestion(e.target.value)}
+        <textarea value={question} onChange={e=>{ setQuestion(e.target.value); setSelectedTheme(null); }}
           placeholder={`e.g. "${sample[play]}"`}
           style={{ width:'100%', minHeight: IS_MOBILE ? 110 : 90, background:'#FFFFFF', border:`1px solid ${S.border}`, borderRadius:8, color:S.text, padding:14, fontSize: px(15,13), fontFamily:font, resize:'vertical', outline:'none', lineHeight:1.6, boxSizing:'border-box' }} />
         <div style={{ display:'flex', flexDirection: IS_MOBILE ? 'column' : 'row', justifyContent:'space-between', alignItems: IS_MOBILE ? 'stretch' : 'center', marginTop:14, gap: IS_MOBILE ? 10 : 0 }}>
-          <button onClick={()=>setQuestion(sample[play])} style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"10px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,11) }}>
+          <button onClick={()=>{ setQuestion(sample[play]); setSelectedTheme(null); }} style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"10px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,11) }}>
             Use sample question
           </button>
           <button onClick={generate} disabled={loading||!question.trim()} style={{ background:loading?'transparent':S.accent, border:`1px solid ${loading?S.border:S.accent}`, color:loading?S.muted:'#FFFFFF', padding:"12px 28px", borderRadius:8, cursor:loading?'default':'pointer', fontFamily:font, fontSize: px(15,14), fontWeight:600, transition:'all 0.2s', opacity:!question.trim()?0.5:1 }}>
