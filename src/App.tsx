@@ -17,6 +17,10 @@ import { EssayBuilderHomePage } from './features/essayBuilder/pages/EssayBuilder
 import { PathSelectionPage } from './features/essayBuilder/pages/PathSelectionPage'
 import { FeedbackPage } from './features/essayBuilder/pages/FeedbackPage'
 import { SkeletonPage } from './features/essayBuilder/pages/SkeletonPage'
+import { DuchessHubPage } from './features/mode-d/DuchessHubPage'
+import { PatriarchalControlPage } from './features/mode-d/routes/PatriarchalControlPage'
+import { CourtSurveillancePage } from './features/mode-d/routes/CourtSurveillancePage'
+import { PatriarchalControlRevealPage } from './features/mode-d/routes/PatriarchalControlRevealPage'
 
 const qc = new QueryClient()
 
@@ -42,6 +46,10 @@ export default function App() {
             <Route path="/essay-builder/:attemptId/skeleton" element={<SkeletonPage />} />
             <Route path="/framework" element={<Framework />} />
             <Route path="/compass"  element={<DramaCompass />} />
+            <Route path="/mode-d/duchess" element={<DuchessHubPage />} />
+            <Route path="/mode-d/duchess/patriarchal-control" element={<PatriarchalControlPage />} />
+            <Route path="/mode-d/duchess/patriarchal-control/reveal" element={<PatriarchalControlRevealPage />} />
+            <Route path="/mode-d/duchess/court-surveillance" element={<CourtSurveillancePage />} />
             <Route path="*"         element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
