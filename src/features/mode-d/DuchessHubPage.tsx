@@ -16,7 +16,7 @@ const ROUTE_CONFIG: Record<string, {
   'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL': {
     trainerPath: '/mode-d/duchess/patriarchal-control',
     revealPath:  '/mode-d/duchess/patriarchal-control/reveal',
-    stemStatus:  'coming_soon',
+    stemStatus:  'available',
     essayStatus: 'available',
   },
   'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_B_COURT_SURVEILLANCE': {
