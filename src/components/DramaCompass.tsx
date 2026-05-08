@@ -564,7 +564,6 @@ function CriticCard({ c }: { c: Critic }) {
 
 function CriticsTab() {
   const [play, setPlay] = useState<Play>('hamlet');
-  const critics = play === 'hamlet' ? HAMLET_CRITICS : DUCHESS_CRITICS;
 
   return (
     <div style={{ maxWidth:780, margin:'0 auto', padding: IS_MOBILE ? '0 14px 60px' : '0 20px 60px' }}>
@@ -576,17 +575,27 @@ function CriticsTab() {
         ))}
       </div>
 
-      <div style={{ background:'#F0F7FF', border:`1px solid ${S.accent}30`, borderRadius:12, padding:'12px 16px', marginBottom:16, borderLeft:`4px solid ${S.accent}` }}>
-        <div style={{ fontSize:13, fontFamily:font, color:S.text, lineHeight:1.6 }}>
-          <strong style={{ color:S.accent }}>AO5 deployment rule:</strong> Never cite critics decoratively. Use tension verbs — <em>complicates, resists, extends, yet, although</em>. Each paragraph should contain 2 critics in productive tension. The dialogic sentence below is portable: substitute the scene/moment for your question's specifics.
+      {play === 'duchess' ? (
+        <div style={{ background:S.card, border:`1px solid ${S.border}`, borderLeft:`4px solid ${S.destructive}`, borderRadius:12, padding:'18px 20px', boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+          <div style={{ fontSize:15, fontFamily:font, fontWeight:600, color:S.destructive, marginBottom:8 }}>AO5 not assessed in Section B</div>
+          <div style={{ fontSize:14, fontFamily:font, color:S.text, lineHeight:1.7 }}>
+            AO5 (critics) is not assessed in Section B — The Duchess of Malfi.<br />
+            Do not use critics in your Duchess essay. Focus on AO1, AO2, and AO3 only.
+          </div>
         </div>
-      </div>
-
-      <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:font }}>
-        {critics.length} critics — tap to expand core position + dialogic sentence
-      </div>
-
-      {critics.map(c=><CriticCard key={c.name} c={c} />)}
+      ) : (
+        <>
+          <div style={{ background:'#F0F7FF', border:`1px solid ${S.accent}30`, borderRadius:12, padding:'12px 16px', marginBottom:16, borderLeft:`4px solid ${S.accent}` }}>
+            <div style={{ fontSize:13, fontFamily:font, color:S.text, lineHeight:1.6 }}>
+              <strong style={{ color:S.accent }}>AO5 deployment rule:</strong> Never cite critics decoratively. Use tension verbs — <em>complicates, resists, extends, yet, although</em>. Each paragraph should contain 2 critics in productive tension. The dialogic sentence below is portable: substitute the scene/moment for your question's specifics.
+            </div>
+          </div>
+          <div style={{ marginBottom:10, color:S.muted, fontSize: px(13,11), fontFamily:font }}>
+            {HAMLET_CRITICS.length} critics — tap to expand core position + dialogic sentence
+          </div>
+          {HAMLET_CRITICS.map(c=><CriticCard key={c.name} c={c} />)}
+        </>
+      )}
     </div>
   );
 }
