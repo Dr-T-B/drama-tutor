@@ -147,7 +147,7 @@ export default function CriticsView() {
         }, {} as Record<string, CriticEntry[]>)
       : { '': filtered }
 
-  const examDate = new Date('2026-05-11T00:00:00')
+  const examDate = new Date('2026-05-13T00:00:00')
   const daysLeft = Math.max(0,
     Math.round((examDate.getTime() - Date.now()) / 86400000)
   )
