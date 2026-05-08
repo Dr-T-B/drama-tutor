@@ -40,7 +40,7 @@ const PRIORITY_PILL: Record<string, string> = {
 
 function gradeClasses(g?: string | null): { cls: string; label: string } {
   if (g === 'A_STAR') return { cls: 'bg-amber-100 text-amber-700 font-bold', label: 'A★' }
-  if (g === 'A') return { cls: 'bg-violet-100 text-violet-700', label: 'A' }
+  if (g === 'A') return { cls: 'bg-blue-50 text-[#0071E3]', label: 'A' }
   return { cls: 'bg-gray-100 text-gray-600', label: g ?? 'B' }
 }
 
@@ -269,34 +269,35 @@ export function Framework() {
   }, [ai])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: '#F5F5F7' }}>
       {/* Input zone */}
-      <section className="bg-gray-900 text-gray-100 px-6 py-10">
+      <section className="bg-white border-b border-[#D2D2D7] px-6 py-10"
+               style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
         <div className="max-w-5xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">🎯 Exam Framework Builder</h1>
-          <p className="text-gray-400 mb-6 text-sm">
+          <h1 className="text-3xl font-bold mb-2 text-[#1D1D1F]">Exam Framework Builder</h1>
+          <p className="text-[#6E6E73] mb-6 text-sm">
             Edexcel A-Level English Literature — Component 1 Drama (9ET0/01). Paste a past question, pick a theme, get
             a 10-section A*-targeted framework built from your revision data.
           </p>
 
-          <label className="block text-sm font-medium text-gray-300 mb-1">Exam question</label>
+          <label className="block text-sm font-medium text-[#1D1D1F] mb-1">Exam question</label>
           <textarea
             rows={3}
             value={question}
             onChange={e => setQuestion(e.target.value)}
             placeholder='e.g. "Explore the significance of madness in Hamlet. In your answer, you must consider the dramatic methods Shakespeare uses."'
-            className="w-full rounded-md bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="w-full rounded-lg bg-white border border-[#D2D2D7] px-3 py-2 text-sm text-[#1D1D1F] placeholder-[#A1A1A6] focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
           />
 
-          <div className="mt-5 rounded-md border border-gray-700 bg-gray-800/60 p-4">
-            <div className="text-sm font-medium text-gray-300 mb-2">
-              Load past question <span className="text-gray-500 font-normal">(2017–2024)</span>
+          <div className="mt-5 rounded-xl border border-[#D2D2D7] bg-[#F5F5F7] p-4">
+            <div className="text-sm font-medium text-[#1D1D1F] mb-2">
+              Load past question <span className="text-[#6E6E73] font-normal">(2017–2024)</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <select
                 value={pickerYear}
                 onChange={e => setPickerYear(e.target.value)}
-                className="w-full rounded-md bg-gray-900 border border-gray-700 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full rounded-lg bg-white border border-[#D2D2D7] px-3 py-2 text-sm text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
               >
                 <option value="">— Year —</option>
                 {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017].map(y => (
@@ -306,15 +307,15 @@ export function Framework() {
               <select
                 value={pickerSection}
                 onChange={e => setPickerSection(e.target.value as '' | 'SECTION_A' | 'SECTION_B')}
-                className="w-full rounded-md bg-gray-900 border border-gray-700 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full rounded-lg bg-white border border-[#D2D2D7] px-3 py-2 text-sm text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
               >
                 <option value="">— Text —</option>
                 <option value="SECTION_A">Hamlet (Section A)</option>
                 <option value="SECTION_B">The Duchess of Malfi (Section B)</option>
               </select>
             </div>
-            {pickerLoading && <p className="text-xs text-gray-400 mt-3">Loading questions…</p>}
-            {pickerError && <p className="text-xs text-red-400 mt-3">{pickerError}</p>}
+            {pickerLoading && <p className="text-xs text-[#6E6E73] mt-3">Loading questions…</p>}
+            {pickerError && <p className="text-xs text-[#FF3B30] mt-3">{pickerError}</p>}
             {!pickerLoading && pastQuestions.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {pastQuestions.map(pq => (
@@ -322,7 +323,7 @@ export function Framework() {
                     key={pq.id}
                     type="button"
                     onClick={() => pickPastQuestion(pq)}
-                    className="text-left text-xs bg-violet-600/20 hover:bg-violet-600/40 border border-violet-500/40 text-violet-100 rounded-md px-3 py-2 transition-colors max-w-full"
+                    className="text-left text-xs bg-blue-50 hover:bg-blue-100 border border-[#0071E3]/40 text-[#0071E3] rounded-lg px-3 py-2 transition-colors max-w-full"
                   >
                     <span className="font-semibold mr-1">Q{pq.question_number}:</span>
                     <span>{pq.question_text}</span>
@@ -331,17 +332,17 @@ export function Framework() {
               </div>
             )}
             {!pickerLoading && !pickerError && pickerYear && pickerSection && pastQuestions.length === 0 && (
-              <p className="text-xs text-gray-400 mt-3">No questions found for this combination.</p>
+              <p className="text-xs text-[#6E6E73] mt-3">No questions found for this combination.</p>
             )}
           </div>
 
-          <label className="block text-sm font-medium text-gray-300 mt-4 mb-1">
-            Theme <span className="text-gray-500 font-normal">(or leave blank to auto-detect)</span>
+          <label className="block text-sm font-medium text-[#1D1D1F] mt-4 mb-1">
+            Theme <span className="text-[#6E6E73] font-normal">(or leave blank to auto-detect)</span>
           </label>
           <select
             value={selectedThemeId}
             onChange={e => setSelectedThemeId(e.target.value)}
-            className="w-full rounded-md bg-gray-800 border border-gray-700 px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="w-full rounded-lg bg-white border border-[#D2D2D7] px-3 py-2 text-sm text-[#1D1D1F] focus:outline-none focus:ring-2 focus:ring-[#0071E3]"
           >
             <option value="">— Select a theme —</option>
             <optgroup label="Hamlet (Section A)">
@@ -364,12 +365,12 @@ export function Framework() {
             <button
               onClick={handleBuild}
               disabled={status === 'loading'}
-              className="px-5 py-2.5 rounded-md bg-violet-600 hover:bg-violet-500 disabled:bg-gray-700 disabled:text-gray-400 text-white font-semibold text-sm transition-colors"
+              className="px-5 py-2.5 rounded-lg bg-[#0071E3] hover:bg-[#0077ED] disabled:bg-gray-300 disabled:text-gray-500 text-white font-semibold text-sm transition-colors"
             >
               {status === 'loading' ? 'Building framework — fetching data + running AI analysis…' : 'Build framework'}
             </button>
             {status === 'error' && errorMsg && (
-              <span className="text-sm text-red-400">{errorMsg}</span>
+              <span className="text-sm text-[#FF3B30]">{errorMsg}</span>
             )}
           </div>
         </div>
@@ -377,7 +378,8 @@ export function Framework() {
 
       {/* Output zone */}
       {data && ai && (
-        <section className="bg-white px-6 py-12">
+        <section className="bg-white px-6 py-12 mt-6 rounded-2xl mx-4 md:mx-6"
+                 style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
           <div className="max-w-5xl mx-auto space-y-14">
             <header className="border-b border-gray-200 pb-6">
               <div className="text-xs uppercase tracking-wide text-gray-500 mb-1">
@@ -395,8 +397,8 @@ export function Framework() {
                   <div className="text-xs font-bold uppercase tracking-wide text-blue-700 mb-1">Command word</div>
                   <div className="text-gray-900">{ai.question_decoded.command_word}</div>
                 </div>
-                <div className="rounded-lg border border-violet-200 bg-violet-50 p-4">
-                  <div className="text-xs font-bold uppercase tracking-wide text-violet-700 mb-1">What is really asked</div>
+                <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                  <div className="text-xs font-bold uppercase tracking-wide text-[#0071E3] mb-1">What is really asked</div>
                   <div className="text-gray-900">{ai.question_decoded.what_is_really_asked}</div>
                 </div>
                 <div className="rounded-lg border border-red-200 bg-red-50 p-4">
@@ -541,7 +543,7 @@ export function Framework() {
                   let badgeLabel = 'Optional'
                   let badgeCls = 'bg-gray-200 text-gray-700'
                   if (priority === 5) { badgeLabel = 'Must use'; badgeCls = 'bg-amber-200 text-amber-900' }
-                  else if (priority === 4) { badgeLabel = 'Strong'; badgeCls = 'bg-violet-200 text-violet-900' }
+                  else if (priority === 4) { badgeLabel = 'Strong'; badgeCls = 'bg-blue-100 text-[#0071E3]' }
                   else if (priority === 3) { badgeLabel = 'Useful'; badgeCls = 'bg-gray-200 text-gray-800' }
 
                   const methodNames = (q.quote_methods ?? [])
@@ -567,7 +569,7 @@ export function Framework() {
                         </div>
                       </div>
 
-                      <blockquote className="border-l-4 border-violet-500 pl-3 italic text-gray-900 mb-3">
+                      <blockquote className="border-l-4 border-[#0071E3] pl-3 italic text-[#1D1D1F] mb-3">
                         "{quoteText(q)}"
                       </blockquote>
 
@@ -608,7 +610,7 @@ export function Framework() {
                     )}
                     {strong.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-bold uppercase tracking-wide text-violet-700 mb-3">
+                        <h3 className="text-sm font-bold uppercase tracking-wide text-amber-700 mb-3">
                           Strong choices
                         </h3>
                         <div className="space-y-3">{strong.map(renderCard)}</div>
@@ -749,9 +751,9 @@ export function Framework() {
               <SectionHeader n="10" title="Forbidden moves" />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {ai.forbidden_moves.map((m, i) => (
-                  <div key={i} className="rounded-lg bg-gray-900 text-gray-100 p-4">
-                    <div className="text-xs font-bold uppercase tracking-wide text-amber-400 mb-1">Avoid</div>
-                    <p className="text-sm">{m}</p>
+                  <div key={i} className="rounded-lg bg-[#F5F5F7] border border-[#D2D2D7] p-4">
+                    <div className="text-xs font-bold uppercase tracking-wide text-[#FF3B30] mb-1">Avoid</div>
+                    <p className="text-sm text-[#1D1D1F]">{m}</p>
                   </div>
                 ))}
               </div>

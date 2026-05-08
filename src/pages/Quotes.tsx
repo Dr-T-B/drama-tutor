@@ -84,8 +84,8 @@ export function Quotes() {
         placeholder="Search quotes, speakers, exam sentences…"
         value={search}
         onChange={e => setSearch(e.target.value)}
-        className="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm
-                   focus:outline-none focus:ring-2 focus:ring-violet-300 mb-4"
+        className="w-full rounded-xl border border-[#D2D2D7] px-4 py-2.5 text-sm bg-white text-[#1D1D1F]
+                   focus:outline-none focus:ring-2 focus:ring-[#0071E3] mb-4"
       />
 
       {/* Filter pills row */}
@@ -100,7 +100,7 @@ export function Quotes() {
               className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
                 prioFilter === p
                   ? 'bg-amber-400 text-amber-900 border-amber-400'
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+                  : 'bg-white text-[#6E6E73] border-[#D2D2D7] hover:border-[#A1A1A6]'
               }`}>
               {'★'.repeat(p)}
             </button>
@@ -115,8 +115,8 @@ export function Quotes() {
               onClick={() => setCharFilter(charFilter === sp ? null : sp)}
               className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
                 charFilter === sp
-                  ? 'bg-violet-600 text-white border-violet-600'
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+                  ? 'bg-[#0071E3] text-white border-[#0071E3]'
+                  : 'bg-white text-[#6E6E73] border-[#D2D2D7] hover:border-[#A1A1A6]'
               }`}>
               {sp}
             </button>
@@ -132,8 +132,8 @@ export function Quotes() {
               title={t.code}
               className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
                 themeFilter === t.code
-                  ? 'bg-teal-600 text-white border-teal-600'
-                  : 'bg-white text-gray-500 border-gray-200 hover:border-gray-400'
+                  ? 'bg-[#0071E3] text-white border-[#0071E3]'
+                  : 'bg-white text-[#6E6E73] border-[#D2D2D7] hover:border-[#A1A1A6]'
               }`}>
               {t.name}
             </button>

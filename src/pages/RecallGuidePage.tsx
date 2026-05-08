@@ -35,10 +35,8 @@ export function RecallGuidePage() {
           {(['HAM', 'MAL'] as const).map(t => {
             const active = t === tab
             const cls = active
-              ? t === 'HAM'
-                ? 'border-violet-500 text-violet-700'
-                : 'border-teal-500 text-teal-700'
-              : 'border-transparent text-gray-500 hover:text-gray-800'
+              ? 'border-[#0071E3] text-[#0071E3]'
+              : 'border-transparent text-[#6E6E73] hover:text-[#1D1D1F]'
             return (
               <button
                 key={t}

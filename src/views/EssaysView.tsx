@@ -133,10 +133,10 @@ const LEVEL5_MAL = [
 ]
 
 const AO_CLS: Record<string, string> = {
-  AO1: 'bg-amber-50 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-  AO2: 'bg-blue-50 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200',
-  AO3: 'bg-red-50 text-red-800 dark:bg-red-900/40 dark:text-red-200',
-  AO5: 'bg-teal-50 text-teal-800 dark:bg-teal-900/40 dark:text-teal-200',
+  AO1: 'bg-amber-50 text-amber-800',
+  AO2: 'bg-blue-50 text-blue-800',
+  AO3: 'bg-red-50 text-red-800',
+  AO5: 'bg-teal-50 text-teal-800',
 }
 
 async function fetchPlans(): Promise<UserPlanRow[]> {
@@ -183,13 +183,13 @@ export default function EssaysView() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
-      <div className="flex border-b border-gray-200 dark:border-gray-700 mb-5">
+      <div className="flex border-b border-[#D2D2D7] mb-5">
         {(['framework', 'plans'] as const).map(t => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               tab === t
-                ? 'border-gray-900 dark:border-white text-gray-900 dark:text-white'
-                : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                ? 'border-[#0071E3] text-[#0071E3]'
+                : 'border-transparent text-[#6E6E73] hover:text-[#1D1D1F]'
             }`}>
             {t === 'framework' ? 'Essay framework' : 'My plans'}
           </button>
@@ -202,13 +202,13 @@ export default function EssaysView() {
             A single argumentive framework applies across all Edexcel Component 1 question types,
             operating at two levels: paragraph anatomy and essay structure.
           </p>
-          <div className="flex flex-wrap gap-0 border-b border-gray-200 dark:border-gray-700 mb-5">
+          <div className="flex flex-wrap gap-0 border-b border-[#D2D2D7] mb-5">
             {([['para', 'Paragraph anatomy'], ['essay', 'Essay structure'], ['qtypes', 'Question types'], ['l5', 'Level 5 markers']] as const).map(([key, label]) => (
               <button key={key} onClick={() => setFwTab(key as typeof fwTab)}
                 className={`px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
                   fwTab === key
-                    ? 'border-gray-900 dark:border-white text-gray-900 dark:text-white'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                    ? 'border-[#0071E3] text-[#0071E3]'
+                    : 'border-transparent text-[#6E6E73] hover:text-[#1D1D1F]'
                 }`}>{label}</button>
             ))}
           </div>
@@ -217,29 +217,29 @@ export default function EssaysView() {
             <div className="space-y-3">
               {PHASES.map(ph => (
                 <div key={ph.num}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
+                  className="bg-white border border-[#D2D2D7] rounded-xl p-4"
                   <div className="flex items-center gap-2 mb-3">
-                    <span className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center
-                                     justify-center text-xs font-medium text-gray-700 dark:text-gray-200">
+                    <span className="w-6 h-6 rounded-full bg-[#E8E8ED] flex items-center
+                                     justify-center text-xs font-medium text-[#1D1D1F]">
                       {ph.num}
                     </span>
-                    <span className="font-medium text-gray-900 dark:text-gray-100">{ph.title}</span>
+                    <span className="font-medium text-[#1D1D1F]">{ph.title}</span>
                     {ph.aos.map(ao => (
                       <span key={ao} className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${AO_CLS[ao]}`}>{ao}</span>
                     ))}
                   </div>
                   <ul className="space-y-1.5">
                     {ph.points.map((p, i) => (
-                      <li key={i} className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed flex gap-2">
-                        <span className="text-gray-300 dark:text-gray-600 mt-0.5">–</span>
+                      <li key={i} className="text-sm text-[#1D1D1F] leading-relaxed flex gap-2">
+                        <span className="text-[#D2D2D7] mt-0.5">–</span>
                         <span>{p}</span>
                       </li>
                     ))}
                   </ul>
                   {ph.note && (
-                    <div className="mt-3 p-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg
-                                    text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
-                      <strong className="text-gray-900 dark:text-gray-100">Level 4 → Level 5:</strong> {ph.note}
+                    <div className="mt-3 p-2.5 bg-[#F5F5F7] rounded-lg
+                                    text-xs text-[#1D1D1F] leading-relaxed">
+                      <strong className="text-[#1D1D1F]">Level 4 → Level 5:</strong> {ph.note}
                     </div>
                   )}
                 </div>
@@ -254,8 +254,8 @@ export default function EssaysView() {
                 <div className="space-y-3">
                   {ESSAY_STRUCTURE.intro.map((move, j) => (
                     <div key={j}>
-                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-0.5">{j + 1}. {move.title}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{move.body}</p>
+                      <p className="text-xs font-medium text-[#1D1D1F] mb-0.5">{j + 1}. {move.title}</p>
+                      <p className="text-sm text-[#6E6E73] leading-relaxed">{move.body}</p>
                     </div>
                   ))}
                 </div>
@@ -280,8 +280,8 @@ export default function EssaysView() {
                 <div className="space-y-3">
                   {ESSAY_STRUCTURE.conclusion.map((move, j) => (
                     <div key={j}>
-                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-0.5">{j + 1}. {move.title}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{move.body}</p>
+                      <p className="text-xs font-medium text-[#1D1D1F] mb-0.5">{j + 1}. {move.title}</p>
+                      <p className="text-sm text-[#6E6E73] leading-relaxed">{move.body}</p>
                     </div>
                   ))}
                 </div>
@@ -293,9 +293,9 @@ export default function EssaysView() {
             <div className="space-y-3">
               {QUESTION_TYPES.map((qt, i) => (
                 <div key={i}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
-                  <p className="text-xs italic text-gray-500 dark:text-gray-400 mb-2">{qt.stem}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{qt.guidance}</p>
+                  className="bg-white border border-[#D2D2D7] rounded-xl p-4"
+                  <p className="text-xs italic text-[#6E6E73] mb-2">{qt.stem}</p>
+                  <p className="text-sm text-[#1D1D1F] leading-relaxed">{qt.guidance}</p>
                 </div>
               ))}
             </div>
@@ -305,18 +305,18 @@ export default function EssaysView() {
             <div className="space-y-3">
               {LEVEL5.map((m, i) => (
                 <div key={i}
-                  className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4">
-                  <p className="text-xs font-medium text-gray-900 dark:text-gray-100 mb-3">{i + 1}. {m.title}</p>
+                  className="bg-white border border-[#D2D2D7] rounded-xl p-4"
+                  <p className="text-xs font-medium text-[#1D1D1F] mb-3">{i + 1}. {m.title}</p>
                   <div className="grid grid-cols-2 gap-3">
                     {([['Level 4', m.l4, false], ['Level 5', m.l5, true]] as const).map(([label, text, good]) => (
                       <div key={label}>
                         <div className="flex items-center gap-1.5 mb-1.5">
                           <span className={`w-2 h-2 rounded-full ${good ? 'bg-green-500' : 'bg-red-400'}`} />
-                          <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
+                          <span className="text-[11px] font-medium text-[#6E6E73]">
                             {label}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">{text}</p>
+                        <p className="text-xs text-[#1D1D1F] leading-relaxed">{text}</p>
                       </div>
                     ))}
                   </div>
@@ -344,15 +344,13 @@ export default function EssaysView() {
                 const isOpen = expandedId === plan.id
                 return (
                   <div key={plan.id}
-                    className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                               rounded-xl overflow-hidden">
+                    className="bg-white border border-[#D2D2D7] rounded-xl overflow-hidden"
                     <div
                       onClick={() => setExpandedId(isOpen ? null : plan.id)}
-                      className="px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/40
-                                 flex items-start gap-3"
+                      className="px-4 py-3 cursor-pointer hover:bg-[#F5F5F7] flex items-start gap-3"
                     >
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                        <p className="text-sm font-medium text-[#1D1D1F]">
                           {plan.title}
                         </p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
@@ -360,15 +358,13 @@ export default function EssaysView() {
                             {new Date(plan.updated_at).toLocaleDateString('en-GB')}
                           </span>
                           {plan.source === 'exam' && (
-                            <span className="text-[10px] font-medium bg-violet-50 text-violet-700
-                                             dark:bg-violet-900/40 dark:text-violet-200
+                            <span className="text-[10px] font-medium bg-blue-50 text-[#0071E3]
                                              rounded-full px-2 py-0.5">
                               From past paper
                             </span>
                           )}
                           {plan.play && (
-                            <span className="text-[10px] font-medium bg-gray-100 text-gray-600
-                                             dark:bg-gray-700 dark:text-gray-300
+                            <span className="text-[10px] font-medium bg-[#E8E8ED] text-[#6E6E73]
                                              rounded-full px-2 py-0.5">
                               {plan.play === 'HAM' ? 'Hamlet' : 'Malfi'}
                             </span>
@@ -389,12 +385,12 @@ export default function EssaysView() {
                     </div>
 
                     {isOpen && (
-                      <div className="border-t border-gray-100 dark:border-gray-700 p-4 space-y-4">
+                      <div className="border-t border-[#E5E5EA] p-4 space-y-4">
                         {plan.thesis && (
                           <div>
                             <p className="text-[10px] font-semibold uppercase tracking-wide
-                                          text-violet-600 mb-1">Thesis</p>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed italic">
+                                          text-[#0071E3] mb-1">Thesis</p>
+                            <p className="text-sm text-[#1D1D1F] leading-relaxed italic">
                               {plan.thesis}
                             </p>
                           </div>
@@ -403,22 +399,22 @@ export default function EssaysView() {
                         {plan.paragraph_plan && plan.paragraph_plan.length > 0 && (
                           <div>
                             <p className="text-[10px] font-semibold uppercase tracking-wide
-                                          text-violet-600 mb-2">Paragraph plan</p>
+                                          text-[#0071E3] mb-2">Paragraph plan</p>
                             <div className="space-y-2">
                               {plan.paragraph_plan.map((p, i) => (
-                                <div key={i} className="rounded-lg bg-gray-50 dark:bg-gray-700/40 p-3">
+                                <div key={i} className="rounded-lg bg-[#F5F5F7] p-3">
                                   <div className="flex items-start justify-between gap-2 mb-1">
-                                    <p className="text-xs font-medium text-gray-800 dark:text-gray-200">
+                                    <p className="text-xs font-medium text-[#1D1D1F]">
                                       {p.topic}
                                     </p>
                                     <div className="flex gap-1 flex-shrink-0">
                                       {(p.ao_focus ?? []).map(ao => (
-                                        <span key={ao} className="text-[9px] bg-violet-100
-                                          text-violet-700 rounded px-1.5 py-0.5">{ao}</span>
+                                        <span key={ao} className="text-[9px] bg-blue-50
+                                          text-[#0071E3] rounded px-1.5 py-0.5">{ao}</span>
                                       ))}
                                     </div>
                                   </div>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                                  <p className="text-xs text-[#6E6E73] leading-relaxed">
                                     {p.topic_sentence}
                                   </p>
                                 </div>
@@ -430,16 +426,15 @@ export default function EssaysView() {
                         {plan.sentence_stems && Object.keys(plan.sentence_stems).length > 0 && (
                           <div>
                             <p className="text-[10px] font-semibold uppercase tracking-wide
-                                          text-violet-600 mb-2">Sentence stems</p>
+                                          text-[#0071E3] mb-2">Sentence stems</p>
                             <div className="space-y-1.5">
                               {Object.entries(plan.sentence_stems)
                                 .filter(([, v]) => v)
                                 .map(([ao, stem]) => (
                                   <div key={ao} className="flex gap-2 text-xs">
-                                    <span className="font-semibold text-gray-500
+                                    <span className="font-semibold text-[#6E6E73]
                                                      flex-shrink-0 w-8">{ao}</span>
-                                    <span className="text-gray-700 dark:text-gray-300
-                                                     leading-relaxed">{stem}</span>
+                                    <span className="text-[#1D1D1F] leading-relaxed">{stem}</span>
                                   </div>
                                 ))}
                             </div>
@@ -449,17 +444,15 @@ export default function EssaysView() {
                         {plan.critic_positions && plan.critic_positions.length > 0 && (
                           <div>
                             <p className="text-[10px] font-semibold uppercase tracking-wide
-                                          text-violet-600 mb-2">Critic positions</p>
+                                          text-[#0071E3] mb-2">Critic positions</p>
                             <div className="space-y-2">
                               {plan.critic_positions.map((c, i) => (
-                                <div key={i} className="rounded-lg border border-gray-200
-                                  dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
-                                  <p className="text-xs font-semibold text-gray-800
-                                                dark:text-gray-200 mb-0.5">{c.critic}</p>
-                                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 italic">
+                                <div key={i} className="rounded-lg border border-[#D2D2D7] bg-white p-3">
+                                  <p className="text-xs font-semibold text-[#1D1D1F] mb-0.5">{c.critic}</p>
+                                  <p className="text-xs text-[#6E6E73] mb-1 italic">
                                     {c.position}
                                   </p>
-                                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
+                                  <p className="text-xs text-[#6E6E73] leading-relaxed">
                                     {c.embed}
                                   </p>
                                 </div>
@@ -471,8 +464,8 @@ export default function EssaysView() {
                         {plan.model_paragraph && (
                           <div>
                             <p className="text-[10px] font-semibold uppercase tracking-wide
-                                          text-violet-600 mb-1">Model paragraph</p>
-                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                          text-[#0071E3] mb-1">Model paragraph</p>
+                            <p className="text-sm text-[#1D1D1F] leading-relaxed">
                               {plan.model_paragraph}
                             </p>
                           </div>

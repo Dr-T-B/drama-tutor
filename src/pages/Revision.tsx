@@ -55,7 +55,7 @@ export function Revision() {
           {masteredCount}/{totalCards} mastered
         </span>
         {dueDeck.length > 0 && (
-          <span className="ml-auto bg-violet-100 text-violet-700 text-sm
+          <span className="ml-auto bg-blue-50 text-[#0071E3] text-sm
                            font-semibold px-2.5 py-0.5 rounded-full">
             {dueDeck.length} due
           </span>
@@ -78,7 +78,7 @@ export function Revision() {
           {/* Progress bar */}
           <div className="w-full bg-gray-100 rounded-full h-1.5">
             <div
-              className="bg-violet-500 h-1.5 rounded-full transition-all"
+              className="bg-[#0071E3] h-1.5 rounded-full transition-all"
               style={{ width: `${((cardIndex) / dueDeck.length) * 100}%` }}
             />
           </div>
@@ -93,16 +93,16 @@ export function Revision() {
               'rounded-2xl border cursor-pointer select-none min-h-48',
               'flex flex-col gap-3 p-6 transition-all',
               flipped
-                ? 'bg-gray-900 text-white border-gray-700'
-                : 'bg-white text-gray-900 border-gray-200 hover:border-violet-300',
+                ? 'bg-[#1D1D1F] text-white border-[#1D1D1F]'
+                : 'bg-white text-[#1D1D1F] border-[#D2D2D7] hover:border-[#0071E3]',
             ].join(' ')}
           >
             <div className="flex items-center justify-between">
               <AoBadge ao={currentCard.ao_focus} />
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full
                 ${flipped
-                  ? 'bg-gray-700 text-gray-300'
-                  : 'bg-gray-100 text-gray-500'}`}>
+                  ? 'bg-white/20 text-white'
+                  : 'bg-gray-100 text-[#6E6E73]'}`}>
                 {currentCard.card_type === 'quote' ? 'Quote' : 'Theme'}
               </span>
             </div>

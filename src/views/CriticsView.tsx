@@ -25,10 +25,10 @@ type CriticEntry = {
 }
 
 const AO_CLS: Record<string, string> = {
-  AO1: 'bg-amber-50 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-  AO2: 'bg-blue-50  text-blue-800  dark:bg-blue-900/40  dark:text-blue-200',
-  AO3: 'bg-red-50   text-red-800   dark:bg-red-900/40   dark:text-red-200',
-  AO5: 'bg-teal-50  text-teal-800  dark:bg-teal-900/40  dark:text-teal-200',
+  AO1: 'bg-amber-50 text-amber-800',
+  AO2: 'bg-blue-50 text-blue-800',
+  AO3: 'bg-red-50 text-red-800',
+  AO5: 'bg-teal-50 text-teal-800',
 }
 
 // Component 1 Drama (9ET0/01) AOs:
@@ -165,7 +165,7 @@ export default function CriticsView() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-5">
       <div>
-        <h1 className="text-xl font-medium text-gray-900 dark:text-gray-100">Critics library</h1>
+        <h1 className="text-xl font-semibold text-[#1D1D1F]">Critics library</h1>
         <p className="text-sm text-gray-400 mt-0.5">
           {filtered.length} of {critics.length} critics ·{' '}
           {play === 'HAM' ? 'Hamlet' : play === 'MAL' ? 'The Duchess of Malfi' : 'Both plays'}
@@ -173,8 +173,8 @@ export default function CriticsView() {
       </div>
 
       <div className="flex items-center justify-between flex-wrap gap-2
-                      px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/60
-                      text-xs text-gray-500 dark:text-gray-400">
+                      px-3 py-2 rounded-lg bg-[#F5F5F7] border border-[#E5E5EA]
+                      text-xs text-[#6E6E73]">
         <span>{sectionLabel} · {sectionAoNote}</span>
         <span className="flex items-center gap-2">
           {visibleAOs.map(ao => (
@@ -197,30 +197,30 @@ export default function CriticsView() {
             <button key={ao} onClick={() => toggle(selAOs, setSelAOs, ao)}
               className={`px-2.5 py-0.5 rounded-full text-xs border transition-colors ${
                 selAOs.has(ao)
-                  ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-gray-900'
-                  : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-500'
+                  ? 'bg-[#0071E3] text-white border-[#0071E3]'
+                  : 'border-[#D2D2D7] text-[#6E6E73] hover:border-[#A1A1A6]'
               }`}>{ao}</button>
           ))}
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-xs text-gray-400 w-16 shrink-0">School</span>
+          <span className="text-xs text-[#6E6E73] w-16 shrink-0">School</span>
           {schools.map(s => (
             <button key={s} onClick={() => toggle(selSchools, setSelSchools, s)}
               className={`px-2.5 py-0.5 rounded-full text-xs border transition-colors ${
                 selSchools.has(s)
-                  ? 'bg-gray-900 text-white border-gray-900 dark:bg-white dark:text-gray-900'
-                  : 'border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-500'
+                  ? 'bg-[#0071E3] text-white border-[#0071E3]'
+                  : 'border-[#D2D2D7] text-[#6E6E73] hover:border-[#A1A1A6]'
               }`}>{s}</button>
           ))}
         </div>
         <div className="flex gap-2">
           <input type="search" value={search} onChange={e => setSearch(e.target.value)}
             placeholder="Search critics, themes, arguments…"
-            className="flex-1 text-sm px-3 py-1.5 rounded-full border border-gray-300
-                       dark:border-gray-600 bg-transparent focus:outline-none focus:border-gray-500" />
+            className="flex-1 text-sm px-3 py-1.5 rounded-full border border-[#D2D2D7]
+                       bg-white text-[#1D1D1F] focus:outline-none focus:border-[#0071E3]" />
           <button onClick={clearAll}
-            className="text-xs px-3 py-1.5 rounded-full border border-gray-300
-                       dark:border-gray-600 text-gray-500 hover:border-gray-400">
+            className="text-xs px-3 py-1.5 rounded-full border border-[#D2D2D7]
+                       text-[#6E6E73] hover:border-[#A1A1A6]">
             Clear all
           </button>
         </div>
@@ -242,14 +242,13 @@ export default function CriticsView() {
                 const expanded = expandedId === id
                 return (
                   <div key={id}
-                    className="bg-white dark:bg-gray-800 border border-gray-200
-                               dark:border-gray-700 rounded-xl p-4 flex flex-col gap-3">
+                    className="bg-white border border-[#D2D2D7] rounded-xl p-4 flex flex-col gap-3"
+                    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
 
                     {/* Row 1: school + AO tags */}
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-gray-100
-                                       dark:bg-gray-700 text-gray-500 dark:text-gray-300
-                                       leading-snug shrink-0 max-w-[55%]">
+                      <span className="text-[11px] px-2 py-0.5 rounded bg-[#E8E8ED]
+                                       text-[#6E6E73] leading-snug shrink-0 max-w-[55%]">
                         {c.school}
                       </span>
                       <div className="flex gap-1 flex-wrap justify-end">
@@ -266,22 +265,21 @@ export default function CriticsView() {
 
                     {/* Row 2: name + year */}
                     <div className="flex items-baseline gap-2">
-                      <span className="font-medium text-gray-900 dark:text-gray-100">{c.name}</span>
+                      <span className="font-semibold text-[#1D1D1F]">{c.name}</span>
                       {c.year && (
                         <span className="text-xs text-gray-400">{c.year}</span>
                       )}
                     </div>
 
                     {/* Row 3: interpretation (clamped to 3 lines) */}
-                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed
-                                  line-clamp-3">
+                    <p className="text-sm text-[#1D1D1F] leading-relaxed line-clamp-3">
                       {c.interpretation}
                     </p>
 
                     {/* Row 4: short quote blockquote */}
                     {c.short_quote && (
-                      <div className="border-l-2 border-gray-300 dark:border-gray-500 pl-3">
-                        <p className="text-xs italic text-gray-500 dark:text-gray-400 leading-relaxed">
+                      <div className="border-l-2 border-[#D2D2D7] pl-3">
+                        <p className="text-xs italic text-[#6E6E73] leading-relaxed">
                           {c.short_quote}
                         </p>
                       </div>
@@ -293,8 +291,7 @@ export default function CriticsView() {
                         {c.themes.map(t => (
                           <span key={t}
                             className="text-[11px] px-2 py-0.5 rounded
-                                       bg-gray-100 dark:bg-gray-700/60
-                                       text-gray-500 dark:text-gray-400">
+                                       bg-[#E8E8ED] text-[#6E6E73]">
                             {t}
                           </span>
                         ))}
@@ -305,40 +302,33 @@ export default function CriticsView() {
                     <button
                       onClick={() => setExpandedId(expanded ? null : id)}
                       className="self-start text-xs px-2.5 py-1 rounded-lg border
-                                 border-gray-200 dark:border-gray-700
-                                 text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/50
-                                 transition-colors">
+                                 border-[#D2D2D7] text-[#6E6E73] hover:bg-gray-50 transition-colors">
                       {expanded ? '▲ hide exam notes' : '▼ exam notes'}
                     </button>
 
                     {/* Expanded: three-move dialectical panel */}
                     {expanded && (
-                      <div className="border-t border-gray-100 dark:border-gray-700
-                                      pt-3 flex flex-col gap-2.5">
+                      <div className="border-t border-[#E5E5EA] pt-3 flex flex-col gap-2.5">
 
                         {/* Move 1 — Establish */}
-                        <div className="rounded-lg p-3
-                                        bg-teal-50 dark:bg-teal-900/20
-                                        border border-teal-100 dark:border-teal-800/40">
+                        <div className="rounded-lg p-3 bg-teal-50 border border-teal-100">
                           <p className="text-[10px] font-semibold uppercase tracking-wider
-                                        text-teal-700 dark:text-teal-400 mb-1.5">
+                                        text-teal-700 mb-1.5">
                             Move 1 — Establish
                           </p>
-                          <p className="text-xs text-teal-900 dark:text-teal-200 leading-relaxed">
+                          <p className="text-xs text-teal-900 leading-relaxed">
                             {c.school} perspective: {c.interpretation}
                           </p>
                         </div>
 
                         {/* Move 2 — Challenge */}
                         {c.counter_reading && (
-                          <div className="rounded-lg p-3
-                                          bg-red-50 dark:bg-red-900/20
-                                          border border-red-100 dark:border-red-800/40">
+                          <div className="rounded-lg p-3 bg-red-50 border border-red-100">
                             <p className="text-[10px] font-semibold uppercase tracking-wider
-                                          text-red-700 dark:text-red-400 mb-1.5">
+                                          text-red-700 mb-1.5">
                               Move 2 — Challenge
                             </p>
-                            <p className="text-xs text-red-900 dark:text-red-200 leading-relaxed">
+                            <p className="text-xs text-red-900 leading-relaxed">
                               {c.counter_reading}
                             </p>
                           </div>
@@ -346,14 +336,12 @@ export default function CriticsView() {
 
                         {/* Move 3 — Advance */}
                         {c.exam_tip && (
-                          <div className="rounded-lg p-3
-                                          bg-blue-50 dark:bg-blue-900/20
-                                          border border-blue-100 dark:border-blue-800/40">
+                          <div className="rounded-lg p-3 bg-blue-50 border border-blue-100">
                             <p className="text-[10px] font-semibold uppercase tracking-wider
-                                          text-blue-700 dark:text-blue-400 mb-1.5">
+                                          text-blue-700 mb-1.5">
                               Move 3 — Advance
                             </p>
-                            <p className="text-xs text-blue-900 dark:text-blue-200 leading-relaxed">
+                            <p className="text-xs text-blue-900 leading-relaxed">
                               {c.exam_tip}
                             </p>
                           </div>
@@ -362,11 +350,11 @@ export default function CriticsView() {
                         {/* Deployable AO5 sentence — Section A (Hamlet) only */}
                         {c.usable_ao5_sentence && c.play_title === 'Hamlet' && (
                           <div>
-                            <p className="text-[10px] font-medium text-gray-500 dark:text-gray-400 mb-1">
+                            <p className="text-[10px] font-medium text-[#6E6E73] mb-1">
                               Deployable AO5 sentence
                             </p>
-                            <div className="border-l-2 border-gray-200 dark:border-gray-600 pl-3">
-                              <p className="text-xs italic text-gray-600 dark:text-gray-300 leading-relaxed">
+                            <div className="border-l-2 border-[#D2D2D7] pl-3">
+                              <p className="text-xs italic text-[#1D1D1F] leading-relaxed">
                                 {c.usable_ao5_sentence}
                               </p>
                             </div>

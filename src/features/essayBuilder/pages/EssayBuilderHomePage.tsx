@@ -18,10 +18,10 @@ export function EssayBuilderHomePage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-6">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
+        <h1 className="text-2xl font-semibold text-[#1D1D1F]">
           Essay Builder
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+        <p className="text-sm text-[#6E6E73] mt-1 leading-relaxed">
           Choose a question, then choose between four essay routes — the app will
           explain why each one works or fails.
         </p>
@@ -98,11 +98,11 @@ function QuestionRow({
 
   return (
     <li
-      className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
-                 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3"
+      className="bg-white border border-[#D2D2D7] rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-3"
+      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
     >
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+        <p className="text-sm text-[#1D1D1F] leading-relaxed">
           {q.question_text}
         </p>
         {q.question_year !== null && (
@@ -113,8 +113,8 @@ function QuestionRow({
       <button
         onClick={onStart}
         disabled={!authReady || start.isPending}
-        className="px-4 py-2 rounded-md text-sm font-medium bg-violet-600 text-white
-                   hover:bg-violet-700 disabled:bg-gray-300 disabled:cursor-not-allowed
+        className="px-4 py-2 rounded-lg text-sm font-medium bg-[#0071E3] text-white
+                   hover:bg-[#0077ED] disabled:bg-gray-300 disabled:cursor-not-allowed
                    transition-colors shrink-0"
       >
         {start.isPending ? 'Starting…' : 'Start'}
