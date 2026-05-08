@@ -217,7 +217,7 @@ export default function EssaysView() {
             <div className="space-y-3">
               {PHASES.map(ph => (
                 <div key={ph.num}
-                  className="bg-white border border-[#D2D2D7] rounded-xl p-4"
+                  className="bg-white border border-[#D2D2D7] rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="w-6 h-6 rounded-full bg-[#E8E8ED] flex items-center
                                      justify-center text-xs font-medium text-[#1D1D1F]">
@@ -293,7 +293,7 @@ export default function EssaysView() {
             <div className="space-y-3">
               {QUESTION_TYPES.map((qt, i) => (
                 <div key={i}
-                  className="bg-white border border-[#D2D2D7] rounded-xl p-4"
+                  className="bg-white border border-[#D2D2D7] rounded-xl p-4">
                   <p className="text-xs italic text-[#6E6E73] mb-2">{qt.stem}</p>
                   <p className="text-sm text-[#1D1D1F] leading-relaxed">{qt.guidance}</p>
                 </div>
@@ -305,7 +305,7 @@ export default function EssaysView() {
             <div className="space-y-3">
               {LEVEL5.map((m, i) => (
                 <div key={i}
-                  className="bg-white border border-[#D2D2D7] rounded-xl p-4"
+                  className="bg-white border border-[#D2D2D7] rounded-xl p-4">
                   <p className="text-xs font-medium text-[#1D1D1F] mb-3">{i + 1}. {m.title}</p>
                   <div className="grid grid-cols-2 gap-3">
                     {([['Level 4', m.l4, false], ['Level 5', m.l5, true]] as const).map(([label, text, good]) => (
@@ -344,7 +344,7 @@ export default function EssaysView() {
                 const isOpen = expandedId === plan.id
                 return (
                   <div key={plan.id}
-                    className="bg-white border border-[#D2D2D7] rounded-xl overflow-hidden"
+                    className="bg-white border border-[#D2D2D7] rounded-xl overflow-hidden">
                     <div
                       onClick={() => setExpandedId(isOpen ? null : plan.id)}
                       className="px-4 py-3 cursor-pointer hover:bg-[#F5F5F7] flex items-start gap-3"
