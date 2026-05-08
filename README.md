@@ -129,6 +129,83 @@ relevant importer propagates changes through. Idempotency is implemented by:
 - delete-then-insert for child rows (theme_guidance, plan_paragraphs,
   quote_ao_links, etc.) which lack a stable composite unique key
 
+## Mode D — Duchess Trainer
+
+Mode D is a five-round multiple-choice essay trainer for The Duchess of Malfi,
+Section B, AO1/AO2/AO3 only. Each route presents five paragraph-level options
+(A–D, scored 0–4) and delivers examiner-voice feedback after each choice.
+
+### Setup
+
+Run the Supabase migration once to create the schema:
+
+```bash
+# In Supabase SQL editor:
+# paste supabase/migrations/15_mode_d_duchess_trainer.sql
+```
+
+Then seed the foundation reference data and import content:
+
+```bash
+npm run import-mode-d-foundation            # routes, rounds, templates
+npm run import-mode-d-d004d-court-surveillance  # 20 Route B stems
+npm run import-mode-d-d007-patriarchal-control  # 5 annotated paragraphs
+# or run both content importers in one step:
+npm run import-mode-d-route-b-and-reveal
+```
+
+### Routes
+
+#### Route A — Patriarchal Control (LEVEL_5_ENTRY · recommended)
+
+Open the trainer:
+  /mode-d/duchess/patriarchal-control
+
+Read the annotated model essay (D007):
+  /mode-d/duchess/patriarchal-control/reveal
+
+A 5-paragraph Level 5 worked example with inline AO annotations.
+~878 words, ~7 minute study read.
+
+#### Route B — Court Surveillance (LEVEL_5_ADVANCED)
+
+Run the importer:
+  npm run import-mode-d-d004d-court-surveillance
+
+Open the trainer:
+  /mode-d/duchess/court-surveillance
+
+Risk: this route can drift toward Bosola character study. The
+trainer's C-options diagnose that drift and the feedback
+redirects to Webster's system-level critique.
+
+#### Route C — Resistance and Identity (LEVEL_5_ADVANCED)
+
+Foundation imported · stems pending.
+
+### Hub
+
+  /mode-d/duchess
+
+Lists all routes with difficulty band, risk warning, and trainer/essay links.
+
+### Verify after import
+
+```bash
+npx tsx scripts/verify_mode_d_duchess.ts
+```
+
+Or run the SQL block in `sql/post_import_verification.sql` (Mode D section).
+
+### AO compliance hard rules (enforced at schema + validator level)
+
+- Duchess only (`play_code = 'DUCHESS'`)
+- Section B only (`exam_section_code = 'SECTION_B_OTHER_DRAMA'`)
+- AO1/AO2/AO3 only — AO4/AO5 blocked by CHECK constraint
+- One best answer per round per route (partial unique index)
+- R5 (CONCLUSION) best answer and annotations must exclude AO2
+- No Hamlet content, no critic-led AO5, no comparison phrasing
+
 ## Notes & limitations
 
 - **Service-role key required.** The anon key cannot bypass RLS for content

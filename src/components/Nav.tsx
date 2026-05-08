@@ -13,6 +13,7 @@ const LINKS: NavLink[] = [
   { to: '/acts',     label: 'Acts & Scenes' },
   { to: '/guide',    label: 'Recall Guide' },
   { to: '/compass',  label: 'Compass' },
+  { to: '/mode-d/duchess', label: 'Mode D', highlight: true },
 ]
 
 export function Nav() {

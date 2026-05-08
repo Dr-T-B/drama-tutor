@@ -22,7 +22,12 @@
     "import-context": "tsx scripts/importers/09_context_entries.ts",
     "import-exam-skills": "tsx scripts/importers/10_exam_skills.ts",
     "import-vocab": "tsx scripts/importers/11_vocabulary.ts",
-    "import-exam-questions": "tsx scripts/importers/12_exam_questions.ts"
+    "import-exam-questions": "tsx scripts/importers/12_exam_questions.ts",
+    "import-mode-d-foundation": "tsx scripts/importers/13_mode_d_foundation.ts",
+    "import-mode-d-d004d-court-surveillance": "tsx scripts/importers/14_mode_d_d004d_court_surveillance.ts",
+    "import-mode-d-d007-patriarchal-control": "tsx scripts/importers/15_mode_d_d007_patriarchal_control.ts",
+    "import-mode-d-d004d-patriarchal-control": "tsx scripts/importers/16_mode_d_d004d_patriarchal_control.ts",
+    "import-mode-d-route-b-and-reveal": "npm run import-mode-d-d004d-court-surveillance && npm run import-mode-d-d007-patriarchal-control"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.1",
