@@ -62,6 +62,47 @@ union all
 select 'orphan theme_guidance (no theme)', count(*)
   from theme_guidance tg left join themes th on th.id = tg.theme_id where th.id is null;
 
+-- ─── Mode D Duchess verification block ──────────────────────────────────────
+select 'D004D Route B row count' as check, count(*) = 20 as ok
+  from mode_d_duchess_mcq_stem_options
+  where route_key = 'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_B_COURT_SURVEILLANCE';
+
+select 'D004D Route B best answers' as check, count(*) = 5 as ok
+  from mode_d_duchess_mcq_stem_options
+  where route_key = 'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_B_COURT_SURVEILLANCE'
+    and is_best_answer = true;
+
+select 'D004D Route B R5 best excludes AO2' as check, bool_and(not (ao_tags && array['AO2']::text[])) as ok
+  from mode_d_duchess_mcq_stem_options
+  where route_key = 'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_B_COURT_SURVEILLANCE'
+    and round_number = 5 and is_best_answer = true;
+
+select 'D004D total Duchess rows >= 20' as check, count(*) >= 20 as ok
+  from mode_d_duchess_mcq_stem_options;
+
+select 'D007 Patriarchal Control paragraph count' as check, count(*) = 5 as ok
+  from mode_d_annotated_essay_paragraphs
+  where route_key = 'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL';
+
+select 'D007 distinct rounds' as check, count(distinct round_number) = 5 as ok
+  from mode_d_annotated_essay_paragraphs
+  where route_key = 'MODE_D_D002R_DUCHESS_CONTROL_ROUTE_A_PATRIARCHAL_CONTROL';
+
+select 'D007 all paragraphs have annotations' as check, bool_and(jsonb_array_length(annotations) > 0) as ok
+  from mode_d_annotated_essay_paragraphs;
+
+select 'D007 R5 annotations exclude AO2' as check,
+       bool_and(not exists (
+         select 1 from jsonb_array_elements(annotations) a
+         where a->'ao_tags' @> '"AO2"'::jsonb
+       )) as ok
+  from mode_d_annotated_essay_paragraphs
+  where round_number = 5;
+
+select 'D007 all paragraphs draft+pending' as check, count(*) = 5 as ok
+  from mode_d_annotated_essay_paragraphs
+  where marking_status = 'draft' and quote_verification_status = 'pending';
+
 -- ─── AO4 guard check (should fail with a constraint / trigger error) ─────────
 -- Uncomment to test that AO4 quote links cannot be inserted.
 -- insert into quote_ao_links (quote_id, ao_code, note)
