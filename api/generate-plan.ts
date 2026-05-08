@@ -133,40 +133,36 @@ TRANSITIONS — use these instead of "Secondly":
 • What initially appears to be [X] becomes [Y]…
 • This contradiction reaches its most disturbing form in…
 
-═══════════════════════════════════════
-RESPONSE FORMAT
-═══════════════════════════════════════
+OUTPUT FORMAT — STRICT. Follow this exactly. No tables. No HTML. No markdown tables using | pipes.
 
-Use these exact headers with ** **:
+Use this structure:
 
-**CONTROLLING THESIS**
-(Adapted from the thesis bank — 1-2 sentences. Must name the conceptual reading, not just the topic.)
+## CONTROLLING THESIS
+One sentence. Bold, specific, arguable.
 
-**INTRODUCTION STRUCTURE**
-(Apply the intro formula. Show the student exactly what their opening should argue, including which AO5 debate to open with — Hamlet only.)
+## INTRODUCTION
+3–4 sentences of flowing prose. Name the key scenes. State the AO5 tension in one sentence. End with the thesis restated as a dramatic argument.
 
-**PARAGRAPH 1**
-Dramatic location: | Argument (sentence stem): | AO2 method + how it works: | AO3 context (integrated not bolted on): | AO5 debate route (Hamlet only — name both interpretations): | Judgement sentence:
+## PARAGRAPH 1: [TITLE IN CAPS]
+**Scene:** [Act.Scene — brief description]
+**1. Topic:** One sentence stating the argument for this paragraph.
+**2. Quote:** Exact quote in "quotation marks" with (Act.Scene reference).
+**3. Method + Effect:** Name the AO2 method. One sentence on dramatic effect.
+**4. Context:** One sentence of AO3 historical/contextual point, integrated.
+**5. Critic (Hamlet only):** Name + position in one sentence. One counter-position.
 
-**PARAGRAPH 2**
-(same structure — must show structural development from Para 1 using a transition)
+[Repeat PARAGRAPH structure for each paragraph — 3 paragraphs total]
 
-**PARAGRAPH 3**
-(same structure)
+## CONCLUSION
+2 sentences. Return to thesis. Name the biggest AO5 tension unresolved.
 
-**PARAGRAPH 4**
-(Hamlet only — fourth paragraph giving further AO5 development or structural culmination)
+## PRE-WRITING CHECKLIST
+- Thesis locked? [ ]
+- 3 quotes selected from the bank? [ ]
+- AO5 debate route chosen (Hamlet only)? [ ]
+- Timing: Section A 8 min plan / 58 min write. Section B 6 min plan / 42 min write.
 
-**CONCLUSION**
-(2-3 sentences: what the essay has established about the dramatist's purpose. End with the play's wider tragic significance.)
-
-**TIMING**
-Section A: 8 min plan, 58 min write, check. Section B: 6 min plan, 42 min write, check.
-
-**PRE-WRITING CHECKLIST**
-List 4-5 things to verify before starting to write, drawn from the non-negotiable rules for this section.
-
-Name exact scenes. Give quote directions — phrase or moment, not full quote. Every AO2 method must be linked to its dramatic effect on the audience. Pitch at Level 5 / A* throughout.`;
+CRITICAL: You must use quotes from the NEHA'S QUOTE BANK section. Do not use any other quotes. Do not use tables at any point in the output.`;
 
 type QuoteRow = {
   content: string | null;
@@ -282,7 +278,7 @@ You MUST use quotes from this bank in the essay plan. Reference the exact quote 
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1500,
+      max_tokens: 4000,
       stream: true,
       system: systemPrompt,
       messages: [{ role: 'user', content: userMsg }],
