@@ -59,10 +59,10 @@ export interface ThemeQuoteBank {
 }
 
 const HAMLET_AO_WEIGHTS: Record<string, number> = {
-  AO1: 12, AO2: 12, AO3: 6, AO5: 5
+  AO1: 7, AO2: 7, AO3: 7, AO5: 14
 }
 const MALFI_AO_WEIGHTS: Record<string, number> = {
-  AO1: 8, AO2: 8, AO3: 6
+  AO1: 8, AO2: 8, AO3: 9
 }
 
 export const pastPaperQuestions: PastPaperQuestion[] = [
