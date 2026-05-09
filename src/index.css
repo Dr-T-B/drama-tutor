@@ -19,3 +19,52 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
 }
+
+@media print {
+  nav,
+  header,
+  aside,
+  [role="tablist"],
+  [role="tab"],
+  .print-hide {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .grid {
+    display: block !important;
+  }
+
+  body {
+    background: white !important;
+    color: #000 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  @page {
+    margin: 2cm;
+  }
+
+  h1, h2, h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  p, li {
+    orphans: 3;
+    widows: 3;
+  }
+  .print-keep-together {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
