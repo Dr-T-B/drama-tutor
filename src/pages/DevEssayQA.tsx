@@ -24,6 +24,7 @@ export function DevEssayQA() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [copyState, setCopyState] = useState<'idle' | 'copied'>('idle')
+  const [activeThemes, setActiveThemes] = useState<string[]>([])
 
   async function generate() {
     if (!selected) return
@@ -85,6 +86,8 @@ export function DevEssayQA() {
         <PastQuestionSelector
           selectedQuestionId={selected?.id ?? null}
           onSelect={(q) => setSelected(q)}
+          activeThemes={activeThemes}
+          onActiveThemesChange={setActiveThemes}
         />
       </div>
 

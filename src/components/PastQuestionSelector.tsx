@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { pastPaperQuestions, type PastPaperQuestion } from '../data/pastPapers'
 import type { PastQuestion } from '../lib/duchessEssayPrompt'
 
@@ -30,11 +30,16 @@ function toPastQuestion(q: PastPaperQuestion): PastQuestion {
 interface Props {
   selectedQuestionId: string | null
   onSelect: (question: PastQuestion) => void
+  activeThemes: string[]
+  onActiveThemesChange: (themes: string[]) => void
 }
 
-export function PastQuestionSelector({ selectedQuestionId, onSelect }: Props) {
-  const [activeThemes, setActiveThemes] = useState<string[]>([])
-
+export function PastQuestionSelector({
+  selectedQuestionId,
+  onSelect,
+  activeThemes,
+  onActiveThemesChange,
+}: Props) {
   const duchessQuestions = useMemo(
     () => pastPaperQuestions.filter(q => q.play === 'MAL'),
     [],
@@ -59,15 +64,17 @@ export function PastQuestionSelector({ selectedQuestionId, onSelect }: Props) {
   )
 
   function toggleTheme(theme: string) {
-    setActiveThemes(prev =>
-      prev.includes(theme) ? prev.filter(t => t !== theme) : [...prev, theme],
+    onActiveThemesChange(
+      activeThemes.includes(theme)
+        ? activeThemes.filter(t => t !== theme)
+        : [...activeThemes, theme],
     )
   }
 
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">
+        <p className="text-sm font-semibold uppercase tracking-wide text-gray-700 mb-2">
           Filter by theme
         </p>
         <div className="flex flex-wrap gap-1.5 items-center">
@@ -77,7 +84,7 @@ export function PastQuestionSelector({ selectedQuestionId, onSelect }: Props) {
               <button
                 key={theme}
                 onClick={() => toggleTheme(theme)}
-                className={`text-[11px] rounded-full px-2.5 py-1 border transition-colors ${
+                className={`text-[12px] rounded-full px-2.5 py-1 border transition-colors ${
                   active
                     ? 'bg-[#0071E3] text-white border-[#0071E3]'
                     : 'bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100'
@@ -87,27 +94,18 @@ export function PastQuestionSelector({ selectedQuestionId, onSelect }: Props) {
               </button>
             )
           })}
-          {activeThemes.length > 0 && (
-            <button
-              onClick={() => setActiveThemes([])}
-              className="text-[11px] rounded-full px-2.5 py-1 border border-transparent
-                         text-gray-500 hover:text-gray-800 underline"
-            >
-              Clear filters
-            </button>
-          )}
         </div>
       </div>
 
       {visibleQuestions.length === 0 ? (
-        <p className="text-sm text-gray-400 italic py-4">
+        <p className="text-sm text-gray-700 italic py-4">
           No questions match the selected themes.
         </p>
       ) : (
         <div className="space-y-6">
           {years.map(year => (
             <div key={year}>
-              <p className="text-xs text-gray-400 font-medium mb-2">{year}</p>
+              <p className="text-sm text-gray-700 font-semibold mb-2">{year}</p>
               <div className="space-y-3">
                 {visibleQuestions
                   .filter(q => q.year === year)
