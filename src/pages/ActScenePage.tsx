@@ -23,7 +23,7 @@ export function ActScenePage() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <div className="mb-6">
+      <div className="mb-6 print-hide">
         <h1 className="text-2xl font-semibold text-gray-900">Acts &amp; Scenes</h1>
         <p className="text-gray-500 mt-1">
           Act-by-act revision — {PLAY_LABEL[activeTab]}
@@ -31,7 +31,7 @@ export function ActScenePage() {
       </div>
 
       {play === 'both' && (
-        <div className="mb-6 flex gap-1 border-b border-gray-200">
+        <div className="mb-6 flex gap-1 border-b border-gray-200 print-hide">
           {(['HAM', 'MAL'] as const).map(t => {
             const active = t === tab
             const cls = active
