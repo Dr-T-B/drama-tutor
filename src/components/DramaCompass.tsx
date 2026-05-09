@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PastQuestionSelector } from './PastQuestionSelector';
+import { PrintButton } from './PrintButton';
 import {
   buildDuchessSystemPrompt,
   buildDuchessUserMessage,
@@ -425,7 +426,7 @@ function PlanTab() {
   };
 
   const formCard = (
-    <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding: IS_MOBILE ? 18 : 28, marginBottom:20, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+    <div className="print-hide" style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding: IS_MOBILE ? 18 : 28, marginBottom:20, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
       <div style={{ marginBottom:16, color:S.text, fontSize: px(13,13), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Select text</div>
       <div style={{ display:'flex', gap:12, marginBottom:20 }}>
         {(['hamlet','duchess'] as const).map(p => (
@@ -468,26 +469,65 @@ function PlanTab() {
       {error && <div style={{ background:S.destructiveBg, border:`1px solid ${S.destructive}`, color:S.destructive, borderRadius:8, padding:16, fontSize:14, fontFamily:font, marginBottom:20 }}>{error}</div>}
 
       {(plan || loading) && (
-        <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding:28, boxShadow:'0 2px 8px rgba(0,0,0,0.08)', marginBottom:20 }}>
-          <div style={{ borderBottom:`1px solid ${S.borderFaint}`, marginBottom:20, paddingBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-            <span style={{ color:S.accent, fontFamily:font, fontWeight:600, fontSize:15 }}>
-              {useDuchessLockedScaffold ? 'Model Answer' : 'Essay Plan'}
-              {loading && <span style={{ marginLeft:10, color:S.text, fontSize:13, fontWeight:400 }}>· Generating…</span>}
-            </span>
-            <span style={{ color:S.text, fontSize:12, fontFamily:font }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 50 min'}</span>
-          </div>
-          <div>
-            {plan
-              ? (useDuchessLockedScaffold
-                  ? <div className="prose prose-sm max-w-none"><ReactMarkdown remarkPlugins={[remarkGfm]}>{plan}</ReactMarkdown></div>
-                  : renderPlan(plan))
-              : <div style={{ color:S.text, fontFamily:font, fontSize:14 }}>{useDuchessLockedScaffold ? 'Composing your model answer…' : 'Constructing your essay plan…'}</div>}
-          </div>
-          {stopped && plan && (
-            <div style={{ marginTop:16, paddingTop:12, borderTop:`1px solid ${S.borderFaint}`, color:S.text, fontFamily:font, fontSize:13, fontStyle:'italic' }}>
-              Generation stopped — partial output preserved above.
-            </div>
+        <article id="compass-essay-output">
+          {plan && (
+            <header className="hidden print-only" style={{ marginBottom: '1.5rem' }}>
+              <h1 style={{ fontSize: '16pt', margin: 0, fontFamily: 'Georgia, serif' }}>
+                Drama Tutor — Model Answer
+              </h1>
+              <p style={{ fontSize: '10pt', color: '#555', margin: '0.25rem 0 1rem' }}>
+                Generated {new Date().toLocaleDateString('en-GB', {
+                  day: 'numeric', month: 'long', year: 'numeric'
+                })}
+              </p>
+
+              {selectedPast ? (
+                <>
+                  <p style={{ margin: '0 0 0.5rem', fontWeight: 600, fontSize: '12pt' }}>
+                    {selectedPast.questionText}
+                  </p>
+                  <p style={{ fontSize: '10pt', color: '#555', margin: 0 }}>
+                    {selectedPast.year} · {selectedPast.eitherOr} · {selectedPast.marks} marks ·
+                    {' '}AO1×{selectedPast.aoWeightings.AO1},
+                    {' '}AO2×{selectedPast.aoWeightings.AO2},
+                    {' '}AO3×{selectedPast.aoWeightings.AO3}
+                  </p>
+                </>
+              ) : (
+                <p style={{ margin: 0, fontWeight: 600, fontSize: '12pt' }}>{question}</p>
+              )}
+
+              <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #ccc' }} />
+            </header>
           )}
+
+          <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding:28, boxShadow:'0 2px 8px rgba(0,0,0,0.08)', marginBottom:20 }}>
+            <div style={{ borderBottom:`1px solid ${S.borderFaint}`, marginBottom:20, paddingBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+              <span style={{ color:S.accent, fontFamily:font, fontWeight:600, fontSize:15 }}>
+                {useDuchessLockedScaffold ? 'Model Answer' : 'Essay Plan'}
+                {loading && <span style={{ marginLeft:10, color:S.text, fontSize:13, fontWeight:400 }}>· Generating…</span>}
+              </span>
+              <span style={{ color:S.text, fontSize:12, fontFamily:font }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 50 min'}</span>
+            </div>
+            <div>
+              {plan
+                ? (useDuchessLockedScaffold
+                    ? <div className="prose prose-sm max-w-none"><ReactMarkdown remarkPlugins={[remarkGfm]}>{plan}</ReactMarkdown></div>
+                    : renderPlan(plan))
+                : <div style={{ color:S.text, fontFamily:font, fontSize:14 }}>{useDuchessLockedScaffold ? 'Composing your model answer…' : 'Constructing your essay plan…'}</div>}
+            </div>
+            {stopped && plan && (
+              <div style={{ marginTop:16, paddingTop:12, borderTop:`1px solid ${S.borderFaint}`, color:S.text, fontFamily:font, fontSize:13, fontStyle:'italic' }}>
+                Generation stopped — partial output preserved above.
+              </div>
+            )}
+          </div>
+        </article>
+      )}
+
+      {plan && !loading && (
+        <div className="mt-4 mb-5 flex gap-2 print-hide">
+          <PrintButton />
         </div>
       )}
     </>

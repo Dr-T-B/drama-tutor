@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AoBadge } from './AoBadge'
+import { PrintButton } from './PrintButton'
 import type { ActScene, AOKey } from '../data/actScenes'
 
 const AO_RING: Record<AOKey, string> = {
@@ -166,8 +167,30 @@ function SceneDetail({ scene }: { scene: ActScene }) {
     ? scene.keyQuotes.filter(q => q.aos.includes(activeAO))
     : scene.keyQuotes
 
+  const textName = scene.play === 'HAM' ? 'Hamlet' : 'The Duchess of Malfi'
+
   return (
     <article className="flex flex-col gap-6">
+      {/* Print button — hidden on print */}
+      <div className="flex justify-end print-hide">
+        <PrintButton label="Print this scene" />
+      </div>
+
+      {/* Print-only metadata header */}
+      <header className="hidden print-only" style={{ marginBottom: '1.5rem' }}>
+        <h1 style={{ fontSize: '16pt', margin: 0, fontFamily: 'Georgia, serif' }}>
+          Drama Tutor — Acts &amp; Scenes
+        </h1>
+        <p style={{ fontSize: '10pt', color: '#555', margin: '0.25rem 0 1rem' }}>
+          {textName} · Act {scene.act}, Scene {scene.scene} · Generated{' '}
+          {new Date().toLocaleDateString('en-GB', {
+            day: 'numeric', month: 'long', year: 'numeric'
+          })}
+        </p>
+        <p style={{ margin: 0, fontWeight: 600, fontSize: '12pt' }}>{scene.title}</p>
+        <hr style={{ margin: '1rem 0', border: 'none', borderTop: '1px solid #ccc' }} />
+      </header>
+
       {/* Header */}
       <header className="flex flex-col gap-2">
         <h2 className="text-2xl font-semibold text-gray-900">
@@ -227,7 +250,7 @@ function SceneDetail({ scene }: { scene: ActScene }) {
         {filteredQuotes.map((q, i) => (
           <div
             key={i}
-            className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-3"
+            className="rounded-xl border border-gray-200 bg-white p-4 flex flex-col gap-3 print-keep-together"
           >
             <p className="text-xs uppercase text-gray-400 tracking-wide">
               {q.speaker} · Act {scene.act}, Scene {scene.scene}
