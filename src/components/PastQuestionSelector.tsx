@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { pastPaperQuestions, type PastPaperQuestion } from '../data/pastPapers'
 import type { PastQuestion } from '../lib/duchessEssayPrompt'
 
@@ -32,6 +32,7 @@ interface Props {
   onSelect: (question: PastQuestion) => void
   activeThemes: string[]
   onActiveThemesChange: (themes: string[]) => void
+  collapsibleYears?: boolean
 }
 
 export function PastQuestionSelector({
@@ -39,6 +40,7 @@ export function PastQuestionSelector({
   onSelect,
   activeThemes,
   onActiveThemesChange,
+  collapsibleYears = false,
 }: Props) {
   const duchessQuestions = useMemo(
     () => pastPaperQuestions.filter(q => q.play === 'MAL'),
@@ -69,6 +71,26 @@ export function PastQuestionSelector({
         ? activeThemes.filter(t => t !== theme)
         : [...activeThemes, theme],
     )
+  }
+
+  const [expandedYears, setExpandedYears] = useState<Set<number>>(new Set())
+
+  useEffect(() => {
+    if (!collapsibleYears) return
+    if (activeThemes.length === 0) {
+      setExpandedYears(new Set())
+    } else {
+      setExpandedYears(new Set(visibleQuestions.map(q => q.year)))
+    }
+  }, [collapsibleYears, activeThemes, visibleQuestions])
+
+  function toggleYear(year: number) {
+    setExpandedYears(prev => {
+      const next = new Set(prev)
+      if (next.has(year)) next.delete(year)
+      else next.add(year)
+      return next
+    })
   }
 
   return (
@@ -103,12 +125,35 @@ export function PastQuestionSelector({
         </p>
       ) : (
         <div className="space-y-6">
-          {years.map(year => (
+          {years.map(year => {
+            const yearQuestions = visibleQuestions.filter(q => q.year === year)
+            const isExpanded = collapsibleYears ? expandedYears.has(year) : true
+            return (
             <div key={year}>
-              <p className="text-sm text-gray-700 font-semibold mb-2">{year}</p>
+              {collapsibleYears ? (
+                <button
+                  type="button"
+                  onClick={() => toggleYear(year)}
+                  aria-expanded={isExpanded}
+                  className="flex items-center w-full mb-2 px-1 py-1 -mx-1 rounded-md hover:bg-gray-50 transition-colors"
+                >
+                  <span className="text-sm font-semibold text-gray-900">{year}</span>
+                  <span className="ml-2 text-xs text-gray-500">({yearQuestions.length})</span>
+                  <svg
+                    className="ml-auto w-4 h-4 text-gray-400 transition-transform duration-150"
+                    style={{ transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)' }}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.06 10 7.23 6.29a.75.75 0 111.04-1.08l4.39 4.25a.75.75 0 010 1.08l-4.39 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              ) : (
+                <p className="text-sm text-gray-700 font-semibold mb-2">{year}</p>
+              )}
+              {isExpanded && (
               <div className="space-y-3">
-                {visibleQuestions
-                  .filter(q => q.year === year)
+                {yearQuestions
                   .map(q => {
                     const isSelected = selectedQuestionId === q.id
                     return (
@@ -160,8 +205,10 @@ export function PastQuestionSelector({
                     )
                   })}
               </div>
+              )}
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

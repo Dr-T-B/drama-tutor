@@ -523,6 +523,7 @@ function PlanTab() {
         onSelect={(q) => { setSelectedPast(q); }}
         activeThemes={activeThemes}
         onActiveThemesChange={setActiveThemes}
+        collapsibleYears
       />
       {selectedPast && (
         <div style={{ marginTop:14, display:'flex', flexWrap:'wrap', alignItems:'center', gap:8 }}>
