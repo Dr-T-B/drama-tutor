@@ -520,19 +520,13 @@ function PlanTab() {
       </div>
       <PastQuestionSelector
         selectedQuestionId={selectedPast?.id ?? null}
-        onSelect={(q) => { setSelectedPast(q); }}
+        onSelect={(q) => { setSelectedPast(q); setQuestion(q.questionText); setSelectedTheme(null); }}
         activeThemes={activeThemes}
         onActiveThemesChange={setActiveThemes}
         collapsibleYears
       />
       {selectedPast && (
         <div style={{ marginTop:14, display:'flex', flexWrap:'wrap', alignItems:'center', gap:8 }}>
-          <button
-            onClick={() => { setQuestion(selectedPast.questionText); setSelectedTheme(null); }}
-            style={{ background:S.accent, border:`1px solid ${S.accent}`, color:'#FFFFFF', padding:"8px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,13), fontWeight:600 }}
-          >
-            Use this question
-          </button>
           <button
             onClick={() => setSelectedPast(null)}
             style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.text, padding:"8px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,13) }}
