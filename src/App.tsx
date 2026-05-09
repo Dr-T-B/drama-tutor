@@ -21,6 +21,7 @@ import { DuchessHubPage } from './features/mode-d/DuchessHubPage'
 import { PatriarchalControlPage } from './features/mode-d/routes/PatriarchalControlPage'
 import { CourtSurveillancePage } from './features/mode-d/routes/CourtSurveillancePage'
 import { PatriarchalControlRevealPage } from './features/mode-d/routes/PatriarchalControlRevealPage'
+import { DevEssayQA } from './pages/DevEssayQA'
 
 const qc = new QueryClient()
 
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/mode-d/duchess/patriarchal-control" element={<PatriarchalControlPage />} />
             <Route path="/mode-d/duchess/patriarchal-control/reveal" element={<PatriarchalControlRevealPage />} />
             <Route path="/mode-d/duchess/court-surveillance" element={<CourtSurveillancePage />} />
+            <Route path="/dev/essay-qa" element={<DevEssayQA />} />
             <Route path="*"         element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

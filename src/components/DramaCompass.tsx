@@ -1,4 +1,13 @@
 import { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { PastQuestionSelector } from './PastQuestionSelector';
+import {
+  buildDuchessSystemPrompt,
+  buildDuchessUserMessage,
+  buildDuchessUserMessageFromFreeText,
+  type PastQuestion,
+} from '../lib/duchessEssayPrompt';
 
 // ────────────────────────────────────────────────────────────────────────────
 // STYLES
@@ -348,21 +357,37 @@ function PlanTab() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const [selectedPast, setSelectedPast] = useState<PastQuestion | null>(null);
 
   const sample: Record<Play, string> = {
     hamlet: "Explore how Shakespeare presents Hamlet's treatment of women in the play.",
     duchess: "Explore how Webster presents the relationship between power and suffering in The Duchess of Malfi."
   };
 
+  const useDuchessLockedScaffold = play === 'duchess';
+
   const generate = async () => {
-    if (!question.trim()) return;
+    if (!question.trim() && !selectedPast) return;
     setLoading(true); setError(''); setPlan('');
     try {
-      const res = await fetch('/api/generate-plan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: question.trim(), play, theme: selectedTheme }),
-      });
+      let res: Response;
+      if (useDuchessLockedScaffold) {
+        const system = buildDuchessSystemPrompt();
+        const user = selectedPast
+          ? buildDuchessUserMessage(selectedPast)
+          : buildDuchessUserMessageFromFreeText(question.trim());
+        res = await fetch('/api/generate-duchess-essay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ system, user }),
+        });
+      } else {
+        res = await fetch('/api/generate-plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: question.trim(), play, theme: selectedTheme }),
+        });
+      }
       if (!res.ok || !res.body) throw new Error(`API error ${res.status}`);
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -392,21 +417,49 @@ function PlanTab() {
         <div style={{ marginBottom:8, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Thesis Bank — tap to use</div>
         <div style={{ display:'flex', flexWrap:'wrap', marginBottom:20 }}>
           {THESIS_BANK[play].map(({ focus, thesis }) => (
-            <span key={focus} onClick={() => { setQuestion(thesis); setSelectedTheme(focus); }} style={{ fontSize: px(12,11), padding:"3px 10px", borderRadius:6, background: selectedTheme===focus ? S.accentBg : '#E8E8ED', color: selectedTheme===focus ? S.accent : S.text, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:font, cursor:'pointer', transition:'background 0.15s' }}>
+            <span key={focus} onClick={() => { setQuestion(thesis); setSelectedTheme(focus); setSelectedPast(null); }} style={{ fontSize: px(12,11), padding:"3px 10px", borderRadius:6, background: selectedTheme===focus ? S.accentBg : '#E8E8ED', color: selectedTheme===focus ? S.accent : S.text, marginRight:4, marginBottom:4, display:"inline-block", fontFamily:font, cursor:'pointer', transition:'background 0.15s' }}>
               {focus}
             </span>
           ))}
         </div>
+        {play === 'duchess' && (
+          <div style={{ marginBottom:20, padding:'14px 14px 16px', border:`1px solid ${S.border}`, borderRadius:10, background:'#FAFAFA' }}>
+            <div style={{ marginBottom:10, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Past papers — Duchess of Malfi</div>
+            <PastQuestionSelector
+              selectedQuestionId={selectedPast?.id ?? null}
+              onSelect={(q) => { setSelectedPast(q); }}
+            />
+            {selectedPast && (
+              <div style={{ marginTop:12, display:'flex', flexWrap:'wrap', alignItems:'center', gap:10 }}>
+                <button
+                  onClick={() => { setQuestion(selectedPast.questionText); setSelectedTheme(null); }}
+                  style={{ background:S.accent, border:`1px solid ${S.accent}`, color:'#FFFFFF', padding:"8px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,12), fontWeight:600 }}
+                >
+                  Use this question
+                </button>
+                <button
+                  onClick={() => setSelectedPast(null)}
+                  style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"8px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,12) }}
+                >
+                  Clear selection
+                </button>
+                <span style={{ fontSize: px(11,10), color:S.muted, fontFamily:font }}>
+                  {selectedPast.year} · {selectedPast.eitherOr} · {selectedPast.marks} marks
+                </span>
+              </div>
+            )}
+          </div>
+        )}
         <div style={{ marginBottom:16, color:S.muted, fontSize: px(11,10), fontFamily:font, letterSpacing:1, textTransform:'uppercase', fontWeight:600 }}>Exam question</div>
-        <textarea value={question} onChange={e=>{ setQuestion(e.target.value); setSelectedTheme(null); }}
+        <textarea value={question} onChange={e=>{ setQuestion(e.target.value); setSelectedTheme(null); setSelectedPast(null); }}
           placeholder={`e.g. "${sample[play]}"`}
           style={{ width:'100%', minHeight: IS_MOBILE ? 110 : 90, background:'#FFFFFF', border:`1px solid ${S.border}`, borderRadius:8, color:S.text, padding:14, fontSize: px(15,13), fontFamily:font, resize:'vertical', outline:'none', lineHeight:1.6, boxSizing:'border-box' }} />
         <div style={{ display:'flex', flexDirection: IS_MOBILE ? 'column' : 'row', justifyContent:'space-between', alignItems: IS_MOBILE ? 'stretch' : 'center', marginTop:14, gap: IS_MOBILE ? 10 : 0 }}>
-          <button onClick={()=>{ setQuestion(sample[play]); setSelectedTheme(null); }} style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"10px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,11) }}>
+          <button onClick={()=>{ setQuestion(sample[play]); setSelectedTheme(null); setSelectedPast(null); }} style={{ background:'transparent', border:`1px solid ${S.border}`, color:S.muted, padding:"10px 14px", borderRadius:8, cursor:'pointer', fontFamily:font, fontSize: px(13,11) }}>
             Use sample question
           </button>
-          <button onClick={generate} disabled={loading||!question.trim()} style={{ background:loading?'transparent':S.accent, border:`1px solid ${loading?S.border:S.accent}`, color:loading?S.muted:'#FFFFFF', padding:"12px 28px", borderRadius:8, cursor:loading?'default':'pointer', fontFamily:font, fontSize: px(15,14), fontWeight:600, transition:'all 0.2s', opacity:!question.trim()?0.5:1 }}>
-            {loading ? 'Generating…' : 'Generate Essay Plan →'}
+          <button onClick={generate} disabled={loading||(!question.trim() && !selectedPast)} style={{ background:loading?'transparent':S.accent, border:`1px solid ${loading?S.border:S.accent}`, color:loading?S.muted:'#FFFFFF', padding:"12px 28px", borderRadius:8, cursor:loading?'default':'pointer', fontFamily:font, fontSize: px(15,14), fontWeight:600, transition:'all 0.2s', opacity:(!question.trim() && !selectedPast)?0.5:1 }}>
+            {loading ? 'Generating…' : useDuchessLockedScaffold ? 'Generate Model Answer →' : 'Generate Essay Plan →'}
           </button>
         </div>
       </div>
@@ -417,12 +470,18 @@ function PlanTab() {
         <div style={{ background:S.card, border:`1px solid ${S.border}`, borderRadius:12, padding:28, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
           <div style={{ borderBottom:`1px solid ${S.borderFaint}`, marginBottom:20, paddingBottom:12, display:'flex', justifyContent:'space-between', alignItems:'center' }}>
             <span style={{ color:S.accent, fontFamily:font, fontWeight:600, fontSize:14 }}>
-              Essay Plan
+              {useDuchessLockedScaffold ? 'Model Answer' : 'Essay Plan'}
               {loading && <span style={{ marginLeft:10, color:S.muted, fontSize:12, fontWeight:400 }}>· Generating…</span>}
             </span>
-            <span style={{ color:S.muted, fontSize:11, fontFamily:font }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 30 min'}</span>
+            <span style={{ color:S.muted, fontSize:11, fontFamily:font }}>{play === 'hamlet' ? 'Section A — 35 marks — 45 min' : 'Section B — 25 marks — 50 min'}</span>
           </div>
-          <div>{plan ? renderPlan(plan) : <div style={{ color:S.muted, fontFamily:font, fontSize:13 }}>Constructing your essay plan…</div>}</div>
+          <div>
+            {plan
+              ? (useDuchessLockedScaffold
+                  ? <div className="prose prose-sm max-w-none"><ReactMarkdown remarkPlugins={[remarkGfm]}>{plan}</ReactMarkdown></div>
+                  : renderPlan(plan))
+              : <div style={{ color:S.muted, fontFamily:font, fontSize:13 }}>{useDuchessLockedScaffold ? 'Composing your model answer…' : 'Constructing your essay plan…'}</div>}
+          </div>
         </div>
       )}
 
