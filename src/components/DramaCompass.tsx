@@ -664,8 +664,6 @@ function DramaCompass() {
     { id:'scenes', label: IS_MOBILE ? 'Scenes' : 'Scene Map' },
     { id:'critics', label: IS_MOBILE ? 'Critics' : 'Critics Panel' },
   ];
-  const daysLeft = 5;
-
   return (
     <div style={{ background:S.bg, minHeight:'100vh', color:S.text, fontFamily:font }}>
       <style>{`
@@ -678,15 +676,9 @@ function DramaCompass() {
 
       {/* Header */}
       <header style={{ background:'#FFFFFF', backdropFilter:'blur(10px)', borderBottom:`1px solid ${S.border}`, padding: IS_MOBILE ? '14px 16px' : '16px 24px', position:'sticky', top:0, zIndex:100, boxShadow:'0 1px 4px rgba(0,0,0,0.06)' }}>
-        <div style={{ maxWidth:780, margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
-          <div>
-            <div style={{ fontSize: px(18,20), fontWeight:700, color:S.text, letterSpacing:-0.3 }}>Drama Compass</div>
-            <div style={{ fontSize: px(11,10), color:S.muted, fontFamily:font, letterSpacing:1, textTransform:'uppercase', marginTop:2 }}>Edexcel 9ET0/01 · Component 1</div>
-          </div>
-          <div style={{ textAlign:'right' }}>
-            <div style={{ fontSize: px(20,22), fontWeight:700, color:S.accent }}>{daysLeft}</div>
-            <div style={{ fontSize: px(11,10), color:S.muted, textTransform:'uppercase', letterSpacing:1 }}>days</div>
-          </div>
+        <div style={{ maxWidth:780, margin:'0 auto' }}>
+          <div style={{ fontSize: px(18,20), fontWeight:700, color:S.text, letterSpacing:-0.3 }}>Drama Compass</div>
+          <div style={{ fontSize: px(11,10), color:S.muted, fontFamily:font, letterSpacing:1, textTransform:'uppercase', marginTop:2 }}>Edexcel 9ET0/01 · Component 1</div>
         </div>
       </header>
 
