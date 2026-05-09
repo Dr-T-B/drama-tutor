@@ -7,9 +7,13 @@
   --color-mal: #0F766E;   /* teal-700   */
 }
 
+html {
+  font-size: 17px;
+}
+
 body {
   background-color: #F5F5F7;
-  color: #1D1D1F;
+  color: #111827;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
