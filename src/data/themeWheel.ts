@@ -45,7 +45,8 @@ export function getThemeWheelData(play: Play): ThemeNode[] {
   const nodes: ThemeNode[] = []
 
   for (const [theme, qIds] of themeQuestions) {
-    const matchingQuestions = questionsForPlay.filter(q => qIds.includes(q.id))
+    const qIdsSet = new Set(qIds)
+    const matchingQuestions = questionsForPlay.filter(q => qIdsSet.has(q.id))
 
     // Ring 3: aggregate paragraph_plan items, dedupe by normalized topic.
     // For each duplicate cluster: merge sourceQuestionIds, keep longest topic_sentence,
