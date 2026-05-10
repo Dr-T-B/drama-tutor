@@ -241,138 +241,163 @@ export default function CriticsView() {
                 const id = `${c.critic_id}::${c.text_id}`
                 const expanded = expandedId === id
                 return (
-                  <div key={id}
-                    className="bg-white border border-[#D2D2D7] rounded-xl p-4 flex flex-col gap-3"
-                    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-
-                    {/* Row 1: school + AO tags */}
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-[11px] px-2 py-0.5 rounded bg-[#E8E8ED]
-                                       text-[#6E6E73] leading-snug shrink-0 max-w-[55%]">
-                        {c.school}
-                      </span>
-                      <div className="flex gap-1 flex-wrap justify-end">
-                        {c.ao_tags
-                          .filter(ao => visibleAOs.includes(ao))
-                          .map(ao => (
-                            <span key={ao}
-                              className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${AO_CLS[ao] ?? ''}`}>
-                              {ao}
-                            </span>
-                          ))}
-                      </div>
-                    </div>
-
-                    {/* Row 2: name + year */}
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-semibold text-[#1D1D1F]">{c.name}</span>
-                      {c.year && (
-                        <span className="text-xs text-gray-400">{c.year}</span>
-                      )}
-                    </div>
-
-                    {/* Row 3: interpretation (clamped to 3 lines) */}
-                    <p className="text-sm text-[#1D1D1F] leading-relaxed line-clamp-3">
-                      {c.interpretation}
-                    </p>
-
-                    {/* Row 4: short quote blockquote */}
-                    {c.short_quote && (
-                      <div className="border-l-2 border-[#D2D2D7] pl-3">
-                        <p className="text-xs italic text-[#6E6E73] leading-relaxed">
-                          {c.short_quote}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Row 5: theme chips */}
-                    {c.themes.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {c.themes.map(t => (
-                          <span key={t}
-                            className="text-[11px] px-2 py-0.5 rounded
-                                       bg-[#E8E8ED] text-[#6E6E73]">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Expand toggle */}
-                    <button
-                      onClick={() => setExpandedId(expanded ? null : id)}
-                      className="self-start text-xs px-2.5 py-1 rounded-lg border
-                                 border-[#D2D2D7] text-[#6E6E73] hover:bg-gray-50 transition-colors">
-                      {expanded ? '▲ hide exam notes' : '▼ exam notes'}
-                    </button>
-
-                    {/* Expanded: three-move dialectical panel */}
-                    {expanded && (
-                      <div className="border-t border-[#E5E5EA] pt-3 flex flex-col gap-2.5">
-
-                        {/* Move 1 — Establish */}
-                        <div className="rounded-lg p-3 bg-teal-50 border border-teal-100">
-                          <p className="text-[10px] font-semibold uppercase tracking-wider
-                                        text-teal-700 mb-1.5">
-                            Move 1 — Establish
-                          </p>
-                          <p className="text-xs text-teal-900 leading-relaxed">
-                            {c.school} perspective: {c.interpretation}
-                          </p>
-                        </div>
-
-                        {/* Move 2 — Challenge */}
-                        {c.counter_reading && (
-                          <div className="rounded-lg p-3 bg-red-50 border border-red-100">
-                            <p className="text-[10px] font-semibold uppercase tracking-wider
-                                          text-red-700 mb-1.5">
-                              Move 2 — Challenge
-                            </p>
-                            <p className="text-xs text-red-900 leading-relaxed">
-                              {c.counter_reading}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Move 3 — Advance */}
-                        {c.exam_tip && (
-                          <div className="rounded-lg p-3 bg-blue-50 border border-blue-100">
-                            <p className="text-[10px] font-semibold uppercase tracking-wider
-                                          text-blue-700 mb-1.5">
-                              Move 3 — Advance
-                            </p>
-                            <p className="text-xs text-blue-900 leading-relaxed">
-                              {c.exam_tip}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Deployable AO5 sentence — Section A (Hamlet) only */}
-                        {c.usable_ao5_sentence && c.play_title === 'Hamlet' && (
-                          <div>
-                            <p className="text-[10px] font-medium text-[#6E6E73] mb-1">
-                              Deployable AO5 sentence
-                            </p>
-                            <div className="border-l-2 border-[#D2D2D7] pl-3">
-                              <p className="text-xs italic text-[#1D1D1F] leading-relaxed">
-                                {c.usable_ao5_sentence}
-                              </p>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Source note */}
-                        {c.key_text && (
-                          <p className="text-[10px] text-gray-400 italic">{c.key_text}</p>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  <CriticEntryCard
+                    key={id}
+                    c={c}
+                    id={id}
+                    expanded={expanded}
+                    visibleAOs={visibleAOs}
+                    onToggleExpand={() => setExpandedId(expanded ? null : id)}
+                  />
                 )
               })}
             </div>
           </div>
         ))
+      )}
+    </div>
+  )
+}
+
+function CriticEntryCard({
+  c,
+  id,
+  expanded,
+  visibleAOs,
+  onToggleExpand
+}: {
+  c: CriticEntry
+  id: string
+  expanded: boolean
+  visibleAOs: string[]
+  onToggleExpand: () => void
+}) {
+  return (
+    <div key={id}
+      className="bg-white border border-[#D2D2D7] rounded-xl p-4 flex flex-col gap-3"
+      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+
+      {/* Row 1: school + AO tags */}
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[11px] px-2 py-0.5 rounded bg-[#E8E8ED]
+                         text-[#6E6E73] leading-snug shrink-0 max-w-[55%]">
+          {c.school}
+        </span>
+        <div className="flex gap-1 flex-wrap justify-end">
+          {c.ao_tags
+            .filter(ao => visibleAOs.includes(ao))
+            .map(ao => (
+              <span key={ao}
+                className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${AO_CLS[ao] ?? ''}`}>
+                {ao}
+              </span>
+            ))}
+        </div>
+      </div>
+
+      {/* Row 2: name + year */}
+      <div className="flex items-baseline gap-2">
+        <span className="font-semibold text-[#1D1D1F]">{c.name}</span>
+        {c.year && (
+          <span className="text-xs text-gray-400">{c.year}</span>
+        )}
+      </div>
+
+      {/* Row 3: interpretation (clamped to 3 lines) */}
+      <p className="text-sm text-[#1D1D1F] leading-relaxed line-clamp-3">
+        {c.interpretation}
+      </p>
+
+      {/* Row 4: short quote blockquote */}
+      {c.short_quote && (
+        <div className="border-l-2 border-[#D2D2D7] pl-3">
+          <p className="text-xs italic text-[#6E6E73] leading-relaxed">
+            {c.short_quote}
+          </p>
+        </div>
+      )}
+
+      {/* Row 5: theme chips */}
+      {c.themes.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {c.themes.map(t => (
+            <span key={t}
+              className="text-[11px] px-2 py-0.5 rounded
+                         bg-[#E8E8ED] text-[#6E6E73]">
+              {t}
+            </span>
+          ))}
+        </div>
+      )}
+
+      {/* Expand toggle */}
+      <button
+        onClick={onToggleExpand}
+        className="self-start text-xs px-2.5 py-1 rounded-lg border
+                   border-[#D2D2D7] text-[#6E6E73] hover:bg-gray-50 transition-colors">
+        {expanded ? '▲ hide exam notes' : '▼ exam notes'}
+      </button>
+
+      {/* Expanded: three-move dialectical panel */}
+      {expanded && (
+        <div className="border-t border-[#E5E5EA] pt-3 flex flex-col gap-2.5">
+
+          {/* Move 1 — Establish */}
+          <div className="rounded-lg p-3 bg-teal-50 border border-teal-100">
+            <p className="text-[10px] font-semibold uppercase tracking-wider
+                          text-teal-700 mb-1.5">
+              Move 1 — Establish
+            </p>
+            <p className="text-xs text-teal-900 leading-relaxed">
+              {c.school} perspective: {c.interpretation}
+            </p>
+          </div>
+
+          {/* Move 2 — Challenge */}
+          {c.counter_reading && (
+            <div className="rounded-lg p-3 bg-red-50 border border-red-100">
+              <p className="text-[10px] font-semibold uppercase tracking-wider
+                            text-red-700 mb-1.5">
+                Move 2 — Challenge
+              </p>
+              <p className="text-xs text-red-900 leading-relaxed">
+                {c.counter_reading}
+              </p>
+            </div>
+          )}
+
+          {/* Move 3 — Advance */}
+          {c.exam_tip && (
+            <div className="rounded-lg p-3 bg-blue-50 border border-blue-100">
+              <p className="text-[10px] font-semibold uppercase tracking-wider
+                            text-blue-700 mb-1.5">
+                Move 3 — Advance
+              </p>
+              <p className="text-xs text-blue-900 leading-relaxed">
+                {c.exam_tip}
+              </p>
+            </div>
+          )}
+
+          {/* Deployable AO5 sentence — Section A (Hamlet) only */}
+          {c.usable_ao5_sentence && c.play_title === 'Hamlet' && (
+            <div>
+              <p className="text-[10px] font-medium text-[#6E6E73] mb-1">
+                Deployable AO5 sentence
+              </p>
+              <div className="border-l-2 border-[#D2D2D7] pl-3">
+                <p className="text-xs italic text-[#1D1D1F] leading-relaxed">
+                  {c.usable_ao5_sentence}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Source note */}
+          {c.key_text && (
+            <p className="text-[10px] text-gray-400 italic">{c.key_text}</p>
+          )}
+        </div>
       )}
     </div>
   )
