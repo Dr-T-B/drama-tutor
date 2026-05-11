@@ -3,6 +3,12 @@ import { useAuth } from '../hooks/useAuth'
 import { usePlay } from '../contexts/PlayContext'
 import { useQuotes } from '../hooks/useQuotes'
 import { QuoteCard } from '../components/QuoteCard'
+import { EssayCard } from '../components/EssayCard'
+import {
+  getEssaysByTheme,
+  getCharacterStudies,
+} from '../data/essays'
+import type { EssayPlay } from '../types/essay'
 
 export function Quotes() {
   const { userId, loading: authLoading } = useAuth()
@@ -162,6 +168,77 @@ export function Quotes() {
           ))}
         </div>
       )}
+
+      <ThemeEssays
+        play={play}
+        themeCode={themeFilter}
+        themeName={themes.find(t => t.code === themeFilter)?.name ?? null}
+      />
+
+      <CharacterStudies play={play} />
     </div>
+  )
+}
+
+function ThemeEssays({
+  play,
+  themeCode,
+  themeName,
+}: {
+  play: 'HAM' | 'MAL' | 'both'
+  themeCode: string | null
+  themeName: string | null
+}) {
+  if (!themeCode || play === 'both') return null
+  const essays = getEssaysByTheme(play as EssayPlay, themeCode)
+  if (essays.length === 0) return null
+
+  return (
+    <section className="mt-10">
+      <h2 className="text-sm font-semibold text-gray-800 mb-3">
+        Model essays exploring{themeName ? ` "${themeName}"` : ' this theme'}
+      </h2>
+      <div className="flex flex-col gap-3">
+        {essays.map(e => (
+          <EssayCard key={e.id} essay={e} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function CharacterStudies({ play }: { play: 'HAM' | 'MAL' | 'both' }) {
+  const [open, setOpen] = useState(false)
+  const studies = useMemo(() => {
+    if (play === 'both') {
+      return [...getCharacterStudies('HAM'), ...getCharacterStudies('MAL')]
+    }
+    return getCharacterStudies(play as EssayPlay)
+  }, [play])
+  if (studies.length === 0) return null
+
+  return (
+    <section className="mt-10">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-left hover:bg-gray-50"
+      >
+        <span className="text-sm font-semibold text-gray-800">
+          Character studies
+          <span className="ml-2 text-xs font-normal text-gray-400">
+            {studies.length}
+          </span>
+        </span>
+        <span className="text-xs text-gray-400">{open ? '−' : '+'}</span>
+      </button>
+      {open && (
+        <div className="mt-3 flex flex-col gap-3">
+          {studies.map(e => (
+            <EssayCard key={e.id} essay={e} />
+          ))}
+        </div>
+      )}
+    </section>
   )
 }

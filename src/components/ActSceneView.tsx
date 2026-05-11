@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AoBadge } from './AoBadge'
 import { PrintButton } from './PrintButton'
+import { EssayCard } from './EssayCard'
+import { getEssaysByAct } from '../data/essays'
 import type { ActScene, AOKey } from '../data/actScenes'
 
 const AO_RING: Record<AOKey, string> = {
@@ -305,6 +307,50 @@ function SceneDetail({ scene }: { scene: ActScene }) {
           <p className="text-blue-900 text-sm leading-snug">{scene.contextNote}</p>
         </div>
       )}
+
+      <SceneEssays play={scene.play} act={scene.act} sceneNum={scene.scene} />
     </article>
+  )
+}
+
+function SceneEssays({
+  play,
+  act,
+  sceneNum,
+}: {
+  play: 'HAM' | 'MAL'
+  act: number
+  sceneNum: number
+}) {
+  const [open, setOpen] = useState(false)
+  const essays = useMemo(
+    () => getEssaysByAct(play, `${act}.${sceneNum}`),
+    [play, act, sceneNum],
+  )
+  if (essays.length === 0) return null
+
+  return (
+    <div className="print-hide">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-left hover:bg-gray-50"
+      >
+        <span className="text-sm font-semibold text-gray-800">
+          Model essays for this scene
+          <span className="ml-2 text-xs font-normal text-gray-400">
+            {essays.length}
+          </span>
+        </span>
+        <span className="text-xs text-gray-400">{open ? '−' : '+'}</span>
+      </button>
+      {open && (
+        <div className="mt-3 flex flex-col gap-3">
+          {essays.map(e => (
+            <EssayCard key={e.id} essay={e} />
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
