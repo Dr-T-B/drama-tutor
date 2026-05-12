@@ -1,0 +1,96 @@
+/* ============================================================================
+ * Quickfire styles — last-minute revision drills
+ * Brighter / lighter palette than /session to signal "quick energy"
+ * ==========================================================================*/
+
+.quickfire-root {
+  --qf-bg:            #FBF8F1;
+  --qf-card:          #FFFFFF;
+  --qf-ink:           #1A1814;
+  --qf-ink-soft:      #56463A;
+  --qf-rule:          rgba(26, 24, 20, 0.12);
+  --qf-accent:        #6E1E2A;
+  --qf-accent-soft:   #8B2E3A;
+
+  /* drill-mode pastels */
+  --qf-flash:         #FFE4D0;
+  --qf-flash-ink:     #6B3A1F;
+  --qf-method:        #DCEFE2;
+  --qf-method-ink:    #1F4A33;
+  --qf-decode:        #E8DDF5;
+  --qf-decode-ink:    #3C2A60;
+
+  --qf-good:          #DDF1DC;
+  --qf-good-ink:      #20492A;
+  --qf-miss:          #F7E0D3;
+  --qf-miss-ink:      #6F3A23;
+
+  --qf-display-font:  'Cormorant Garamond', 'Crimson Pro', Georgia, serif;
+  --qf-body-font:     'Crimson Pro', Georgia, serif;
+  --qf-mono-font:     'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+  background: var(--qf-bg);
+  color: var(--qf-ink);
+  font-family: var(--qf-body-font);
+  min-height: 100vh;
+}
+
+.quickfire-root .qf-display { font-family: var(--qf-display-font); }
+.quickfire-root .qf-mono { font-family: var(--qf-mono-font); }
+
+.quickfire-root em { font-style: italic; color: var(--qf-accent-soft); }
+.quickfire-root strong { font-weight: 600; color: var(--qf-ink); }
+
+/* Mode picker cards — three pastel options on the home page */
+.qf-mode-card {
+  border: 1px solid rgba(26, 24, 20, 0.08);
+  border-radius: 4px;
+  padding: 1.5rem;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 0 1px 2px rgba(26, 24, 20, 0.04);
+  width: 100%;
+}
+.qf-mode-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 24, 20, 0.1);
+}
+
+.qf-mode-card[data-mode="flash"]  { background: var(--qf-flash);  color: var(--qf-flash-ink); }
+.qf-mode-card[data-mode="method"] { background: var(--qf-method); color: var(--qf-method-ink); }
+.qf-mode-card[data-mode="decode"] { background: var(--qf-decode); color: var(--qf-decode-ink); }
+
+/* Self-mark buttons in the drills */
+.qf-self-mark {
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-family: var(--qf-mono-font);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.qf-self-mark:hover { transform: translateY(-1px); }
+.qf-self-mark[data-mark="got"]  { background: var(--qf-good); color: var(--qf-good-ink); }
+.qf-self-mark[data-mark="miss"] { background: var(--qf-miss); color: var(--qf-miss-ink); }
+
+/* Reveal panel inside drills */
+.qf-reveal {
+  background: var(--qf-card);
+  border: 1px solid var(--qf-rule);
+  border-radius: 4px;
+  padding: 1.25rem;
+}
+
+/* Progress dots */
+.qf-progress-dots { display: flex; gap: 6px; }
+.qf-progress-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(26, 24, 20, 0.12);
+}
+.qf-progress-dot[data-state="current"] { background: var(--qf-accent); }
+.qf-progress-dot[data-state="got"]     { background: var(--qf-good-ink); }
+.qf-progress-dot[data-state="miss"]    { background: var(--qf-miss-ink); }

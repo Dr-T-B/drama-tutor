@@ -1,0 +1,209 @@
+/* ============================================================================
+ * Revision Session styles
+ * - Per-play CSS variables (oxblood-parchment for HAM, claret-cream for MAL)
+ * - SVG diagram classes used inline by revision_pairings.diagram_svg
+ * - .match class used in revision_builds.model_paragraph
+ * - .pastel-card classes for Welcome's pairing previews
+ * ==========================================================================*/
+
+.session-root {
+  --session-bg:           #FAF6EE;
+  --session-bg-deep:      #F1EADB;
+  --session-ink:          #1A1814;
+  --session-ink-soft:     #3E342B;
+  --session-rule:         rgba(26, 24, 20, 0.18);
+  --session-card:         #FFFCF5;
+  --session-accent:       #6E1E2A;
+  --session-accent-soft:  #8B2E3A;
+  --session-svg-node:     #EFE7D4;
+  --session-svg-center:   #6E1E2A;
+  --session-svg-overlap:  rgba(110, 30, 42, 0.22);
+  --session-svg-line:     #3E342B;
+  --session-match:        rgba(110, 30, 42, 0.14);
+  --session-match-ink:    #4A1620;
+  --session-display-font: 'Cormorant Garamond', 'Crimson Pro', Georgia, serif;
+  --session-body-font:    'Crimson Pro', Georgia, serif;
+  --session-mono-font:    'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+  /* Pastel palette for the Welcome cards */
+  --pastel-peach:    #FFE9D9;
+  --pastel-peach-ink: #6B4126;
+  --pastel-mint:     #E0F3E5;
+  --pastel-mint-ink: #234A33;
+  --pastel-lilac:    #EBE3F7;
+  --pastel-lilac-ink: #3D2D5C;
+}
+
+/* MAL override — warmer claret + cream + slightly different pastels */
+.session-root[data-play="MAL"] {
+  --session-bg:           #FBF5E8;
+  --session-bg-deep:      #F3E9D2;
+  --session-card:         #FFFBF0;
+  --session-accent:       #5C2A3E;
+  --session-accent-soft:  #7A3C52;
+  --session-svg-center:   #5C2A3E;
+  --session-svg-overlap:  rgba(92, 42, 62, 0.22);
+  --session-match:        rgba(92, 42, 62, 0.14);
+  --session-match-ink:    #3E1A2A;
+
+  --pastel-peach:    #FBE3D2;
+  --pastel-peach-ink: #6B3A26;
+  --pastel-mint:     #DCEFE0;
+  --pastel-mint-ink: #1F4530;
+  --pastel-lilac:    #E6DDF4;
+  --pastel-lilac-ink: #3A2756;
+}
+
+/* ── SVG diagram classes — referenced inline by stored diagram_svg ─────── */
+.svg-node-bg {
+  fill: var(--session-svg-node);
+  stroke: var(--session-ink);
+  stroke-width: 1;
+}
+.svg-node-center {
+  fill: var(--session-svg-center);
+  stroke: var(--session-ink);
+  stroke-width: 1;
+}
+.svg-node-overlap {
+  fill: var(--session-svg-overlap);
+  stroke: var(--session-ink);
+  stroke-width: 1;
+}
+.svg-label {
+  font-family: var(--session-body-font);
+  font-size: 14px;
+  fill: var(--session-ink);
+}
+.svg-label-bold {
+  font-family: var(--session-display-font);
+  font-size: 16px;
+  font-weight: 600;
+  fill: var(--session-ink);
+}
+.svg-label-white {
+  font-family: var(--session-display-font);
+  font-weight: 600;
+  fill: #F6F1E6;
+}
+.svg-label-meta {
+  font-family: var(--session-mono-font);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  fill: var(--session-ink-soft);
+  text-transform: uppercase;
+}
+.svg-label-accent {
+  font-family: var(--session-mono-font);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  fill: var(--session-accent);
+  text-transform: uppercase;
+}
+.svg-line {
+  stroke: var(--session-ink);
+  stroke-width: 1.2;
+  fill: none;
+}
+.svg-line-thick {
+  stroke: var(--session-accent);
+  stroke-width: 2;
+  fill: none;
+}
+.svg-line-dash {
+  stroke: var(--session-ink-soft);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 3;
+  fill: none;
+}
+
+/* ── Build paragraph highlights ─────────────────────────────────────────── */
+.session-root .match {
+  background: var(--session-match);
+  color: var(--session-match-ink);
+  padding: 0 0.15em;
+  border-radius: 1px;
+  font-weight: 500;
+}
+
+/* ── Container/typography baselines ───────────────────────────────────── */
+.session-root {
+  background: var(--session-bg);
+  color: var(--session-ink);
+  font-family: var(--session-body-font);
+}
+.session-root .session-display { font-family: var(--session-display-font); }
+.session-root .session-mono    { font-family: var(--session-mono-font); }
+
+.session-root em { font-style: italic; color: var(--session-accent-soft); }
+.session-root strong { font-weight: 600; color: var(--session-ink); }
+
+/* Diagram caption + figure framing */
+.session-root .session-diagram {
+  background: var(--session-card);
+  border: 1px solid var(--session-rule);
+  border-radius: 2px;
+  padding: 1.25rem 1rem 0.75rem;
+}
+.session-root .session-diagram svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Drill option button base */
+.session-root .drill-option {
+  border: 1px solid var(--session-rule);
+  background: var(--session-card);
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s;
+}
+.session-root .drill-option:hover:not(:disabled) {
+  border-color: var(--session-ink);
+}
+.session-root .drill-option[data-state="correct"] {
+  border-color: var(--session-accent);
+  background: var(--session-match);
+}
+.session-root .drill-option[data-state="incorrect"] {
+  border-color: var(--session-rule);
+  background: var(--session-bg-deep);
+  opacity: 0.7;
+}
+.session-root .drill-option[data-state="selected-wrong"] {
+  border-color: var(--session-ink-soft);
+  background: var(--session-bg-deep);
+  text-decoration: line-through;
+  text-decoration-color: var(--session-ink-soft);
+}
+
+/* ── PASTEL PAIRING CARDS ──────────────────────────────────────────────── */
+.session-root .pastel-card {
+  border: 1px solid rgba(26, 24, 20, 0.08);
+  box-shadow: 0 1px 0 rgba(26, 24, 20, 0.04);
+}
+.session-root .pastel-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 10px rgba(26, 24, 20, 0.08);
+}
+
+.session-root .pastel-card-grid .pastel-card:nth-child(3n+1) {
+  background: var(--pastel-peach);
+  color: var(--pastel-peach-ink);
+}
+.session-root .pastel-card-grid .pastel-card:nth-child(3n+2) {
+  background: var(--pastel-mint);
+  color: var(--pastel-mint-ink);
+}
+.session-root .pastel-card-grid .pastel-card:nth-child(3n+3) {
+  background: var(--pastel-lilac);
+  color: var(--pastel-lilac-ink);
+}
+
+/* Print rules — re-drill handout for summary screen */
+@media print {
+  body * { visibility: hidden; }
+  .session-print, .session-print * { visibility: visible; }
+  .session-print { position: absolute; left: 0; top: 0; width: 100%; }
+}

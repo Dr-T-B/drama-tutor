@@ -12,6 +12,9 @@ import { Exam }      from './pages/Exam'
 import { Framework } from './pages/Framework'
 import { ActScenePage } from './pages/ActScenePage'
 import { RecallGuidePage } from './pages/RecallGuidePage'
+import { StemSprintPage } from './pages/StemSprintPage'
+import SessionPage from './pages/SessionPage'
+import QuickfirePage from './pages/QuickfirePage'
 import DramaCompass from './components/DramaCompass'
 import { EssayBuilderHomePage } from './features/essayBuilder/pages/EssayBuilderHomePage'
 import { PathSelectionPage } from './features/essayBuilder/pages/PathSelectionPage'
@@ -41,6 +44,9 @@ export default function App() {
             <Route path="/exam"     element={<Exam />} />
             <Route path="/acts"     element={<ActScenePage />} />
             <Route path="/guide"    element={<RecallGuidePage />} />
+            <Route path="/session"  element={<SessionPage />} />
+            <Route path="/quickfire" element={<QuickfirePage />} />
+            <Route path="/stems"    element={<StemSprintPage />} />
             <Route path="/essay-builder" element={<EssayBuilderHomePage />} />
             <Route path="/essay-builder/:attemptId" element={<PathSelectionPage />} />
             <Route path="/essay-builder/:attemptId/feedback/:choiceId" element={<FeedbackPage />} />

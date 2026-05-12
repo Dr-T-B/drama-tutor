@@ -12,7 +12,10 @@ const LINKS: NavLink[] = [
   { to: '/exam',     label: 'Exam skills' },
   { to: '/acts',     label: 'Acts & Scenes' },
   { to: '/guide',    label: 'Recall Guide' },
+  { to: '/session',  label: 'Session' },
+  { to: '/quickfire', label: 'Quickfire' },
   { to: '/compass',  label: 'Compass' },
+  { to: '/stems',     label: 'Stem Sprint' },
   { to: '/mode-d/duchess', label: 'Mode D', highlight: true },
 ]
 
